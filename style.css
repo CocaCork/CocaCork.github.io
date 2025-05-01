@@ -85,7 +85,23 @@ summary{
     margin-top: 20px;
 }
 
-.sup_speed{
+.sup_sp{
     background-color: #7fbfff;
-    width: 200px;
+    width: 150px;
+}
+.sup_st{
+    background-color: #7fbfff;
+    width: 150px;
+}
+.sup_po{
+    background-color: #7fbfff;
+    width: 150px;
+}
+.sup_gt{
+    background-color: #7fbfff;
+    width: 150px;
+}
+.sup_it{
+    background-color: #7fbfff;
+    width: 150px;
 }
