@@ -15,7 +15,6 @@ header{
 
 table{
     border-collapse: collapse;   /* 枠線を1本にする */
-    border-width: 5px;
     margin-left: 10px;
     background-color: #ffffff;
 }
