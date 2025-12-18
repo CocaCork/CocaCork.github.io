@@ -36,24 +36,36 @@
     width: 60px;
   }
 
-  /* ★ 3連単表示エリアを広く */
-  .output {
-    max-height: 550px;
-    overflow-y: auto;
+  /* ===== 出力エリア ===== */
+  .result-area {
+    width: 100%;
   }
 
-  /* ★ 矢印を縦に揃える */
+  /* ★ 点数は常に表示 */
+  .count {
+    font-weight: bold;
+    font-size: 16px;
+    padding: 6px 0;
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  /* ★ 組み合わせ一覧のみスクロール */
+  .result-scroll {
+    max-height: 550px;
+    overflow-y: auto;
+    border-top: 1px solid #ccc;
+  }
+
+  /* ★ 矢印を縦揃え */
   .combo {
     font-family: monospace;
     display: grid;
     grid-template-columns: 1fr auto 1fr auto 1fr;
     gap: 6px;
     justify-items: center;
-  }
-
-  .count {
-    font-weight: bold;
-    margin-bottom: 6px;
   }
 </style>
 </head>
@@ -73,21 +85,23 @@
   </tr>
 </table>
 
-<div class="output">
-  <h3>3連単 組み合わせ</h3>
-  <div id="count" class="count"></div>
+<div class="result-area">
+  <!-- 点数表示（固定） -->
+  <div id="count" class="count">組み合わせ：0 点</div>
 
-  <table id="resultTable">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>馬番</th>
-        <th>馬名</th>
-        <th>オッズ</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <!-- 組み合わせ一覧 -->
+  <div class="result-scroll">
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>馬番</th>
+          <th>馬名</th>
+          <th>オッズ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </div>
 </div>
 
@@ -112,12 +126,12 @@ for (let i = 1; i <= 18; i++) {
 horseTable.addEventListener("change", updateCombinations);
 horseTable.addEventListener("input", updateCombinations);
 
-function comboHTML(a, b, c, type) {
+function comboHTML(a, b, c, key) {
   return `
     <div class="combo">
-      <span>${a[type]}</span><span>→</span>
-      <span>${b[type]}</span><span>→</span>
-      <span>${c[type]}</span>
+      <span>${a[key]}</span><span>→</span>
+      <span>${b[key]}</span><span>→</span>
+      <span>${c[key]}</span>
     </div>
   `;
 }
@@ -147,7 +161,6 @@ function updateCombinations() {
           count++;
           const tr = document.createElement("tr");
           tr.innerHTML = `
-            <td>${count}</td>
             <td>${comboHTML(a, b, c, "no")}</td>
             <td>${comboHTML(a, b, c, "name")}</td>
             <td>${comboHTML(a, b, c, "odds")}</td>
@@ -158,13 +171,11 @@ function updateCombinations() {
     });
   });
 
-  countDiv.textContent = count === 0
-    ? "組み合わせ：0 点"
-    : `組み合わせ：${count} 点`;
+  countDiv.textContent = `組み合わせ：${count} 点`;
 
   if (count === 0) {
     const tr = document.createElement("tr");
-    tr.innerHTML = `<td colspan="4">組み合わせがありません</td>`;
+    tr.innerHTML = `<td colspan="3">組み合わせがありません</td>`;
     resultBody.appendChild(tr);
   }
 }
