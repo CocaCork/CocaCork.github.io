@@ -67,13 +67,13 @@
     justify-items: center;
   }
 
-  /* ===== オッズ色分け ===== */
-  .odds-very-low { color: #8B0000; }   /* 濃い赤 */
-  .odds-low      { color: #FF0000; }   /* 赤 */
-  .odds-mid-low  { color: #FF9999; }   /* 薄い赤 */
-  .odds-mid-high { color: #99CC99; }   /* 薄い緑 */
-  .odds-high     { color: #008000; }   /* 緑 */
-  .odds-very-high{ color: #006400; }   /* 濃い緑 */
+  /* ===== 見やすさ重視：オッズ色分け ===== */
+  .odds-very-low  { color: #8B0000; } /* 5以下：濃い赤 */
+  .odds-low       { color: #C00000; } /* 5～10：赤 */
+  .odds-mid-low   { color: #E06666; } /* 10～25：やや濃い薄赤 */
+  .odds-mid-high  { color: #6AA84F; } /* 25～50：見やすい薄緑 */
+  .odds-high      { color: #38761D; } /* 50～100：緑 */
+  .odds-very-high { color: #274E13; } /* 100超：濃い緑 */
 </style>
 </head>
 <body>
