@@ -1,140 +1,119 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>3連単フォーメーション生成</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    h1 {
-      font-size: 1.5rem;
-    }
-    table {
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px 10px;
-      text-align: center;
-    }
-    th {
-      background: #f5f5f5;
-    }
-    input[type="text"], input[type="number"] {
-      width: 120px;
-    }
-    .result {
-      white-space: pre;
-      background: #fafafa;
-      border: 1px solid #ccc;
-      padding: 10px;
-      max-height: 300px;
-      overflow-y: auto;
-      font-family: monospace;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>3連単フォーメーション作成</title>
+<style>
+  body {
+    font-family: sans-serif;
+    padding: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    text-align: center;
+  }
+  th {
+    background: #f0f0f0;
+  }
+  input[type="text"], input[type="number"] {
+    width: 90%;
+  }
+  .output {
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ccc;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+</style>
 </head>
 <body>
-  <h1>3連単フォーメーション生成</h1>
 
-  <p>各馬の「着順候補」をチェックしてください（同一馬の重複は自動除外されます）。</p>
+<h2>3連単フォーメーション作成</h2>
 
-  <table id="horseTable">
-    <thead>
-      <tr>
-        <th>馬番</th>
-        <th>馬名</th>
-        <th>オッズ</th>
-        <th>1着</th>
-        <th>2着</th>
-        <th>3着</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- サンプル行 -->
-      <tr>
-        <td>1</td>
-        <td><input type="text" value="サンプル馬A"></td>
-        <td><input type="number" step="0.1" value="3.2"></td>
-        <td><input type="checkbox" class="pos1"></td>
-        <td><input type="checkbox" class="pos2"></td>
-        <td><input type="checkbox" class="pos3"></td>
-      </tr>
-      <tr>
-        <td>2</td>
-        <td><input type="text" value="サンプル馬B"></td>
-        <td><input type="number" step="0.1" value="5.6"></td>
-        <td><input type="checkbox" class="pos1"></td>
-        <td><input type="checkbox" class="pos2"></td>
-        <td><input type="checkbox" class="pos3"></td>
-      </tr>
-      <tr>
-        <td>3</td>
-        <td><input type="text" value="サンプル馬C"></td>
-        <td><input type="number" step="0.1" value="12.4"></td>
-        <td><input type="checkbox" class="pos1"></td>
-        <td><input type="checkbox" class="pos2"></td>
-        <td><input type="checkbox" class="pos3"></td>
-      </tr>
-    </tbody>
-  </table>
+<table id="horseTable">
+  <tr>
+    <th>馬番</th>
+    <th>馬名</th>
+    <th>オッズ</th>
+    <th>1着</th>
+    <th>2着</th>
+    <th>3着</th>
+  </tr>
+</table>
 
-  <h2>生成された3連単組み合わせ</h2>
-  <div id="output" class="result"></div>
+<h3>3連単 組み合わせ</h3>
+<div id="result" class="output"></div>
 
-  <script>
-    const table = document.getElementById("horseTable");
-    const output = document.getElementById("output");
+<script>
+const table = document.getElementById("horseTable");
+const result = document.getElementById("result");
 
-    table.addEventListener("change", updateCombinations);
-    table.addEventListener("input", updateCombinations);
+// 18頭分の行を作成
+for (let i = 1; i <= 18; i++) {
+  const row = table.insertRow();
+  row.innerHTML = `
+    <td>${i}</td>
+    <td><input type="text" placeholder="馬名"></td>
+    <td><input type="number" step="0.1" placeholder="オッズ"></td>
+    <td><input type="checkbox" class="pos1"></td>
+    <td><input type="checkbox" class="pos2"></td>
+    <td><input type="checkbox" class="pos3"></td>
+  `;
+}
 
-    function getHorses() {
-      const rows = Array.from(table.tBodies[0].rows);
-      return rows.map((row, index) => {
-        return {
-          number: row.cells[0].innerText,
-          name: row.cells[1].querySelector("input").value,
-          odds: row.cells[2].querySelector("input").value,
-          p1: row.querySelector('.pos1').checked,
-          p2: row.querySelector('.pos2').checked,
-          p3: row.querySelector('.pos3').checked
-        };
+// 全チェックボックスにイベント設定
+table.addEventListener("change", updateCombinations);
+
+function updateCombinations() {
+  const rows = [...table.rows].slice(1);
+
+  const first = [];
+  const second = [];
+  const third = [];
+
+  rows.forEach(row => {
+    const no = row.cells[0].textContent;
+    const name = row.cells[1].querySelector("input").value || "未入力";
+    const odds = row.cells[2].querySelector("input").value || "-";
+
+    const horse = { no, name, odds };
+
+    if (row.querySelector(".pos1").checked) first.push(horse);
+    if (row.querySelector(".pos2").checked) second.push(horse);
+    if (row.querySelector(".pos3").checked) third.push(horse);
+  });
+
+  let output = "";
+  let count = 0;
+
+  first.forEach(a => {
+    second.forEach(b => {
+      third.forEach(c => {
+        // 同一馬除外
+        if (a.no !== b.no && a.no !== c.no && b.no !== c.no) {
+          count++;
+          output += `${count}. `
+          + `${a.no}:${a.name}(${a.odds}) → `
+          + `${b.no}:${b.name}(${b.odds}) → `
+          + `${c.no}:${c.name}(${c.odds})\n`;
+        }
       });
-    }
+    });
+  });
 
-    function updateCombinations() {
-      const horses = getHorses();
+  result.textContent = count === 0
+    ? "組み合わせがありません"
+    : `合計 ${count} 点\n\n` + output;
+}
+</script>
 
-      const first = horses.filter(h => h.p1);
-      const second = horses.filter(h => h.p2);
-      const third = horses.filter(h => h.p3);
-
-      let lines = [];
-
-      first.forEach(a => {
-        second.forEach(b => {
-          third.forEach(c => {
-            if (a !== b && b !== c && a !== c) {
-              lines.push(
-                `${a.number}(${a.name}) → ${b.number}(${b.name}) → ${c.number}(${c.name})` +
-                `  | オッズ参考: ${a.odds}, ${b.odds}, ${c.odds}`
-              );
-            }
-          });
-        });
-      });
-
-      output.textContent = lines.length
-        ? lines.join("\n")
-        : "組み合わせがありません";
-    }
-
-    // 初期表示
-    updateCombinations();
-  </script>
 </body>
 </html>
