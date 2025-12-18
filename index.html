@@ -24,13 +24,15 @@
 
   th { background: #f0f0f0; }
 
-  /* ★ チェックボックスを少し大きく */
+  /* チェックボックス：やや大きめ */
   input[type="checkbox"] {
     transform: scale(1.8);
     cursor: pointer;
   }
 
-  input[type="text"] { width: 170px; }
+  /* ★ 馬名入力欄を少しだけ狭く */
+  input[type="text"] { width: 150px; }
+
   input[type="number"] { width: 60px; }
 
   .readonly {
@@ -68,7 +70,7 @@
   }
 
   .result-scroll {
-    max-height: 600px;
+    max-height: 590px;
     overflow-y: auto;
     border-top: 1px solid #ccc;
   }
@@ -85,6 +87,7 @@
 
   .combo .value { font-weight: 700; }
 
+  /* オッズ配色（白背景で見やすい調整済み） */
   .odds-very-low  { color: #7A0000; }
   .odds-low       { color: #B00000; }
   .odds-mid-low   { color: #E06666; }
@@ -155,6 +158,198 @@
 </div>
 </div>
 
-<!-- ※ JavaScript 部分は前回と同一のため省略せずそのまま使ってください -->
+<script>
+const triResults = [];
+const wideResults = [];
+
+const triTable = document.getElementById("triTable");
+const triBody  = document.getElementById("triResult");
+const triCount = document.getElementById("triCount");
+
+const wideTable = document.getElementById("wideTable");
+const wideBody  = document.getElementById("wideResult");
+const wideCount = document.getElementById("wideCount");
+
+/* ---------- 共通 ---------- */
+function safeText(v) {
+  return v && v.trim() !== "" ? v : "-";
+}
+
+function formatOdds(v) {
+  return isNaN(v) || v === "" ? "-" : Number(v).toFixed(1);
+}
+
+function oddsClass(v) {
+  v = Number(v);
+  if (isNaN(v)) return "";
+  if (v <= 5) return "odds-very-low";
+  if (v <= 10) return "odds-low";
+  if (v <= 25) return "odds-mid-low";
+  if (v <= 50) return "odds-mid-high";
+  if (v <= 100) return "odds-high";
+  return "odds-very-high";
+}
+
+/* ---------- CSV出力 ---------- */
+function downloadCSV(data, name) {
+  if (!data.length) return;
+
+  const header = Object.keys(data[0]).join(",");
+  const rows = data.map(o => Object.values(o).join(","));
+  const csv = [header, ...rows].join("\n");
+
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name + ".csv";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- 3連単入力 ---------- */
+for (let i = 1; i <= 18; i++) {
+  triTable.insertRow().innerHTML = `
+    <th>${i}</th>
+    <td><input type="text"></td>
+    <td><input type="number" step="0.1"></td>
+    <td><input type="checkbox" class="p1"></td>
+    <td><input type="checkbox" class="p2"></td>
+    <td><input type="checkbox" class="p3"></td>
+  `;
+}
+
+/* ---------- ワイド入力（参照のみ） ---------- */
+for (let i = 1; i <= 18; i++) {
+  wideTable.insertRow().innerHTML = `
+    <th>${i}</th>
+    <td><input type="text" class="wName readonly" readonly></td>
+    <td><input type="number" class="wOdds readonly" readonly></td>
+    <td><input type="checkbox" class="w1"></td>
+    <td><input type="checkbox" class="w2"></td>
+  `;
+}
+
+/* ---------- 同期 ---------- */
+function syncWideInputs() {
+  [...triTable.rows].slice(1).forEach((r, i) => {
+    const wr = wideTable.rows[i + 1];
+    wr.querySelector(".wName").value = r.cells[1].children[0].value;
+    wr.querySelector(".wOdds").value = r.cells[2].children[0].value;
+  });
+}
+
+/* ---------- イベント ---------- */
+triTable.addEventListener("input", () => {
+  syncWideInputs();
+  updateTrifecta();
+  updateWide();
+});
+triTable.addEventListener("change", () => {
+  syncWideInputs();
+  updateTrifecta();
+  updateWide();
+});
+wideTable.addEventListener("change", updateWide);
+
+/* ---------- 3連単計算 ---------- */
+function updateTrifecta() {
+  triBody.innerHTML = "";
+  triResults.length = 0;
+
+  const rows = [...triTable.rows].slice(1);
+  const A = [], B = [], C = [];
+
+  rows.forEach(r => {
+    const h = {
+      no: r.cells[0].textContent,
+      name: safeText(r.cells[1].children[0].value),
+      odds: r.cells[2].children[0].value
+    };
+    if (r.querySelector(".p1").checked) A.push(h);
+    if (r.querySelector(".p2").checked) B.push(h);
+    if (r.querySelector(".p3").checked) C.push(h);
+  });
+
+  let cnt = 0;
+
+  A.forEach(a => B.forEach(b => C.forEach(c => {
+    if (a.no !== b.no && a.no !== c.no && b.no !== c.no) {
+      cnt++;
+      triResults.push({
+        no: `${a.no}-${b.no}-${c.no}`,
+        name: `${a.name}-${b.name}-${c.name}`,
+        odds: `${formatOdds(a.odds)}-${formatOdds(b.odds)}-${formatOdds(c.odds)}`
+      });
+
+      triBody.insertRow().innerHTML = `
+        <td><div class="combo combo3"><span class="value">${a.no}</span>→<span class="value">${b.no}</span>→<span class="value">${c.no}</span></div></td>
+        <td><div class="combo combo3"><span class="value">${a.name}</span>→<span class="value">${b.name}</span>→<span class="value">${c.name}</span></div></td>
+        <td><div class="combo combo3">
+          <span class="value ${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>→
+          <span class="value ${oddsClass(b.odds)}">${formatOdds(b.odds)}</span>→
+          <span class="value ${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
+        </div></td>
+      `;
+    }
+  })));
+
+  triCount.textContent = `${cnt} 点`;
+}
+
+/* ---------- ワイド計算 ---------- */
+function updateWide() {
+  wideBody.innerHTML = "";
+  wideResults.length = 0;
+
+  const rows = [...wideTable.rows].slice(1);
+  const A = [], B = [];
+
+  rows.forEach(r => {
+    const h = {
+      no: r.cells[0].textContent,
+      name: safeText(r.querySelector(".wName").value),
+      odds: r.querySelector(".wOdds").value
+    };
+    if (r.querySelector(".w1").checked) A.push(h);
+    if (r.querySelector(".w2").checked) B.push(h);
+  });
+
+  let cnt = 0;
+
+  A.forEach(a => {
+    B.forEach(b => {
+      if (a.no !== b.no) {
+        const h1 = Number(a.no) < Number(b.no) ? a : b;
+        const h2 = Number(a.no) < Number(b.no) ? b : a;
+
+        cnt++;
+        wideResults.push({
+          no: `${h1.no}-${h2.no}`,
+          name: `${h1.name}-${h2.name}`,
+          odds: `${formatOdds(h1.odds)}-${formatOdds(h2.odds)}`
+        });
+
+        wideBody.insertRow().innerHTML = `
+          <td><div class="combo combo2"><span class="value">${h1.no}</span>→<span class="value">${h2.no}</span></div></td>
+          <td><div class="combo combo2"><span class="value">${h1.name}</span>→<span class="value">${h2.name}</span></div></td>
+          <td><div class="combo combo2">
+            <span class="value ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</span>→
+            <span class="value ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</span>
+          </div></td>
+        `;
+      }
+    });
+  });
+
+  wideCount.textContent = `${cnt} 点`;
+}
+
+/* 初期同期 */
+syncWideInputs();
+</script>
+
 </body>
 </html>
