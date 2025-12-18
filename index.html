@@ -2,11 +2,15 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>3連単フォーメーション計算</title>
+<title>フォーメーション計算ツール</title>
 <style>
   body {
     font-family: sans-serif;
     padding: 20px;
+  }
+
+  h2 {
+    margin-top: 40px;
   }
 
   .container {
@@ -47,11 +51,10 @@
     width: 100%;
   }
 
-  /* 点数＋CSV */
   .header-bar {
     display: flex;
     align-items: center;
-    gap: 120px; /* ★ 点数とCSVを大きく離す */
+    gap: 120px;
     padding: 6px 0;
     background: #fff;
     position: sticky;
@@ -67,7 +70,6 @@
   .count-label {
     color: #888;
     font-weight: normal;
-    margin-right: 4px;
   }
 
   button {
@@ -84,16 +86,19 @@
   .combo {
     font-family: monospace;
     display: grid;
-    grid-template-columns: 1fr auto 1fr auto 1fr;
+    grid-template-columns: 1fr auto 1fr;
     gap: 6px;
     justify-items: center;
+  }
+
+  .combo3 {
+    grid-template-columns: 1fr auto 1fr auto 1fr;
   }
 
   .combo .value {
     font-weight: 700;
   }
 
-  /* オッズ色分け */
   .odds-very-low  { color: #7A0000; }
   .odds-low       { color: #B00000; }
   .odds-mid-low   { color: #E06666; }
@@ -104,17 +109,13 @@
 </head>
 <body>
 
-<h2>3連単フォーメーション計算</h2>
+<h2>3連単フォーメーション</h2>
 
 <div class="container">
-<table id="horseTable">
+<table id="trifectaTable">
   <tr>
-    <th>馬番</th>
-    <th>馬名</th>
-    <th>オッズ</th>
-    <th>1着</th>
-    <th>2着</th>
-    <th>3着</th>
+    <th>馬番</th><th>馬名</th><th>オッズ</th>
+    <th>1着</th><th>2着</th><th>3着</th>
   </tr>
 </table>
 
@@ -122,158 +123,178 @@
   <div class="header-bar">
     <div class="count">
       <span class="count-label">組み合わせ：</span>
-      <span id="count-number">0 点</span>
+      <span id="triCount">0 点</span>
     </div>
-    <button onclick="downloadCSV()">CSV出力</button>
+    <button onclick="downloadCSV(triResults,'trifecta')">CSV出力</button>
   </div>
 
   <div class="result-scroll">
-    <table id="resultTable">
+    <table>
       <thead>
-        <tr>
-          <th>馬番</th>
-          <th>馬名</th>
-          <th>オッズ</th>
-        </tr>
+        <tr><th>馬番</th><th>馬名</th><th>オッズ</th></tr>
       </thead>
-      <tbody></tbody>
+      <tbody id="triResult"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+
+<!-- ================= ワイド ================= -->
+
+<h2>ワイド（2頭）フォーメーション</h2>
+
+<div class="container">
+<table id="wideTable">
+  <tr>
+    <th>馬番</th><th>馬名</th><th>オッズ</th>
+    <th>選択1</th><th>選択2</th>
+  </tr>
+</table>
+
+<div class="result-area">
+  <div class="header-bar">
+    <div class="count">
+      <span class="count-label">組み合わせ：</span>
+      <span id="wideCount">0 点</span>
+    </div>
+    <button onclick="downloadCSV(wideResults,'wide')">CSV出力</button>
+  </div>
+
+  <div class="result-scroll">
+    <table>
+      <thead>
+        <tr><th>馬番</th><th>馬名</th><th>オッズ</th></tr>
+      </thead>
+      <tbody id="wideResult"></tbody>
     </table>
   </div>
 </div>
 </div>
 
 <script>
-const horseTable = document.getElementById("horseTable");
-const resultBody = document.querySelector("#resultTable tbody");
-const countNumber = document.getElementById("count-number");
+const triResults = [];
+const wideResults = [];
 
-let currentResults = [];
-
-/* 18頭分生成 */
-for (let i = 1; i <= 18; i++) {
-  const row = horseTable.insertRow();
-  row.innerHTML = `
-    <th>${i}</th>
-    <td><input type="text"></td>
-    <td><input type="number" step="0.1"></td>
-    <td><input type="checkbox" class="pos1"></td>
-    <td><input type="checkbox" class="pos2"></td>
-    <td><input type="checkbox" class="pos3"></td>
-  `;
-}
-
-horseTable.addEventListener("change", updateCombinations);
-horseTable.addEventListener("input", updateCombinations);
-
-function formatOdds(value) {
-  const v = parseFloat(value);
-  return isNaN(v) ? "-" : v.toFixed(1);
-}
-
-function oddsClass(value) {
-  const v = parseFloat(value);
-  if (isNaN(v)) return "";
-  if (v <= 5) return "odds-very-low";
-  if (v <= 10) return "odds-low";
-  if (v <= 25) return "odds-mid-low";
-  if (v <= 50) return "odds-mid-high";
-  if (v <= 100) return "odds-high";
+function formatOdds(v){ return isNaN(v)? "-" : Number(v).toFixed(1); }
+function oddsClass(v){
+  v = Number(v);
+  if(v<=5) return "odds-very-low";
+  if(v<=10) return "odds-low";
+  if(v<=25) return "odds-mid-low";
+  if(v<=50) return "odds-mid-high";
+  if(v<=100) return "odds-high";
   return "odds-very-high";
 }
 
-function comboHTML(a, b, c, key) {
-  if (key === "odds") {
-    return `
-      <div class="combo">
-        <span class="value ${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>
-        <span>→</span>
-        <span class="value ${oddsClass(b.odds)}">${formatOdds(b.odds)}</span>
-        <span>→</span>
-        <span class="value ${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
-      </div>
-    `;
-  }
-  return `
-    <div class="combo">
-      <span class="value">${a[key]}</span>
-      <span>→</span>
-      <span class="value">${b[key]}</span>
-      <span>→</span>
-      <span class="value">${c[key]}</span>
-    </div>
-  `;
+/* ===== 3連単 ===== */
+const trifectaTable = document.getElementById("trifectaTable");
+const triBody = document.getElementById("triResult");
+const triCount = document.getElementById("triCount");
+
+for(let i=1;i<=18;i++){
+  trifectaTable.insertRow().innerHTML = `
+    <th>${i}</th>
+    <td><input type="text"></td>
+    <td><input type="number" step="0.1"></td>
+    <td><input type="checkbox" class="p1"></td>
+    <td><input type="checkbox" class="p2"></td>
+    <td><input type="checkbox" class="p3"></td>`;
 }
 
-function updateCombinations() {
-  const rows = [...horseTable.rows].slice(1);
-  const first = [], second = [], third = [];
-  currentResults = [];
+trifectaTable.addEventListener("input", updateTrifecta);
+trifectaTable.addEventListener("change", updateTrifecta);
 
-  rows.forEach(row => {
-    const no = row.cells[0].textContent;
-    const name = row.cells[1].querySelector("input").value || "未入力";
-    const odds = row.cells[2].querySelector("input").value;
-    const horse = { no, name, odds };
-
-    if (row.querySelector(".pos1").checked) first.push(horse);
-    if (row.querySelector(".pos2").checked) second.push(horse);
-    if (row.querySelector(".pos3").checked) third.push(horse);
+function updateTrifecta(){
+  triBody.innerHTML=""; triResults.length=0;
+  const r=[...trifectaTable.rows].slice(1);
+  const A=[],B=[],C=[];
+  r.forEach(row=>{
+    const h={no:row.cells[0].textContent,
+      name:row.cells[1].children[0].value||"未入力",
+      odds:row.cells[2].children[0].value};
+    if(row.querySelector(".p1").checked)A.push(h);
+    if(row.querySelector(".p2").checked)B.push(h);
+    if(row.querySelector(".p3").checked)C.push(h);
   });
 
-  resultBody.innerHTML = "";
-  let count = 0;
-
-  first.forEach(a => {
-    second.forEach(b => {
-      third.forEach(c => {
-        if (a.no !== b.no && a.no !== c.no && b.no !== c.no) {
-          count++;
-          currentResults.push({
-            no: `${a.no}-${b.no}-${c.no}`,
-            name: `${a.name}-${b.name}-${c.name}`,
-            odds: `${formatOdds(a.odds)}-${formatOdds(b.odds)}-${formatOdds(c.odds)}`
-          });
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${comboHTML(a, b, c, "no")}</td>
-            <td>${comboHTML(a, b, c, "name")}</td>
-            <td>${comboHTML(a, b, c, "odds")}</td>
-          `;
-          resultBody.appendChild(tr);
-        }
+  let cnt=0;
+  A.forEach(a=>B.forEach(b=>C.forEach(c=>{
+    if(a.no!==b.no&&a.no!==c.no&&b.no!==c.no){
+      cnt++;
+      triResults.push({
+        no:`${a.no}-${b.no}-${c.no}`,
+        name:`${a.name}-${b.name}-${c.name}`,
+        odds:`${formatOdds(a.odds)}-${formatOdds(b.odds)}-${formatOdds(c.odds)}`
       });
-    });
-  });
-
-  countNumber.textContent = `${count} 点`;
-
-  if (count === 0) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td colspan="3">組み合わせがありません</td>`;
-    resultBody.appendChild(tr);
-  }
+      triBody.insertRow().innerHTML=`
+        <td><div class="combo combo3"><span class="value">${a.no}</span>→<span class="value">${b.no}</span>→<span class="value">${c.no}</span></div></td>
+        <td><div class="combo combo3"><span class="value">${a.name}</span>→<span class="value">${b.name}</span>→<span class="value">${c.name}</span></div></td>
+        <td><div class="combo combo3">
+          <span class="value ${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>→
+          <span class="value ${oddsClass(b.odds)}">${formatOdds(b.odds)}</span>→
+          <span class="value ${oddsClass(c.odds)}">${formatOdds(c.odds)}</span></div></td>`;
+    }
+  })));
+  triCount.textContent=`${cnt} 点`;
 }
 
-function downloadCSV() {
-  if (currentResults.length === 0) {
-    alert("出力する組み合わせがありません");
-    return;
-  }
+/* ===== ワイド ===== */
+const wideTable=document.getElementById("wideTable");
+const wideBody=document.getElementById("wideResult");
+const wideCount=document.getElementById("wideCount");
 
-  let csv = "馬番,馬名,オッズ\n";
-  currentResults.forEach(r => {
-    csv += `"${r.no}","${r.name}","${r.odds}"\n`;
+for(let i=1;i<=18;i++){
+  wideTable.insertRow().innerHTML=`
+    <th>${i}</th>
+    <td><input type="text"></td>
+    <td><input type="number" step="0.1"></td>
+    <td><input type="checkbox" class="w1"></td>
+    <td><input type="checkbox" class="w2"></td>`;
+}
+
+wideTable.addEventListener("input", updateWide);
+wideTable.addEventListener("change", updateWide);
+
+function updateWide(){
+  wideBody.innerHTML=""; wideResults.length=0;
+  const r=[...wideTable.rows].slice(1);
+  const A=[],B=[];
+  r.forEach(row=>{
+    const h={no:row.cells[0].textContent,
+      name:row.cells[1].children[0].value||"未入力",
+      odds:row.cells[2].children[0].value};
+    if(row.querySelector(".w1").checked)A.push(h);
+    if(row.querySelector(".w2").checked)B.push(h);
   });
 
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
+  let cnt=0;
+  A.forEach((a,i)=>B.forEach(b=>{
+    if(a.no<b.no){
+      cnt++;
+      wideResults.push({
+        no:`${a.no}-${b.no}`,
+        name:`${a.name}-${b.name}`,
+        odds:`${formatOdds(a.odds)}-${formatOdds(b.odds)}`
+      });
+      wideBody.insertRow().innerHTML=`
+        <td><div class="combo"><span class="value">${a.no}</span>→<span class="value">${b.no}</span></div></td>
+        <td><div class="combo"><span class="value">${a.name}</span>→<span class="value">${b.name}</span></div></td>
+        <td><div class="combo">
+          <span class="value ${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>→
+          <span class="value ${oddsClass(b.odds)}">${formatOdds(b.odds)}</span></div></td>`;
+    }
+  }));
+  wideCount.textContent=`${cnt} 点`;
+}
 
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "3rentan_combinations.csv";
+function downloadCSV(arr,type){
+  if(!arr.length){alert("組み合わせがありません");return;}
+  let csv="馬番,馬名,オッズ\n";
+  arr.forEach(r=>csv+=`"${r.no}","${r.name}","${r.odds}"\n`);
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+  a.download=`${type}_formation.csv`;
   a.click();
-  URL.revokeObjectURL(url);
 }
 </script>
 
