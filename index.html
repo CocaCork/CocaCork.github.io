@@ -1,182 +1,140 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8">
-    <title>競馬ツール</title>
-    <link rel="stylesheet" href="style.css">
-    <script src = "script.js"></script>
+  <meta charset="UTF-8" />
+  <title>3連単フォーメーション生成</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 1.5rem;
+    }
+    table {
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 10px;
+      text-align: center;
+    }
+    th {
+      background: #f5f5f5;
+    }
+    input[type="text"], input[type="number"] {
+      width: 120px;
+    }
+    .result {
+      white-space: pre;
+      background: #fafafa;
+      border: 1px solid #ccc;
+      padding: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+    }
+  </style>
 </head>
-
 <body>
-    <header>
-        <h1 id="headline">競馬ツール</h1>
-    </header>
+  <h1>3連単フォーメーション生成</h1>
 
-    <textarea id="comboOutput" rows="10" cols="40" readonly></textarea>
+  <p>各馬の「着順候補」をチェックしてください（同一馬の重複は自動除外されます）。</p>
 
-    <table id="chkTable">
-        <tr>
-            <th width="30">枠</th>
-            <th width="50">1着</th>
-            <th width="50">2着</th>
-            <th width="50">3着</th>
-        </tr>
+  <table id="horseTable">
+    <thead>
+      <tr>
+        <th>馬番</th>
+        <th>馬名</th>
+        <th>オッズ</th>
+        <th>1着</th>
+        <th>2着</th>
+        <th>3着</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- サンプル行 -->
+      <tr>
+        <td>1</td>
+        <td><input type="text" value="サンプル馬A"></td>
+        <td><input type="number" step="0.1" value="3.2"></td>
+        <td><input type="checkbox" class="pos1"></td>
+        <td><input type="checkbox" class="pos2"></td>
+        <td><input type="checkbox" class="pos3"></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><input type="text" value="サンプル馬B"></td>
+        <td><input type="number" step="0.1" value="5.6"></td>
+        <td><input type="checkbox" class="pos1"></td>
+        <td><input type="checkbox" class="pos2"></td>
+        <td><input type="checkbox" class="pos3"></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><input type="text" value="サンプル馬C"></td>
+        <td><input type="number" step="0.1" value="12.4"></td>
+        <td><input type="checkbox" class="pos1"></td>
+        <td><input type="checkbox" class="pos2"></td>
+        <td><input type="checkbox" class="pos3"></td>
+      </tr>
+    </tbody>
+  </table>
 
-         <tr>
-             <th>1</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>2</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>3</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>4</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>5</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>6</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>7</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>8</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>9</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>10</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>11</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>12</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>13</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>14</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>15</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>16</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>17</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-        <tr>
-             <th>18</th>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-             <td><input type="checkbox"></td>
-         </tr>
-    </table>
+  <h2>生成された3連単組み合わせ</h2>
+  <div id="output" class="result"></div>
 
-    <!-- <script>
-        const table = document.getElementById("chkTable");
-        const output = document.getElementById("comboOutput");
+  <script>
+    const table = document.getElementById("horseTable");
+    const output = document.getElementById("output");
 
-        // すべてのチェックボックスに change イベントを設定
-        table.querySelectorAll("input[type='checkbox']").forEach(cb => {
-            cb.addEventListener("change", updateCombinations);
-        });
+    table.addEventListener("change", updateCombinations);
+    table.addEventListener("input", updateCombinations);
 
-        // 初期表示
-        updateCombinations();
-        
-        function getCheckedNumbers(colIndex) {
-            const rows = table.rows;
-            let result = [];
-            
-            for (let r = 1; r < rows.length; r++) {
-                const cb = rows[r].cells[colIndex].querySelector("input");
-                if (cb.checked) {
-                    result.push(rows[r].cells[0].innerText);
-                }
+    function getHorses() {
+      const rows = Array.from(table.tBodies[0].rows);
+      return rows.map((row, index) => {
+        return {
+          number: row.cells[0].innerText,
+          name: row.cells[1].querySelector("input").value,
+          odds: row.cells[2].querySelector("input").value,
+          p1: row.querySelector('.pos1').checked,
+          p2: row.querySelector('.pos2').checked,
+          p3: row.querySelector('.pos3').checked
+        };
+      });
+    }
+
+    function updateCombinations() {
+      const horses = getHorses();
+
+      const first = horses.filter(h => h.p1);
+      const second = horses.filter(h => h.p2);
+      const third = horses.filter(h => h.p3);
+
+      let lines = [];
+
+      first.forEach(a => {
+        second.forEach(b => {
+          third.forEach(c => {
+            if (a !== b && b !== c && a !== c) {
+              lines.push(
+                `${a.number}(${a.name}) → ${b.number}(${b.name}) → ${c.number}(${c.name})` +
+                `  | オッズ参考: ${a.odds}, ${b.odds}, ${c.odds}`
+              );
             }
-            return result;
-        }
-        
-        function updateCombinations() {
-            const first  = getCheckedNumbers(1); // 1着
-            const second = getCheckedNumbers(2); // 2着
-            const third  = getCheckedNumbers(3); // 3着
-            
-            let lines = [];
-            
-            first.forEach(f => {
-                second.forEach(s => {
-                    third.forEach(t => {
-                        // ★ 同一馬の重複を除外
-                        if (f !== s && f !== t && s !== t) {
-                            lines.push(`${f}-${s}-${t}`);
-                        }
-                    });
-                });
-            });
-            
-            output.value = lines.join("\n");
-        }
-</script> -->
+          });
+        });
+      });
+
+      output.textContent = lines.length
+        ? lines.join("\n")
+        : "組み合わせがありません";
+    }
+
+    // 初期表示
+    updateCombinations();
+  </script>
 </body>
 </html>
