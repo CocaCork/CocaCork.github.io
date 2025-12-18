@@ -11,7 +11,7 @@
         <h1 id="headline">競馬ツール</h1>
     </header>
 
-    <pre id="result"></pre>
+    <textarea id="comboOutput" rows="10" cols="40" readonly></textarea>
 
     <table id="chkTable">
         <tr>
@@ -133,37 +133,48 @@
 
     <script>
         const table = document.getElementById("chkTable");
-        const result = document.getElementById("result");
+        const result = document.getElementById("comboOutput");
 
         // すべてのチェックボックスに change イベントを設定
         table.querySelectorAll("input[type='checkbox']").forEach(cb => {
-            cb.addEventListener("change", updateResult);
+            cb.addEventListener("change", updateCombinations);
         });
 
         // 初期表示
-        updateResult();
+        updateCombinations();
         
-        function updateResult() {
+        function getCheckedNumbers(colIndex) {
             const rows = table.rows;
-            const colCount = rows[0].cells.length;
+            let result = [];
             
-            let output = "";
-            
-            // 列ごとに処理（1列目は行番号なので除外）
-            for (let c = 1; c < colCount; c++) {
-                let set = new Set();
-                // 行を走査（1行目はヘッダー）
-                for (let r = 1; r < rows.length; r++) {
-                    const checkbox = rows[r].cells[c].querySelector("input");
-                    if (checkbox.checked) {
-                        const rowNumber = rows[r].cells[0].innerText;
-                        set.add(rowNumber);
-                    }
+            for (let r = 1; r < rows.length; r++) {
+                const cb = rows[r].cells[colIndex].querySelector("input");
+                if (cb.checked) {
+                    result.push(rows[r].cells[0].innerText);
                 }
-                output += `列${c}: ${Array.from(set).join(", ")}\n`;
             }
+            return result;
+        }
+        
+        function updateCombinations() {
+            const first  = getCheckedNumbers(1); // 1着
+            const second = getCheckedNumbers(2); // 2着
+            const third  = getCheckedNumbers(3); // 3着
             
-            result.textContent = output;
+            let lines = [];
+            
+            first.forEach(f => {
+                second.forEach(s => {
+                    third.forEach(t => {
+                        // ★ 同一馬の重複を除外
+                        if (f !== s && f !== t && s !== t) {
+                            lines.push(`${f}-${s}-${t}`);
+                        }
+                    });
+                });
+            });
+            
+            output.value = lines.join("\n");
         }
 </script>
 </body>
