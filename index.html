@@ -11,6 +11,8 @@
         <h1 id="headline">競馬ツール</h1>
     </header>
 
+    <pre id="result"></pre>
+
     <table>
         <tr>
             <th width="30">枠</th>
@@ -128,5 +130,41 @@
              <td><input type="checkbox"></td>
          </tr>
     </table>
+
+    <script>
+        const table = document.getElementById("chkTable");
+        const result = document.getElementById("result");
+
+        // すべてのチェックボックスに change イベントを設定
+        table.querySelectorAll("input[type='checkbox']").forEach(cb => {
+            cb.addEventListener("change", updateResult);
+        });
+
+        // 初期表示
+        updateResult();
+        
+        function updateResult() {
+            const rows = table.rows;
+            const colCount = rows[0].cells.length;
+            
+            let output = "";
+            
+            // 列ごとに処理（1列目は行番号なので除外）
+            for (let c = 1; c < colCount; c++) {
+                let set = new Set();
+                // 行を走査（1行目はヘッダー）
+                for (let r = 1; r < rows.length; r++) {
+                    const checkbox = rows[r].cells[c].querySelector("input");
+                    if (checkbox.checked) {
+                        const rowNumber = rows[r].cells[0].innerText;
+                        set.add(rowNumber);
+                    }
+                }
+                output += `列${c}: ${Array.from(set).join(", ")}\n`;
+            }
+            
+            result.textContent = output;
+        }
+</script>
 </body>
 </html>
