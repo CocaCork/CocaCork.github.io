@@ -35,9 +35,25 @@
   input[type="number"] {
     width: 60px;
   }
+
+  /* ★ 3連単表示エリアを広く */
   .output {
-    max-height: 350px;
+    max-height: 550px;
     overflow-y: auto;
+  }
+
+  /* ★ 矢印を縦に揃える */
+  .combo {
+    font-family: monospace;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 6px;
+    justify-items: center;
+  }
+
+  .count {
+    font-weight: bold;
+    margin-bottom: 6px;
   }
 </style>
 </head>
@@ -59,6 +75,8 @@
 
 <div class="output">
   <h3>3連単 組み合わせ</h3>
+  <div id="count" class="count"></div>
+
   <table id="resultTable">
     <thead>
       <tr>
@@ -76,6 +94,7 @@
 <script>
 const horseTable = document.getElementById("horseTable");
 const resultBody = document.querySelector("#resultTable tbody");
+const countDiv = document.getElementById("count");
 
 // 18頭分生成
 for (let i = 1; i <= 18; i++) {
@@ -93,16 +112,24 @@ for (let i = 1; i <= 18; i++) {
 horseTable.addEventListener("change", updateCombinations);
 horseTable.addEventListener("input", updateCombinations);
 
+function comboHTML(a, b, c, type) {
+  return `
+    <div class="combo">
+      <span>${a[type]}</span><span>→</span>
+      <span>${b[type]}</span><span>→</span>
+      <span>${c[type]}</span>
+    </div>
+  `;
+}
+
 function updateCombinations() {
   const rows = [...horseTable.rows].slice(1);
-
   const first = [], second = [], third = [];
 
   rows.forEach(row => {
     const no = row.cells[0].textContent;
     const name = row.cells[1].querySelector("input").value || "未入力";
     const odds = row.cells[2].querySelector("input").value || "-";
-
     const horse = { no, name, odds };
 
     if (row.querySelector(".pos1").checked) first.push(horse);
@@ -121,15 +148,19 @@ function updateCombinations() {
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${count}</td>
-            <td>${a.no} → ${b.no} → ${c.no}</td>
-            <td>${a.name} → ${b.name} → ${c.name}</td>
-            <td>${a.odds} → ${b.odds} → ${c.odds}</td>
+            <td>${comboHTML(a, b, c, "no")}</td>
+            <td>${comboHTML(a, b, c, "name")}</td>
+            <td>${comboHTML(a, b, c, "odds")}</td>
           `;
           resultBody.appendChild(tr);
         }
       });
     });
   });
+
+  countDiv.textContent = count === 0
+    ? "組み合わせ：0 点"
+    : `組み合わせ：${count} 点`;
 
   if (count === 0) {
     const tr = document.createElement("tr");
