@@ -31,7 +31,6 @@
   }
 
   input[type="text"] { width: 130px; }
-
   input[type="number"] { width: 60px; }
 
   .readonly {
@@ -86,13 +85,27 @@
 
   .combo .value { font-weight: 700; }
 
-  /* オッズ配色（白背景で見やすい調整済み） */
+  /* オッズ配色 */
   .odds-very-low  { color: #7A0000; }
   .odds-low       { color: #B00000; }
   .odds-mid-low   { color: #E06666; }
   .odds-mid-high  { color: #6AA84F; }
   .odds-high      { color: #38761D; }
   .odds-very-high { color: #274E13; }
+
+  /* メモ */
+  .memo-area {
+    margin-top: 20px;
+  }
+
+  .memo-area textarea {
+    width: 100%;
+    min-height: 180px;
+    padding: 10px;
+    font-size: 14px;
+    box-sizing: border-box;
+    resize: vertical;
+  }
 </style>
 </head>
 <body>
@@ -157,6 +170,12 @@
 </div>
 </div>
 
+<!-- メモ -->
+<h2>メモ</h2>
+<div class="memo-area">
+  <textarea placeholder="ここにメモを自由に記入できます（買い目の根拠、資金配分、気付きなど）"></textarea>
+</div>
+
 <script>
 const triResults = [];
 const wideResults = [];
@@ -169,7 +188,7 @@ const wideTable = document.getElementById("wideTable");
 const wideBody  = document.getElementById("wideResult");
 const wideCount = document.getElementById("wideCount");
 
-/* ---------- 共通 ---------- */
+/* 共通 */
 function safeText(v) {
   return v && v.trim() !== "" ? v : "-";
 }
@@ -189,10 +208,9 @@ function oddsClass(v) {
   return "odds-very-high";
 }
 
-/* ---------- CSV出力 ---------- */
+/* CSV */
 function downloadCSV(data, name) {
   if (!data.length) return;
-
   const header = Object.keys(data[0]).join(",");
   const rows = data.map(o => Object.values(o).join(","));
   const csv = [header, ...rows].join("\n");
@@ -204,11 +222,10 @@ function downloadCSV(data, name) {
   a.href = url;
   a.download = name + ".csv";
   a.click();
-
   URL.revokeObjectURL(url);
 }
 
-/* ---------- 3連単入力 ---------- */
+/* 3連単入力 */
 for (let i = 1; i <= 18; i++) {
   triTable.insertRow().innerHTML = `
     <th>${i}</th>
@@ -220,7 +237,7 @@ for (let i = 1; i <= 18; i++) {
   `;
 }
 
-/* ---------- ワイド入力（参照のみ） ---------- */
+/* ワイド入力 */
 for (let i = 1; i <= 18; i++) {
   wideTable.insertRow().innerHTML = `
     <th>${i}</th>
@@ -231,7 +248,7 @@ for (let i = 1; i <= 18; i++) {
   `;
 }
 
-/* ---------- 同期 ---------- */
+/* 同期 */
 function syncWideInputs() {
   [...triTable.rows].slice(1).forEach((r, i) => {
     const wr = wideTable.rows[i + 1];
@@ -240,7 +257,6 @@ function syncWideInputs() {
   });
 }
 
-/* ---------- イベント ---------- */
 triTable.addEventListener("input", () => {
   syncWideInputs();
   updateTrifecta();
@@ -253,7 +269,7 @@ triTable.addEventListener("change", () => {
 });
 wideTable.addEventListener("change", updateWide);
 
-/* ---------- 3連単計算 ---------- */
+/* 3連単 */
 function updateTrifecta() {
   triBody.innerHTML = "";
   triResults.length = 0;
@@ -284,13 +300,13 @@ function updateTrifecta() {
       });
 
       triBody.insertRow().innerHTML = `
-        <td><div class="combo combo3"><span class="value">${a.no}</span>→<span class="value">${b.no}</span>→<span class="value">${c.no}</span></div></td>
-        <td><div class="combo combo3"><span class="value">${a.name}</span>→<span class="value">${b.name}</span>→<span class="value">${c.name}</span></div></td>
-        <td><div class="combo combo3">
-          <span class="value ${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>→
-          <span class="value ${oddsClass(b.odds)}">${formatOdds(b.odds)}</span>→
-          <span class="value ${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
-        </div></td>
+        <td>${a.no}→${b.no}→${c.no}</td>
+        <td>${a.name}→${b.name}→${c.name}</td>
+        <td>
+          <span class="${oddsClass(a.odds)}">${formatOdds(a.odds)}</span> →
+          <span class="${oddsClass(b.odds)}">${formatOdds(b.odds)}</span> →
+          <span class="${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
+        </td>
       `;
     }
   })));
@@ -298,7 +314,7 @@ function updateTrifecta() {
   triCount.textContent = `${cnt} 点`;
 }
 
-/* ---------- ワイド計算 ---------- */
+/* ワイド */
 function updateWide() {
   wideBody.innerHTML = "";
   wideResults.length = 0;
@@ -318,35 +334,33 @@ function updateWide() {
 
   let cnt = 0;
 
-  A.forEach(a => {
-    B.forEach(b => {
-      if (a.no !== b.no) {
-        const h1 = Number(a.no) < Number(b.no) ? a : b;
-        const h2 = Number(a.no) < Number(b.no) ? b : a;
+  A.forEach(a => B.forEach(b => {
+    if (a.no !== b.no) {
+      const h1 = Number(a.no) < Number(b.no) ? a : b;
+      const h2 = Number(a.no) < Number(b.no) ? b : a;
 
-        cnt++;
-        wideResults.push({
-          no: `${h1.no}-${h2.no}`,
-          name: `${h1.name}-${h2.name}`,
-          odds: `${formatOdds(h1.odds)}-${formatOdds(h2.odds)}`
-        });
+      cnt++;
+      wideResults.push({
+        no: `${h1.no}-${h2.no}`,
+        name: `${h1.name}-${h2.name}`,
+        odds: `${formatOdds(h1.odds)}-${formatOdds(h2.odds)}`
+      });
 
-        wideBody.insertRow().innerHTML = `
-          <td><div class="combo combo2"><span class="value">${h1.no}</span>→<span class="value">${h2.no}</span></div></td>
-          <td><div class="combo combo2"><span class="value">${h1.name}</span>→<span class="value">${h2.name}</span></div></td>
-          <td><div class="combo combo2">
-            <span class="value ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</span>→
-            <span class="value ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</span>
-          </div></td>
-        `;
-      }
-    });
-  });
+      wideBody.insertRow().innerHTML = `
+        <td>${h1.no}→${h2.no}</td>
+        <td>${h1.name}→${h2.name}</td>
+        <td>
+          <span class="${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</span> →
+          <span class="${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</span>
+        </td>
+      `;
+    }
+  }));
 
   wideCount.textContent = `${cnt} 点`;
 }
 
-/* 初期同期 */
+/* 初期 */
 syncWideInputs();
 </script>
 
