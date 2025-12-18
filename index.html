@@ -4,14 +4,8 @@
 <meta charset="UTF-8">
 <title>フォーメーション計算ツール</title>
 <style>
-  body {
-    font-family: sans-serif;
-    padding: 20px;
-  }
-
-  h2 {
-    margin-top: 40px;
-  }
+  body { font-family: sans-serif; padding: 20px; }
+  h2 { margin-top: 40px; }
 
   .container {
     display: flex;
@@ -19,9 +13,7 @@
     align-items: flex-start;
   }
 
-  table {
-    border-collapse: collapse;
-  }
+  table { border-collapse: collapse; }
 
   th, td {
     border: 1px solid #ccc;
@@ -30,26 +22,17 @@
     white-space: nowrap;
   }
 
-  th {
-    background: #f0f0f0;
-  }
+  th { background: #f0f0f0; }
 
   input[type="checkbox"] {
     transform: scale(1.5);
     cursor: pointer;
   }
 
-  input[type="text"] {
-    width: 170px;
-  }
+  input[type="text"] { width: 170px; }
+  input[type="number"] { width: 60px; }
 
-  input[type="number"] {
-    width: 60px;
-  }
-
-  .result-area {
-    width: 100%;
-  }
+  .result-area { width: 100%; }
 
   .header-bar {
     display: flex;
@@ -62,20 +45,10 @@
     z-index: 2;
   }
 
-  .count {
-    font-size: 16px;
-    font-weight: bold;
-  }
+  .count { font-size: 16px; font-weight: bold; }
+  .count-label { color: #888; font-weight: normal; }
 
-  .count-label {
-    color: #888;
-    font-weight: normal;
-  }
-
-  button {
-    padding: 4px 12px;
-    cursor: pointer;
-  }
+  button { padding: 4px 12px; cursor: pointer; }
 
   .result-scroll {
     max-height: 640px;
@@ -86,18 +59,14 @@
   .combo {
     font-family: monospace;
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
     gap: 6px;
     justify-items: center;
   }
 
-  .combo3 {
-    grid-template-columns: 1fr auto 1fr auto 1fr;
-  }
+  .combo2 { grid-template-columns: 1fr auto 1fr; }
+  .combo3 { grid-template-columns: 1fr auto 1fr auto 1fr; }
 
-  .combo .value {
-    font-weight: 700;
-  }
+  .combo .value { font-weight: 700; }
 
   .odds-very-low  { color: #7A0000; }
   .odds-low       { color: #B00000; }
@@ -112,7 +81,7 @@
 <h2>3連単フォーメーション</h2>
 
 <div class="container">
-<table id="trifectaTable">
+<table id="triTable">
   <tr>
     <th>馬番</th><th>馬名</th><th>オッズ</th>
     <th>1着</th><th>2着</th><th>3着</th>
@@ -139,15 +108,12 @@
 </div>
 </div>
 
-<!-- ================= ワイド ================= -->
-
 <h2>ワイド（2頭）フォーメーション</h2>
 
 <div class="container">
 <table id="wideTable">
   <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>選択1</th><th>選択2</th>
+    <th>馬番</th><th>選択1</th><th>選択2</th>
   </tr>
 </table>
 
@@ -172,12 +138,14 @@
 </div>
 
 <script>
-const triResults = [];
-const wideResults = [];
+const triResults=[], wideResults=[];
+const triTable=document.getElementById("triTable");
+const triBody=document.getElementById("triResult");
+const triCount=document.getElementById("triCount");
 
 function formatOdds(v){ return isNaN(v)? "-" : Number(v).toFixed(1); }
 function oddsClass(v){
-  v = Number(v);
+  v=Number(v);
   if(v<=5) return "odds-very-low";
   if(v<=10) return "odds-low";
   if(v<=25) return "odds-mid-low";
@@ -186,13 +154,9 @@ function oddsClass(v){
   return "odds-very-high";
 }
 
-/* ===== 3連単 ===== */
-const trifectaTable = document.getElementById("trifectaTable");
-const triBody = document.getElementById("triResult");
-const triCount = document.getElementById("triCount");
-
+/* ===== 3連単 入力 ===== */
 for(let i=1;i<=18;i++){
-  trifectaTable.insertRow().innerHTML = `
+  triTable.insertRow().innerHTML=`
     <th>${i}</th>
     <td><input type="text"></td>
     <td><input type="number" step="0.1"></td>
@@ -200,21 +164,36 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="p2"></td>
     <td><input type="checkbox" class="p3"></td>`;
 }
+triTable.addEventListener("input",()=>{updateTrifecta();updateWide();});
+triTable.addEventListener("change",()=>{updateTrifecta();updateWide();});
 
-trifectaTable.addEventListener("input", updateTrifecta);
-trifectaTable.addEventListener("change", updateTrifecta);
+/* ===== ワイド 入力 ===== */
+const wideTable=document.getElementById("wideTable");
+const wideBody=document.getElementById("wideResult");
+const wideCount=document.getElementById("wideCount");
 
+for(let i=1;i<=18;i++){
+  wideTable.insertRow().innerHTML=`
+    <th>${i}</th>
+    <td><input type="checkbox" class="w1"></td>
+    <td><input type="checkbox" class="w2"></td>`;
+}
+wideTable.addEventListener("change",updateWide);
+
+/* ===== 3連単計算 ===== */
 function updateTrifecta(){
   triBody.innerHTML=""; triResults.length=0;
-  const r=[...trifectaTable.rows].slice(1);
+  const rows=[...triTable.rows].slice(1);
   const A=[],B=[],C=[];
-  r.forEach(row=>{
-    const h={no:row.cells[0].textContent,
-      name:row.cells[1].children[0].value||"未入力",
-      odds:row.cells[2].children[0].value};
-    if(row.querySelector(".p1").checked)A.push(h);
-    if(row.querySelector(".p2").checked)B.push(h);
-    if(row.querySelector(".p3").checked)C.push(h);
+  rows.forEach(r=>{
+    const h={
+      no:r.cells[0].textContent,
+      name:r.cells[1].children[0].value||"未入力",
+      odds:r.cells[2].children[0].value
+    };
+    if(r.querySelector(".p1").checked)A.push(h);
+    if(r.querySelector(".p2").checked)B.push(h);
+    if(r.querySelector(".p3").checked)C.push(h);
   });
 
   let cnt=0;
@@ -238,37 +217,26 @@ function updateTrifecta(){
   triCount.textContent=`${cnt} 点`;
 }
 
-/* ===== ワイド ===== */
-const wideTable=document.getElementById("wideTable");
-const wideBody=document.getElementById("wideResult");
-const wideCount=document.getElementById("wideCount");
-
-for(let i=1;i<=18;i++){
-  wideTable.insertRow().innerHTML=`
-    <th>${i}</th>
-    <td><input type="text"></td>
-    <td><input type="number" step="0.1"></td>
-    <td><input type="checkbox" class="w1"></td>
-    <td><input type="checkbox" class="w2"></td>`;
-}
-
-wideTable.addEventListener("input", updateWide);
-wideTable.addEventListener("change", updateWide);
-
+/* ===== ワイド計算（3連単入力参照） ===== */
 function updateWide(){
   wideBody.innerHTML=""; wideResults.length=0;
-  const r=[...wideTable.rows].slice(1);
+  const triRows=[...triTable.rows].slice(1);
+  const wRows=[...wideTable.rows].slice(1);
   const A=[],B=[];
-  r.forEach(row=>{
-    const h={no:row.cells[0].textContent,
-      name:row.cells[1].children[0].value||"未入力",
-      odds:row.cells[2].children[0].value};
-    if(row.querySelector(".w1").checked)A.push(h);
-    if(row.querySelector(".w2").checked)B.push(h);
+
+  wRows.forEach((r,i)=>{
+    const t=triRows[i];
+    const h={
+      no:t.cells[0].textContent,
+      name:t.cells[1].children[0].value||"未入力",
+      odds:t.cells[2].children[0].value
+    };
+    if(r.querySelector(".w1").checked)A.push(h);
+    if(r.querySelector(".w2").checked)B.push(h);
   });
 
   let cnt=0;
-  A.forEach((a,i)=>B.forEach(b=>{
+  A.forEach(a=>B.forEach(b=>{
     if(a.no<b.no){
       cnt++;
       wideResults.push({
@@ -277,9 +245,9 @@ function updateWide(){
         odds:`${formatOdds(a.odds)}-${formatOdds(b.odds)}`
       });
       wideBody.insertRow().innerHTML=`
-        <td><div class="combo"><span class="value">${a.no}</span>→<span class="value">${b.no}</span></div></td>
-        <td><div class="combo"><span class="value">${a.name}</span>→<span class="value">${b.name}</span></div></td>
-        <td><div class="combo">
+        <td><div class="combo combo2"><span class="value">${a.no}</span>→<span class="value">${b.no}</span></div></td>
+        <td><div class="combo combo2"><span class="value">${a.name}</span>→<span class="value">${b.name}</span></div></td>
+        <td><div class="combo combo2">
           <span class="value ${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>→
           <span class="value ${oddsClass(b.odds)}">${formatOdds(b.odds)}</span></div></td>`;
     }
