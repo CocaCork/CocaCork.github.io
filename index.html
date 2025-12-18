@@ -8,20 +8,24 @@
     font-family: sans-serif;
     padding: 20px;
   }
+
   .container {
     display: flex;
     gap: 20px;
     align-items: flex-start;
   }
+
   table {
     border-collapse: collapse;
   }
+
   th, td {
     border: 1px solid #ccc;
     padding: 6px 8px;
     text-align: center;
     white-space: nowrap;
   }
+
   th {
     background: #f0f0f0;
   }
@@ -32,7 +36,7 @@
   }
 
   input[type="text"] {
-    width: 160px;
+    width: 170px; /* 馬名入力を少し広め */
   }
 
   input[type="number"] {
@@ -47,8 +51,7 @@
   .header-bar {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 24px;
+    gap: 40px; /* ★ 点数とCSVの間を拡張 */
     padding: 6px 0;
     background: #fff;
     position: sticky;
@@ -72,9 +75,9 @@
     cursor: pointer;
   }
 
-  /* ★ 出力テーブル表示範囲を拡張 */
+  /* ★ 出力テーブル表示範囲（ほんの少し狭く） */
   .result-scroll {
-    max-height: 680px; /* ← ここを拡張（入力テーブル下端より少し上） */
+    max-height: 640px; /* ← 680px → 640px */
     overflow-y: auto;
     border-top: 1px solid #ccc;
   }
@@ -91,9 +94,9 @@
     font-weight: 700;
   }
 
-  /* オッズ色分け */
-  .odds-very-low  { color: #8B0000; }
-  .odds-low       { color: #C00000; }
+  /* オッズ色分け（白背景で見やすい配色） */
+  .odds-very-low  { color: #7A0000; }
+  .odds-low       { color: #B00000; }
   .odds-mid-low   { color: #E06666; }
   .odds-mid-high  { color: #6AA84F; }
   .odds-high      { color: #38761D; }
