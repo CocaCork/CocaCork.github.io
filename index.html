@@ -73,8 +73,8 @@
 
   /* ===== 矢印専用セル ===== */
   .arrow-cell {
-    width: 16px;          /* 矢印セルを細く */
-    padding: 0 2px;       /* 左右の余白を最小限に */
+    width: 16px;
+    padding: 0 2px;
     color: #bbb;
     font-weight: bold;
     border-left: none;
@@ -83,11 +83,11 @@
 
   .no-border-right { 
     border-right: none; 
-    padding-right: 4px;   /* データセルの右側余白を少し詰める */
+    padding-right: 4px;
   }
   .no-border-left  { 
     border-left: none; 
-    padding-left: 4px;    /* データセルの左側余白を少し詰める */
+    padding-left: 4px;
   }
 
   /* オッズ配色 */
@@ -229,10 +229,11 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="p1"></td>
     <td><input type="checkbox" class="p2"></td>
     <td><input type="checkbox" class="p3"></td>`;
+    
   wideTable.insertRow().innerHTML=`
     <th>${i}</th>
-    <td><input class="wName readonly" readonly></td>
-    <td><input class="wOdds readonly" readonly></td>
+    <td><input class="wName" style="width:120px;"></td>
+    <td><input class="wOdds" style="width:60px;"></td>
     <td><input type="checkbox" class="w1"></td>
     <td><input type="checkbox" class="w2"></td>`;
 }
