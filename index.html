@@ -30,7 +30,7 @@
     cursor: pointer;
   }
 
-  input[type="text"] { width: 130px; }
+  input[type="text"] { width: 120px; }
   input[type="number"] { width: 60px; }
 
   .readonly {
@@ -73,17 +73,27 @@
     border-top: 1px solid #ccc;
   }
 
+  /* ===== 出力（矢印縦揃え＋薄色） ===== */
   .combo {
-    font-family: monospace;
     display: grid;
-    gap: 6px;
+    align-items: center;
     justify-items: center;
+    font-family: monospace;
+    gap: 4px;
   }
 
-  .combo2 { grid-template-columns: 1fr auto 1fr; }
-  .combo3 { grid-template-columns: 1fr auto 1fr auto 1fr; }
+  .combo2 {
+    grid-template-columns: auto 24px auto;
+  }
 
-  .combo .value { font-weight: 700; }
+  .combo3 {
+    grid-template-columns: auto 24px auto 24px auto;
+  }
+
+  .combo .arrow {
+    font-weight: bold;
+    color: #bbb;   /* ← 矢印だけ薄い色 */
+  }
 
   /* オッズ配色 */
   .odds-very-low  { color: #7A0000; }
@@ -170,7 +180,6 @@
 </div>
 </div>
 
-<!-- メモ -->
 <h2>メモ</h2>
 <div class="memo-area">
   <textarea placeholder="ここにメモを自由に記入できます"></textarea>
@@ -188,7 +197,6 @@ const wideTable = document.getElementById("wideTable");
 const wideBody  = document.getElementById("wideResult");
 const wideCount = document.getElementById("wideCount");
 
-/* 共通 */
 function safeText(v) {
   return v && v.trim() !== "" ? v : "-";
 }
@@ -208,7 +216,6 @@ function oddsClass(v) {
   return "odds-very-high";
 }
 
-/* CSV */
 function downloadCSV(data, name) {
   if (!data.length) return;
   const header = Object.keys(data[0]).join(",");
@@ -225,7 +232,7 @@ function downloadCSV(data, name) {
   URL.revokeObjectURL(url);
 }
 
-/* 3連単入力 */
+/* 入力行生成 */
 for (let i = 1; i <= 18; i++) {
   triTable.insertRow().innerHTML = `
     <th>${i}</th>
@@ -235,10 +242,7 @@ for (let i = 1; i <= 18; i++) {
     <td><input type="checkbox" class="p2"></td>
     <td><input type="checkbox" class="p3"></td>
   `;
-}
 
-/* ワイド入力 */
-for (let i = 1; i <= 18; i++) {
   wideTable.insertRow().innerHTML = `
     <th>${i}</th>
     <td><input type="text" class="wName readonly" readonly></td>
@@ -300,12 +304,28 @@ function updateTrifecta() {
       });
 
       triBody.insertRow().innerHTML = `
-        <td>${a.no}→${b.no}→${c.no}</td>
-        <td>${a.name}→${b.name}→${c.name}</td>
         <td>
-          <span class="${oddsClass(a.odds)}">${formatOdds(a.odds)}</span> →
-          <span class="${oddsClass(b.odds)}">${formatOdds(b.odds)}</span> →
-          <span class="${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
+          <div class="combo combo3">
+            <span>${a.no}</span><span class="arrow">→</span>
+            <span>${b.no}</span><span class="arrow">→</span>
+            <span>${c.no}</span>
+          </div>
+        </td>
+        <td>
+          <div class="combo combo3">
+            <span>${a.name}</span><span class="arrow">→</span>
+            <span>${b.name}</span><span class="arrow">→</span>
+            <span>${c.name}</span>
+          </div>
+        </td>
+        <td>
+          <div class="combo combo3">
+            <span class="${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>
+            <span class="arrow">→</span>
+            <span class="${oddsClass(b.odds)}">${formatOdds(b.odds)}</span>
+            <span class="arrow">→</span>
+            <span class="${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
+          </div>
         </td>
       `;
     }
@@ -347,11 +367,24 @@ function updateWide() {
       });
 
       wideBody.insertRow().innerHTML = `
-        <td>${h1.no}→${h2.no}</td>
-        <td>${h1.name}→${h2.name}</td>
         <td>
-          <span class="${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</span> →
-          <span class="${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</span>
+          <div class="combo combo2">
+            <span>${h1.no}</span><span class="arrow">→</span>
+            <span>${h2.no}</span>
+          </div>
+        </td>
+        <td>
+          <div class="combo combo2">
+            <span>${h1.name}</span><span class="arrow">→</span>
+            <span>${h2.name}</span>
+          </div>
+        </td>
+        <td>
+          <div class="combo combo2">
+            <span class="${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</span>
+            <span class="arrow">→</span>
+            <span class="${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</span>
+          </div>
         </td>
       `;
     }
@@ -360,7 +393,6 @@ function updateWide() {
   wideCount.textContent = `${cnt} 点`;
 }
 
-/* 初期 */
 syncWideInputs();
 </script>
 
