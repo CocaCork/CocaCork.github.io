@@ -112,10 +112,9 @@ function updateCombinations() {
         // 同一馬除外
         if (a.no !== b.no && a.no !== c.no && b.no !== c.no) {
           count++;
-          output += `${count}. `
-          + `${a.no}:${a.name}(${a.odds}) → `
-          + `${b.no}:${b.name}(${b.odds}) → `
-          + `${c.no}:${c.name}(${c.odds})\n`;
+          output += `${a.no}:${a.name}(${a.odds}) → `
+                  + `${b.no}:${b.name}(${b.odds}) → `
+                  + `${c.no}:${c.name}(${c.odds})\n`;
         }
       });
     });
