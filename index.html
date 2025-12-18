@@ -31,7 +31,6 @@
     cursor: pointer;
   }
 
-  /* 馬名入力欄を広く */
   input[type="text"] {
     width: 140px;
   }
@@ -40,12 +39,10 @@
     width: 60px;
   }
 
-  /* ===== 出力エリア ===== */
   .result-area {
     width: 100%;
   }
 
-  /* 組み合わせ点数（常に表示） */
   .count {
     font-weight: bold;
     font-size: 16px;
@@ -56,14 +53,21 @@
     z-index: 2;
   }
 
-  /* 組み合わせ一覧スクロール */
+  .controls {
+    margin-bottom: 6px;
+  }
+
+  button {
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+
   .result-scroll {
     max-height: 550px;
     overflow-y: auto;
     border-top: 1px solid #ccc;
   }
 
-  /* 矢印を縦揃え */
   .combo {
     font-family: monospace;
     display: grid;
@@ -72,18 +76,17 @@
     justify-items: center;
   }
 
-  /* 組み合わせ値は太字（矢印は除外） */
   .combo .value {
     font-weight: 700;
   }
 
-  /* ===== 見やすさ重視：オッズ色分け ===== */
-  .odds-very-low  { color: #8B0000; } /* 5以下：濃い赤 */
-  .odds-low       { color: #C00000; } /* 5～10：赤 */
-  .odds-mid-low   { color: #E06666; } /* 10～25：薄赤 */
-  .odds-mid-high  { color: #6AA84F; } /* 25～50：薄緑 */
-  .odds-high      { color: #38761D; } /* 50～100：緑 */
-  .odds-very-high { color: #274E13; } /* 100超：濃い緑 */
+  /* オッズ色分け（見やすさ重視） */
+  .odds-very-low  { color: #8B0000; }
+  .odds-low       { color: #C00000; }
+  .odds-mid-low   { color: #E06666; }
+  .odds-mid-high  { color: #6AA84F; }
+  .odds-high      { color: #38761D; }
+  .odds-very-high { color: #274E13; }
 </style>
 </head>
 <body>
@@ -103,10 +106,12 @@
 </table>
 
 <div class="result-area">
-  <!-- 組み合わせ点数（固定表示） -->
   <div id="count" class="count">組み合わせ：0 点</div>
 
-  <!-- 組み合わせ一覧 -->
+  <div class="controls">
+    <button onclick="downloadCSV()">CSV / Excel 出力</button>
+  </div>
+
   <div class="result-scroll">
     <table id="resultTable">
       <thead>
@@ -127,7 +132,9 @@ const horseTable = document.getElementById("horseTable");
 const resultBody = document.querySelector("#resultTable tbody");
 const countDiv = document.getElementById("count");
 
-/* 18頭分の入力行を生成 */
+let currentResults = [];
+
+/* 18頭分生成 */
 for (let i = 1; i <= 18; i++) {
   const row = horseTable.insertRow();
   row.innerHTML = `
@@ -143,7 +150,12 @@ for (let i = 1; i <= 18; i++) {
 horseTable.addEventListener("change", updateCombinations);
 horseTable.addEventListener("input", updateCombinations);
 
-/* オッズに応じたクラス */
+/* オッズを小数第1位に統一 */
+function formatOdds(value) {
+  const v = parseFloat(value);
+  return isNaN(v) ? "-" : v.toFixed(1);
+}
+
 function oddsClass(value) {
   const v = parseFloat(value);
   if (isNaN(v)) return "";
@@ -155,16 +167,15 @@ function oddsClass(value) {
   return "odds-very-high";
 }
 
-/* 組み合わせ表示HTML */
 function comboHTML(a, b, c, key) {
   if (key === "odds") {
     return `
       <div class="combo">
-        <span class="value ${oddsClass(a.odds)}">${a.odds}</span>
+        <span class="value ${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>
         <span>→</span>
-        <span class="value ${oddsClass(b.odds)}">${b.odds}</span>
+        <span class="value ${oddsClass(b.odds)}">${formatOdds(b.odds)}</span>
         <span>→</span>
-        <span class="value ${oddsClass(c.odds)}">${c.odds}</span>
+        <span class="value ${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
       </div>
     `;
   }
@@ -179,15 +190,15 @@ function comboHTML(a, b, c, key) {
   `;
 }
 
-/* 組み合わせ生成 */
 function updateCombinations() {
   const rows = [...horseTable.rows].slice(1);
   const first = [], second = [], third = [];
+  currentResults = [];
 
   rows.forEach(row => {
     const no = row.cells[0].textContent;
     const name = row.cells[1].querySelector("input").value || "未入力";
-    const odds = row.cells[2].querySelector("input").value || "-";
+    const odds = row.cells[2].querySelector("input").value;
     const horse = { no, name, odds };
 
     if (row.querySelector(".pos1").checked) first.push(horse);
@@ -203,6 +214,12 @@ function updateCombinations() {
       third.forEach(c => {
         if (a.no !== b.no && a.no !== c.no && b.no !== c.no) {
           count++;
+          currentResults.push({
+            no: `${a.no}-${b.no}-${c.no}`,
+            name: `${a.name}-${b.name}-${c.name}`,
+            odds: `${formatOdds(a.odds)}-${formatOdds(b.odds)}-${formatOdds(c.odds)}`
+          });
+
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${comboHTML(a, b, c, "no")}</td>
@@ -222,6 +239,28 @@ function updateCombinations() {
     tr.innerHTML = `<td colspan="3">組み合わせがありません</td>`;
     resultBody.appendChild(tr);
   }
+}
+
+/* CSV / Excel 出力 */
+function downloadCSV() {
+  if (currentResults.length === 0) {
+    alert("出力する組み合わせがありません");
+    return;
+  }
+
+  let csv = "馬番,馬名,オッズ\n";
+  currentResults.forEach(r => {
+    csv += `"${r.no}","${r.name}","${r.odds}"\n`;
+  });
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "3rentan_combinations.csv";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 
