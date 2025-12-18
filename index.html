@@ -32,7 +32,7 @@
   }
 
   input[type="text"] {
-    width: 140px;
+    width: 160px;
   }
 
   input[type="number"] {
@@ -58,7 +58,7 @@
   }
 
   button {
-    padding: 4px 10px;
+    padding: 4px 12px;
     cursor: pointer;
   }
 
@@ -80,7 +80,7 @@
     font-weight: 700;
   }
 
-  /* オッズ色分け（見やすさ重視） */
+  /* 見やすさ重視のオッズ色分け */
   .odds-very-low  { color: #8B0000; }
   .odds-low       { color: #C00000; }
   .odds-mid-low   { color: #E06666; }
@@ -109,7 +109,7 @@
   <div id="count" class="count">組み合わせ：0 点</div>
 
   <div class="controls">
-    <button onclick="downloadCSV()">CSV / Excel 出力</button>
+    <button onclick="downloadCSV()">CSV出力</button>
   </div>
 
   <div class="result-scroll">
@@ -150,7 +150,7 @@ for (let i = 1; i <= 18; i++) {
 horseTable.addEventListener("change", updateCombinations);
 horseTable.addEventListener("input", updateCombinations);
 
-/* オッズを小数第1位に統一 */
+/* オッズは必ず小数第1位 */
 function formatOdds(value) {
   const v = parseFloat(value);
   return isNaN(v) ? "-" : v.toFixed(1);
@@ -241,7 +241,7 @@ function updateCombinations() {
   }
 }
 
-/* CSV / Excel 出力 */
+/* CSV出力のみ */
 function downloadCSV() {
   if (currentResults.length === 0) {
     alert("出力する組み合わせがありません");
