@@ -13,30 +13,6 @@ header{
     color: #008000;
 }
 
-/* h1{
-    margin-left: 10px;
-}
-
-h2{
-    margin-left: 10px;
-    margin-bottom: -5px;
-}
-
-h3{
-    margin-left: 10px;
-    margin-bottom: -5px;
-}
-
-h4{
-    margin-left: 10px;
-    margin-bottom: -5px;
-}
-
-p{
-    margin-left: 10px;
-    margin-bottom: -5px;
-} */
-
 table{
     border-collapse: collapse;   /* 枠線を1本にする */
     border-width: 2px;
