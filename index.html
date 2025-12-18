@@ -25,12 +25,13 @@
   th {
     background: #f0f0f0;
   }
+
   input[type="checkbox"] {
     transform: scale(1.5);
     cursor: pointer;
   }
 
-  /* ★ 馬名欄を広く */
+  /* 馬名入力欄を広く */
   input[type="text"] {
     width: 140px;
   }
@@ -39,10 +40,12 @@
     width: 60px;
   }
 
+  /* ===== 出力エリア ===== */
   .result-area {
     width: 100%;
   }
 
+  /* 組み合わせ点数（常に表示） */
   .count {
     font-weight: bold;
     font-size: 16px;
@@ -53,12 +56,14 @@
     z-index: 2;
   }
 
+  /* 組み合わせ一覧スクロール */
   .result-scroll {
     max-height: 550px;
     overflow-y: auto;
     border-top: 1px solid #ccc;
   }
 
+  /* 矢印を縦揃え */
   .combo {
     font-family: monospace;
     display: grid;
@@ -67,11 +72,16 @@
     justify-items: center;
   }
 
+  /* 組み合わせ値は太字（矢印は除外） */
+  .combo .value {
+    font-weight: 700;
+  }
+
   /* ===== 見やすさ重視：オッズ色分け ===== */
   .odds-very-low  { color: #8B0000; } /* 5以下：濃い赤 */
   .odds-low       { color: #C00000; } /* 5～10：赤 */
-  .odds-mid-low   { color: #E06666; } /* 10～25：やや濃い薄赤 */
-  .odds-mid-high  { color: #6AA84F; } /* 25～50：見やすい薄緑 */
+  .odds-mid-low   { color: #E06666; } /* 10～25：薄赤 */
+  .odds-mid-high  { color: #6AA84F; } /* 25～50：薄緑 */
   .odds-high      { color: #38761D; } /* 50～100：緑 */
   .odds-very-high { color: #274E13; } /* 100超：濃い緑 */
 </style>
@@ -93,8 +103,10 @@
 </table>
 
 <div class="result-area">
+  <!-- 組み合わせ点数（固定表示） -->
   <div id="count" class="count">組み合わせ：0 点</div>
 
+  <!-- 組み合わせ一覧 -->
   <div class="result-scroll">
     <table id="resultTable">
       <thead>
@@ -115,7 +127,7 @@ const horseTable = document.getElementById("horseTable");
 const resultBody = document.querySelector("#resultTable tbody");
 const countDiv = document.getElementById("count");
 
-// 18頭分生成
+/* 18頭分の入力行を生成 */
 for (let i = 1; i <= 18; i++) {
   const row = horseTable.insertRow();
   row.innerHTML = `
@@ -131,6 +143,7 @@ for (let i = 1; i <= 18; i++) {
 horseTable.addEventListener("change", updateCombinations);
 horseTable.addEventListener("input", updateCombinations);
 
+/* オッズに応じたクラス */
 function oddsClass(value) {
   const v = parseFloat(value);
   if (isNaN(v)) return "";
@@ -142,25 +155,31 @@ function oddsClass(value) {
   return "odds-very-high";
 }
 
+/* 組み合わせ表示HTML */
 function comboHTML(a, b, c, key) {
   if (key === "odds") {
     return `
       <div class="combo">
-        <span class="${oddsClass(a.odds)}">${a.odds}</span><span>→</span>
-        <span class="${oddsClass(b.odds)}">${b.odds}</span><span>→</span>
-        <span class="${oddsClass(c.odds)}">${c.odds}</span>
+        <span class="value ${oddsClass(a.odds)}">${a.odds}</span>
+        <span>→</span>
+        <span class="value ${oddsClass(b.odds)}">${b.odds}</span>
+        <span>→</span>
+        <span class="value ${oddsClass(c.odds)}">${c.odds}</span>
       </div>
     `;
   }
   return `
     <div class="combo">
-      <span>${a[key]}</span><span>→</span>
-      <span>${b[key]}</span><span>→</span>
-      <span>${c[key]}</span>
+      <span class="value">${a[key]}</span>
+      <span>→</span>
+      <span class="value">${b[key]}</span>
+      <span>→</span>
+      <span class="value">${c[key]}</span>
     </div>
   `;
 }
 
+/* 組み合わせ生成 */
 function updateCombinations() {
   const rows = [...horseTable.rows].slice(1);
   const first = [], second = [], third = [];
