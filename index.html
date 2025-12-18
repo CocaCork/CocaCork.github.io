@@ -36,7 +36,7 @@
   }
 
   input[type="text"] {
-    width: 170px; /* 馬名入力を少し広め */
+    width: 170px;
   }
 
   input[type="number"] {
@@ -51,7 +51,7 @@
   .header-bar {
     display: flex;
     align-items: center;
-    gap: 40px; /* ★ 点数とCSVの間を拡張 */
+    gap: 120px; /* ★ 点数とCSVを大きく離す */
     padding: 6px 0;
     background: #fff;
     position: sticky;
@@ -75,9 +75,8 @@
     cursor: pointer;
   }
 
-  /* ★ 出力テーブル表示範囲（ほんの少し狭く） */
   .result-scroll {
-    max-height: 640px; /* ← 680px → 640px */
+    max-height: 640px;
     overflow-y: auto;
     border-top: 1px solid #ccc;
   }
@@ -94,7 +93,7 @@
     font-weight: 700;
   }
 
-  /* オッズ色分け（白背景で見やすい配色） */
+  /* オッズ色分け */
   .odds-very-low  { color: #7A0000; }
   .odds-low       { color: #B00000; }
   .odds-mid-low   { color: #E06666; }
