@@ -73,15 +73,22 @@
 
   /* ===== 矢印専用セル ===== */
   .arrow-cell {
-    width: 26px;
+    width: 16px;          /* 矢印セルを細く */
+    padding: 0 2px;       /* 左右の余白を最小限に */
     color: #bbb;
     font-weight: bold;
     border-left: none;
     border-right: none;
   }
 
-  .no-border-right { border-right: none; }
-  .no-border-left  { border-left: none; }
+  .no-border-right { 
+    border-right: none; 
+    padding-right: 4px;   /* データセルの右側余白を少し詰める */
+  }
+  .no-border-left  { 
+    border-left: none; 
+    padding-left: 4px;    /* データセルの左側余白を少し詰める */
+  }
 
   /* オッズ配色 */
   .odds-very-low  { color: #7A0000; }
