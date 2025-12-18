@@ -43,11 +43,12 @@
     width: 100%;
   }
 
-  /* ヘッダ（点数＋CSV） */
+  /* 点数＋CSV */
   .header-bar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
     padding: 6px 0;
     background: #fff;
     position: sticky;
@@ -71,8 +72,9 @@
     cursor: pointer;
   }
 
+  /* ★ 出力テーブル表示範囲を拡張 */
   .result-scroll {
-    max-height: 550px;
+    max-height: 680px; /* ← ここを拡張（入力テーブル下端より少し上） */
     overflow-y: auto;
     border-top: 1px solid #ccc;
   }
@@ -89,7 +91,7 @@
     font-weight: 700;
   }
 
-  /* 見やすさ重視のオッズ色分け */
+  /* オッズ色分け */
   .odds-very-low  { color: #8B0000; }
   .odds-low       { color: #C00000; }
   .odds-mid-low   { color: #E06666; }
@@ -116,7 +118,7 @@
 
 <div class="result-area">
   <div class="header-bar">
-    <div id="count" class="count">
+    <div class="count">
       <span class="count-label">組み合わせ：</span>
       <span id="count-number">0 点</span>
     </div>
@@ -161,7 +163,6 @@ for (let i = 1; i <= 18; i++) {
 horseTable.addEventListener("change", updateCombinations);
 horseTable.addEventListener("input", updateCombinations);
 
-/* オッズは小数第1位 */
 function formatOdds(value) {
   const v = parseFloat(value);
   return isNaN(v) ? "-" : v.toFixed(1);
@@ -252,7 +253,6 @@ function updateCombinations() {
   }
 }
 
-/* CSV出力 */
 function downloadCSV() {
   if (currentResults.length === 0) {
     alert("出力する組み合わせがありません");
