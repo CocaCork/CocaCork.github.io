@@ -43,9 +43,11 @@
     width: 100%;
   }
 
-  .count {
-    font-weight: bold;
-    font-size: 16px;
+  /* ヘッダ（点数＋CSV） */
+  .header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 6px 0;
     background: #fff;
     position: sticky;
@@ -53,8 +55,16 @@
     z-index: 2;
   }
 
-  .controls {
-    margin-bottom: 6px;
+  .count {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  /* ★ 「組み合わせ：」だけ薄く */
+  .count-label {
+    color: #888;
+    font-weight: normal;
+    margin-right: 4px;
   }
 
   button {
@@ -106,9 +116,11 @@
 </table>
 
 <div class="result-area">
-  <div id="count" class="count">組み合わせ：0 点</div>
-
-  <div class="controls">
+  <div class="header-bar">
+    <div id="count" class="count">
+      <span class="count-label">組み合わせ：</span>
+      <span id="count-number">0 点</span>
+    </div>
     <button onclick="downloadCSV()">CSV出力</button>
   </div>
 
@@ -130,7 +142,7 @@
 <script>
 const horseTable = document.getElementById("horseTable");
 const resultBody = document.querySelector("#resultTable tbody");
-const countDiv = document.getElementById("count");
+const countNumber = document.getElementById("count-number");
 
 let currentResults = [];
 
@@ -150,7 +162,7 @@ for (let i = 1; i <= 18; i++) {
 horseTable.addEventListener("change", updateCombinations);
 horseTable.addEventListener("input", updateCombinations);
 
-/* オッズは必ず小数第1位 */
+/* オッズは小数第1位 */
 function formatOdds(value) {
   const v = parseFloat(value);
   return isNaN(v) ? "-" : v.toFixed(1);
@@ -232,7 +244,7 @@ function updateCombinations() {
     });
   });
 
-  countDiv.textContent = `組み合わせ：${count} 点`;
+  countNumber.textContent = `${count} 点`;
 
   if (count === 0) {
     const tr = document.createElement("tr");
@@ -241,7 +253,7 @@ function updateCombinations() {
   }
 }
 
-/* CSV出力のみ */
+/* CSV出力 */
 function downloadCSV() {
   if (currentResults.length === 0) {
     alert("出力する組み合わせがありません");
