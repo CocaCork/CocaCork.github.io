@@ -23,7 +23,7 @@ table{
 
 th, td {
     border: 1px solid #000000;
-    /* padding: 6px; */
+    padding: 6px;
     text-align: center;
 }
 
