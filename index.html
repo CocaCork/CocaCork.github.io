@@ -29,8 +29,12 @@
     transform: scale(1.5);
     cursor: pointer;
   }
-  input[type="text"], input[type="number"] {
+  input[type="text"] {
     width: 90%;
+  }
+  /* ★オッズ欄を少し狭く */
+  input[type="number"] {
+    width: 60px;
   }
   .output {
     white-space: pre-wrap;
@@ -39,6 +43,7 @@
     border: 1px solid #ccc;
     max-height: 300px;
     overflow-y: auto;
+    margin-bottom: 10px;
   }
 </style>
 </head>
@@ -59,14 +64,18 @@
 </table>
 
 <div>
-<h3>3連単 組み合わせ</h3>
-<div id="result" class="output"></div>
+  <h3>馬番のみ</h3>
+  <div id="resultNo" class="output"></div>
+
+  <h3>馬名＋オッズ</h3>
+  <div id="resultDetail" class="output"></div>
 </div>
 </div>
 
 <script>
 const table = document.getElementById("horseTable");
-const result = document.getElementById("result");
+const resultNo = document.getElementById("resultNo");
+const resultDetail = document.getElementById("resultDetail");
 
 // 18頭分の行を作成
 for (let i = 1; i <= 18; i++) {
@@ -81,8 +90,9 @@ for (let i = 1; i <= 18; i++) {
   `;
 }
 
-// 全チェックボックスにイベント設定
+// チェック変更で即更新
 table.addEventListener("change", updateCombinations);
+table.addEventListener("input", updateCombinations);
 
 function updateCombinations() {
   const rows = [...table.rows].slice(1);
@@ -103,26 +113,32 @@ function updateCombinations() {
     if (row.querySelector(".pos3").checked) third.push(horse);
   });
 
-  let output = "";
+  let outNo = "";
+  let outDetail = "";
   let count = 0;
 
   first.forEach(a => {
     second.forEach(b => {
       third.forEach(c => {
-        // 同一馬除外
         if (a.no !== b.no && a.no !== c.no && b.no !== c.no) {
           count++;
-          output += `${a.no}:${a.name}(${a.odds}) → `
-                  + `${b.no}:${b.name}(${b.odds}) → `
-                  + `${c.no}:${c.name}(${c.odds})\n`;
+          outNo += `${a.no} → ${b.no} → ${c.no}\n`;
+          outDetail +=
+            `${a.no}:${a.name}(${a.odds}) → ` +
+            `${b.no}:${b.name}(${b.odds}) → ` +
+            `${c.no}:${c.name}(${c.odds})\n`;
         }
       });
     });
   });
 
-  result.textContent = count === 0
-    ? "組み合わせがありません"
-    : `合計 ${count} 点\n\n` + output;
+  if (count === 0) {
+    resultNo.textContent = "組み合わせがありません";
+    resultDetail.textContent = "組み合わせがありません";
+  } else {
+    resultNo.textContent = `合計 ${count} 点\n\n` + outNo;
+    resultDetail.textContent = `合計 ${count} 点\n\n` + outDetail;
+  }
 }
 </script>
 
