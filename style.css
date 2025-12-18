@@ -31,3 +31,8 @@ th{
     background-color: #000000;
     color: #ffffff;
 }
+
+input[type="checkbox"] {
+    transform: scale(1.5);   /* 倍率（1.2～2.0くらいがおすすめ） */
+    cursor: pointer;
+}
