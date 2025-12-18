@@ -15,12 +15,12 @@
   }
   table {
     border-collapse: collapse;
-    margin-bottom: 20px;
   }
   th, td {
     border: 1px solid #ccc;
-    padding: 6px;
+    padding: 6px 8px;
     text-align: center;
+    white-space: nowrap;
   }
   th {
     background: #f0f0f0;
@@ -32,18 +32,12 @@
   input[type="text"] {
     width: 90%;
   }
-  /* ★オッズ欄を少し狭く */
   input[type="number"] {
     width: 60px;
   }
   .output {
-    white-space: pre-wrap;
-    background: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ccc;
-    max-height: 300px;
+    max-height: 350px;
     overflow-y: auto;
-    margin-bottom: 10px;
   }
 </style>
 </head>
@@ -63,23 +57,29 @@
   </tr>
 </table>
 
-<div>
-  <h3>馬番のみ</h3>
-  <div id="resultNo" class="output"></div>
-
-  <h3>馬名＋オッズ</h3>
-  <div id="resultDetail" class="output"></div>
+<div class="output">
+  <h3>3連単 組み合わせ</h3>
+  <table id="resultTable">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>馬番</th>
+        <th>馬名</th>
+        <th>オッズ</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 </div>
 
 <script>
-const table = document.getElementById("horseTable");
-const resultNo = document.getElementById("resultNo");
-const resultDetail = document.getElementById("resultDetail");
+const horseTable = document.getElementById("horseTable");
+const resultBody = document.querySelector("#resultTable tbody");
 
-// 18頭分の行を作成
+// 18頭分生成
 for (let i = 1; i <= 18; i++) {
-  const row = table.insertRow();
+  const row = horseTable.insertRow();
   row.innerHTML = `
     <th>${i}</th>
     <td><input type="text"></td>
@@ -90,16 +90,13 @@ for (let i = 1; i <= 18; i++) {
   `;
 }
 
-// チェック変更で即更新
-table.addEventListener("change", updateCombinations);
-table.addEventListener("input", updateCombinations);
+horseTable.addEventListener("change", updateCombinations);
+horseTable.addEventListener("input", updateCombinations);
 
 function updateCombinations() {
-  const rows = [...table.rows].slice(1);
+  const rows = [...horseTable.rows].slice(1);
 
-  const first = [];
-  const second = [];
-  const third = [];
+  const first = [], second = [], third = [];
 
   rows.forEach(row => {
     const no = row.cells[0].textContent;
@@ -113,8 +110,7 @@ function updateCombinations() {
     if (row.querySelector(".pos3").checked) third.push(horse);
   });
 
-  let outNo = "";
-  let outDetail = "";
+  resultBody.innerHTML = "";
   let count = 0;
 
   first.forEach(a => {
@@ -122,22 +118,23 @@ function updateCombinations() {
       third.forEach(c => {
         if (a.no !== b.no && a.no !== c.no && b.no !== c.no) {
           count++;
-          outNo += `${a.no} → ${b.no} → ${c.no}\n`;
-          outDetail +=
-            `${a.no}:${a.name}(${a.odds}) → ` +
-            `${b.no}:${b.name}(${b.odds}) → ` +
-            `${c.no}:${c.name}(${c.odds})\n`;
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${count}</td>
+            <td>${a.no} → ${b.no} → ${c.no}</td>
+            <td>${a.name} → ${b.name} → ${c.name}</td>
+            <td>${a.odds} → ${b.odds} → ${c.odds}</td>
+          `;
+          resultBody.appendChild(tr);
         }
       });
     });
   });
 
   if (count === 0) {
-    resultNo.textContent = "組み合わせがありません";
-    resultDetail.textContent = "組み合わせがありません";
-  } else {
-    resultNo.textContent = `合計 ${count} 点\n\n` + outNo;
-    resultDetail.textContent = `合計 ${count} 点\n\n` + outDetail;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td colspan="4">組み合わせがありません</td>`;
+    resultBody.appendChild(tr);
   }
 }
 </script>
