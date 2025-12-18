@@ -57,7 +57,6 @@
 
   .count-label {
     color: #888;
-    font-weight: normal;
     margin-right: 4px;
   }
 
@@ -72,27 +71,17 @@
     border-top: 1px solid #ccc;
   }
 
-  /* ===== 矢印完全縦揃え ===== */
-  .combo {
-    display: grid;
-    align-items: center;
-    font-family: monospace;
-  }
-
-  .combo2 {
-    grid-template-columns: auto 26px auto;
-  }
-
-  .combo3 {
-    grid-template-columns: auto 26px auto 26px auto;
-  }
-
-  .arrow {
+  /* ===== 矢印専用セル ===== */
+  .arrow-cell {
     width: 26px;
-    text-align: center;
     color: #bbb;
     font-weight: bold;
+    border-left: none;
+    border-right: none;
   }
+
+  .no-border-right { border-right: none; }
+  .no-border-left  { border-left: none; }
 
   /* オッズ配色 */
   .odds-very-low  { color: #7A0000; }
@@ -139,7 +128,11 @@
   <div class="result-scroll">
     <table>
       <thead>
-        <tr><th>馬番</th><th>馬名</th><th>オッズ</th></tr>
+        <tr>
+          <th colspan="5">馬番</th>
+          <th colspan="5">馬名</th>
+          <th colspan="5">オッズ</th>
+        </tr>
       </thead>
       <tbody id="triResult"></tbody>
     </table>
@@ -169,7 +162,11 @@
   <div class="result-scroll">
     <table>
       <thead>
-        <tr><th>馬番</th><th>馬名</th><th>オッズ</th></tr>
+        <tr>
+          <th colspan="3">馬番</th>
+          <th colspan="3">馬名</th>
+          <th colspan="3">オッズ</th>
+        </tr>
       </thead>
       <tbody id="wideResult"></tbody>
     </table>
@@ -246,7 +243,7 @@ triTable.addEventListener("change",()=>{syncWideInputs();updateTrifecta();update
 wideTable.addEventListener("change",updateWide);
 
 function updateTrifecta(){
-  triBody.innerHTML=""; triResults.length=0;
+  triBody.innerHTML="";
   const rows=[...triTable.rows].slice(1);
   const A=[],B=[],C=[];
   rows.forEach(r=>{
@@ -261,15 +258,25 @@ function updateTrifecta(){
     if(a.no!==b.no&&a.no!==c.no&&b.no!==c.no){
       cnt++;
       triBody.insertRow().innerHTML=`
-      <td><div class="combo combo3"><span>${a.no}</span><span class="arrow">→</span><span>${b.no}</span><span class="arrow">→</span><span>${c.no}</span></div></td>
-      <td><div class="combo combo3"><span>${a.name}</span><span class="arrow">→</span><span>${b.name}</span><span class="arrow">→</span><span>${c.name}</span></div></td>
-      <td><div class="combo combo3">
-        <span class="${oddsClass(a.odds)}">${formatOdds(a.odds)}</span>
-        <span class="arrow">→</span>
-        <span class="${oddsClass(b.odds)}">${formatOdds(b.odds)}</span>
-        <span class="arrow">→</span>
-        <span class="${oddsClass(c.odds)}">${formatOdds(c.odds)}</span>
-      </div></td>`;
+      <tr>
+        <td class="no-border-right">${a.no}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left no-border-right">${b.no}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left">${c.no}</td>
+
+        <td class="no-border-right">${a.name}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left no-border-right">${b.name}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left">${c.name}</td>
+
+        <td class="no-border-right ${oddsClass(a.odds)}">${formatOdds(a.odds)}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
+      </tr>`;
     }
   })));
   triCount.textContent=`${cnt} 点`;
@@ -291,13 +298,19 @@ function updateWide(){
       const [h1,h2]=Number(a.no)<Number(b.no)?[a,b]:[b,a];
       cnt++;
       wideBody.insertRow().innerHTML=`
-      <td><div class="combo combo2"><span>${h1.no}</span><span class="arrow">→</span><span>${h2.no}</span></div></td>
-      <td><div class="combo combo2"><span>${h1.name}</span><span class="arrow">→</span><span>${h2.name}</span></div></td>
-      <td><div class="combo combo2">
-        <span class="${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</span>
-        <span class="arrow">→</span>
-        <span class="${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</span>
-      </div></td>`;
+      <tr>
+        <td class="no-border-right">${h1.no}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left">${h2.no}</td>
+
+        <td class="no-border-right">${h1.name}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left">${h2.name}</td>
+
+        <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
+        <td class="arrow-cell">→</td>
+        <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
+      </tr>`;
     }
   }));
   wideCount.textContent=`${cnt} 点`;
