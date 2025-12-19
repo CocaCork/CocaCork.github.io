@@ -300,6 +300,7 @@ wideTable.addEventListener("change",()=>{syncTriInputs();updateTrifecta();update
 
 function updateTrifecta(){
   triBody.innerHTML="";
+  triResults.length = 0;
   const rows=[...triTable.rows].slice(1);
   const A=[],B=[],C=[];
   rows.forEach(r=>{
@@ -313,6 +314,14 @@ function updateTrifecta(){
   A.forEach(a=>B.forEach(b=>C.forEach(c=>{
     if(a.no!==b.no&&a.no!==c.no&&b.no!==c.no){
       cnt++;
+
+      // 結果を配列に格納
+      triResults.push({
+        no1: a.no, no2: b.no, no3: c.no,
+        name1: a.name, name2: b.name, name3: c.name,
+        odds1: formatOdds(a.odds), odds2: formatOdds(b.odds), odds3: formatOdds(c.odds)
+      });
+      
       triBody.insertRow().innerHTML=`
       <tr>
         <td class="no-border-right">${a.no}</td>
@@ -340,6 +349,7 @@ function updateTrifecta(){
 
 function updateWide(){
   wideBody.innerHTML="";
+  wideResults.length = 0;
   const rows=[...wideTable.rows].slice(1);
   const A=[],B=[];
   rows.forEach(r=>{
@@ -353,6 +363,14 @@ function updateWide(){
     if(a.no!==b.no){
       const [h1,h2]=Number(a.no)<Number(b.no)?[a,b]:[b,a];
       cnt++;
+
+      // 結果を配列に格納
+      wideResults.push({
+        no1: h1.no, no2: h2.no,
+        name1: h1.name, name2: h2.name,
+        odds1: formatOdds(h1.odds), odds2: formatOdds(h2.odds)
+      });
+      
       wideBody.insertRow().innerHTML=`
       <tr>
         <td class="no-border-right">${h1.no}</td>
