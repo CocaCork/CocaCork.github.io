@@ -99,12 +99,12 @@
   .odds-very-high { color: #274E13; }
 
   /* 入力欄用オッズ背景色 */
-  .bg-odds-very-low  { background-color: #7A0000; }
-  .bg-odds-low       { background-color: #B00000; }
-  .bg-odds-mid-low   { background-color: #E06666; }
-  .bg-odds-mid-high  { background-color: #6AA84F; }
-  .bg-odds-high      { background-color: #38761D; }
-  .bg-odds-very-high { background-color: #274E13; }
+  .bg-odds-very-low  { background-color: #FFCFCF; }
+  .bg-odds-low       { background-color: #FFDDDD; }
+  .bg-odds-mid-low   { background-color: #FFE6E6; }
+  .bg-odds-mid-high  { background-color: #E0F0D9; }
+  .bg-odds-high      { background-color: #CFEACF; }
+  .bg-odds-very-high { background-color: #B5D690; }
 
   .memo-area {
     margin-top: 20px;
@@ -380,6 +380,7 @@ function loadCSV(){
       syncWideInputs();
       updateTrifecta();
       updateWide();
+      updateInputOddsColor();
     })
     .catch(err=>{ alert(err.message); });
 }
