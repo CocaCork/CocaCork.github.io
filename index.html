@@ -269,6 +269,7 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="w2"></td>`;
 }
 
+// 3連単に入力した馬名とオッズをワイドの方にも反映させる
 function syncWideInputs(){
   [...triTable.rows].slice(1).forEach((r,i)=>{
     const wr=wideTable.rows[i+1];
@@ -277,9 +278,19 @@ function syncWideInputs(){
   });
 }
 
+// ワイドに入力した馬名とオッズを3連単の方にも反映させる
+function syncTriInputs(){
+  [...wideTable.rows].slice(1).forEach((r,i)=>{
+    const triRow = triTable.rows[i+1];
+    triRow.cells[1].children[0].value = r.querySelector(".wName").value;
+    triRow.cells[2].children[0].value = r.querySelector(".wOdds").value;
+  });
+}
+
 triTable.addEventListener("input",()=>{syncWideInputs();updateTrifecta();updateWide();updateInputOddsColor();});
 triTable.addEventListener("change",()=>{syncWideInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-wideTable.addEventListener("change",updateWide);
+wideTable.addEventListener("input",()=>{syncTriInputs();updateTrifecta();updateWide();updateInputOddsColor();});
+wideTable.addEventListener("change",()=>{syncTriInputs();updateTrifecta();updateWide();updateInputOddsColor();});
 
 function updateTrifecta(){
   triBody.innerHTML="";
