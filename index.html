@@ -109,11 +109,23 @@
     font-size: 14px;
     resize: vertical;
   }
+
+  .csv-load {
+    margin-bottom: 12px;
+  }
+
+  .csv-load input[type="text"] { width: 150px; margin-right: 6px; }
 </style>
 </head>
 <body>
 
 <h2>3連単フォーメーション</h2>
+
+<!-- CSV読み込み用 -->
+<div class="csv-load">
+  <input type="text" id="raceName" placeholder="ファイル名を入力">
+  <button onclick="loadCSV()">CSV読込</button>
+</div>
 
 <div class="container">
 <table id="triTable">
@@ -325,6 +337,33 @@ function updateWide(){
 }
 
 syncWideInputs();
+
+// ===== CSV読み込み機能 =====
+function loadCSV(){
+  const raceName = document.getElementById("raceName").value.trim();
+  if(!raceName) return;
+
+  fetch(`${raceName}.csv`)
+    .then(res => {
+      if(!res.ok) throw new Error("CSVファイルが見つかりません");
+      return res.text();
+    })
+    .then(text=>{
+      const lines = text.split("\n").map(l=>l.trim()).filter(l=>l);
+      lines.forEach(line=>{
+        const [no,name,odds] = line.split(",");
+        const row = triTable.rows[Number(no)];
+        if(row){
+          row.cells[1].children[0].value = name;
+          row.cells[2].children[0].value = odds;
+        }
+      });
+      syncWideInputs();
+      updateTrifecta();
+      updateWide();
+    })
+    .catch(err=>{ alert(err.message); });
+}
 </script>
 
 </body>
