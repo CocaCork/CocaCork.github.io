@@ -470,6 +470,26 @@ function updateInputOddsColor(){
       input.classList.add("bg-" + cls);
     }
   });
+
+  // 馬連
+  [...umarenTable.rows].slice(1).forEach(r=>{
+    const input = r.cells[2].children[0];
+    const cls = oddsClass(input.value);
+    input.classList.remove(...classes);
+    if(input.value !== "" && cls){
+      input.classList.add("bg-" + cls);
+    }
+  });
+
+  // 単勝
+  [...tanshoTable.rows].slice(1).forEach(r=>{
+    const input = r.cells[2].children[0];
+    const cls = oddsClass(input.value);
+    input.classList.remove(...classes);
+    if(input.value !== "" && cls){
+      input.classList.add("bg-" + cls);
+    }
+  });
 }
 
 function oddsClass(v){
