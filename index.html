@@ -193,9 +193,16 @@
   </div>
 
   <div class="result-scroll">
-    <table>
-      <tbody id="triBoxResult"></tbody>
-    </table>
+  <table>
+    <thead>
+      <tr>
+        <th colspan="5">馬番</th>
+        <th colspan="5">馬名</th>
+        <th colspan="5">オッズ</th>
+      </tr>
+    </thead>
+    <tbody id="triBoxResult"></tbody>
+  </table>
   </div>
 </div>
 </div>
@@ -458,14 +465,14 @@ function updateTriBox(){
   triBoxBody.innerHTML = "";
   triBoxResults.length = 0;
 
-  const rows=[...triBoxTable.rows].slice(1);
-  const A=[],B=[],C=[];
+  const rows = [...triBoxTable.rows].slice(1);
+  const A = [], B = [], C = [];
 
   rows.forEach(r=>{
-    const h={
-      no:r.cells[0].textContent,
-      name:safeText(r.cells[1].children[0].value),
-      odds:r.cells[2].children[0].value
+    const h = {
+      no: r.cells[0].textContent,
+      name: safeText(r.cells[1].children[0].value),
+      odds: r.cells[2].children[0].value
     };
     if(r.querySelector(".b1").checked) A.push(h);
     if(r.querySelector(".b2").checked) B.push(h);
@@ -473,32 +480,48 @@ function updateTriBox(){
   });
 
   const used = new Set();
-  let cnt=0;
+  let cnt = 0;
 
   A.forEach(a=>B.forEach(b=>C.forEach(c=>{
-    const nos=[a.no,b.no,c.no];
-    if(new Set(nos).size !== 3) return;
+    if(a.no===b.no || a.no===c.no || b.no===c.no) return;
 
-    const key = [...nos].sort((x,y)=>x-y).join("-");
+    // 重複除外用キー（順不同）
+    const key = [a.no,b.no,c.no].sort((x,y)=>x-y).join("-");
     if(used.has(key)) return;
     used.add(key);
 
     cnt++;
+
     triBoxResults.push({
-      no1:key.split("-")[0],
-      no2:key.split("-")[1],
-      no3:key.split("-")[2]
+      no1:a.no, no2:b.no, no3:c.no,
+      name1:a.name, name2:b.name, name3:c.name,
+      odds1:formatOdds(a.odds),
+      odds2:formatOdds(b.odds),
+      odds3:formatOdds(c.odds)
     });
 
-    triBoxBody.insertRow().innerHTML=`
+    triBoxBody.insertRow().innerHTML = `
       <tr>
-        <td class="no-border-right">${nos[0]}</td>
+        <td class="no-border-right">${a.no}</td>
         <td class="arrow-cell">-</td>
-        <td class="no-border-left no-border-right">${nos[1]}</td>
+        <td class="no-border-left no-border-right">${b.no}</td>
         <td class="arrow-cell">-</td>
-        <td class="no-border-left">${nos[2]}</td>
-      </tr>`;
-  })));
+        <td class="no-border-left">${c.no}</td>
+
+        <td class="no-border-right">${a.name}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left no-border-right">${b.name}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left">${c.name}</td>
+
+        <td class="no-border-right ${oddsClass(a.odds)}">${formatOdds(a.odds)}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
+      </tr>
+    `;
+  }))));
 
   triBoxCount.textContent = `${cnt} 点`;
 }
