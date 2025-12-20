@@ -316,6 +316,42 @@
 </div>
 </details>
 
+<details>
+<summary><h2>単勝</h2></summary>
+
+<div class="container">
+<table id="tanshoTable">
+  <tr>
+    <th>馬番</th><th>馬名</th><th>オッズ</th>
+    <th>選択</th>
+  </tr>
+</table>
+
+<div class="result-area">
+  <div class="header-bar">
+    <div class="count">
+      <span class="count-label">点数：</span>
+      <span id="tanshoCount">0 点</span>
+    </div>
+    <button onclick="downloadCSV(tanshoResults,'tansho')">CSV出力</button>
+  </div>
+
+  <div class="result-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>馬番</th>
+          <th>馬名</th>
+          <th>オッズ</th>
+        </tr>
+      </thead>
+      <tbody id="tanshoResult"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+</details>
+
 <h2>メモ</h2>
 <div class="memo-area">
   <textarea placeholder="ここにメモを自由に記入できます"></textarea>
@@ -327,6 +363,7 @@ const triBoxResults = [];
 const wideResults = [];
 const umatanResults = [];
 const umarenResults = [];
+const tanshoResults = [];
 
 const triTable = document.getElementById("triTable");
 const triBody  = document.getElementById("triResult");
@@ -347,6 +384,10 @@ const umatanCount = document.getElementById("umatanCount");
 const umarenTable = document.getElementById("umarenTable");
 const umarenBody  = document.getElementById("umarenResult");
 const umarenCount = document.getElementById("umarenCount");
+
+const tanshoTable = document.getElementById("tanshoTable");
+const tanshoBody  = document.getElementById("tanshoResult");
+const tanshoCount = document.getElementById("tanshoCount");
 
 const syncTables = [
   {
@@ -371,6 +412,11 @@ const syncTables = [
   },
   {
   table: umarenTable,
+  nameSelector: "td:nth-child(2) input",
+  oddsSelector: "td:nth-child(3) input"
+  },
+  {
+  table: tanshoTable,
   nameSelector: "td:nth-child(2) input",
   oddsSelector: "td:nth-child(3) input"
   }
@@ -483,6 +529,12 @@ for(let i=1;i<=18;i++){
     <td><input type="number" step="0.1"></td>
     <td><input type="checkbox" class="r1"></td>
     <td><input type="checkbox" class="r2"></td>`;
+
+  tanshoTable.insertRow().innerHTML = `
+    <th>${i}</th>
+    <td><input type="text"></td>
+    <td><input type="number" step="0.1"></td>
+    <td><input type="checkbox" class="t1"></td>`;
 }
 
 function syncHorseInputs(sourceTable){
@@ -514,13 +566,15 @@ function syncHorseInputs(sourceTable){
   });
 }
 
-[triTable, triBoxTable, wideTable, umatanTable, umarenTable].forEach(tbl=>{
+[triTable, triBoxTable, wideTable, umatanTable, umarenTable, tanshoTable].forEach(tbl=>{
   tbl.addEventListener("input",(e)=>{
     syncHorseInputs(e.currentTarget);
     updateTrifecta();
     updateTriBox();
     updateWide();
     updateUmatan();
+    updateUmaren();
+    updateTansho();
     updateInputOddsColor();
   });
   tbl.addEventListener("change",(e)=>{
@@ -530,6 +584,7 @@ function syncHorseInputs(sourceTable){
     updateWide();
     updateUmatan();
     updateUmaren();
+    updateTansho();
     updateInputOddsColor();
   });
 });
@@ -790,6 +845,40 @@ function updateUmaren(){
   umarenCount.textContent = `${cnt} 点`;
 }
 
+function updateTansho(){
+  tanshoBody.innerHTML = "";
+  tanshoResults.length = 0;
+
+  const rows = [...tanshoTable.rows].slice(1);
+  let cnt = 0;
+
+  rows.forEach(r=>{
+    if(!r.querySelector(".t1").checked) return;
+
+    const h = {
+      no: r.cells[0].textContent,
+      name: safeText(r.cells[1].children[0].value),
+      odds: r.cells[2].children[0].value
+    };
+
+    cnt++;
+    tanshoResults.push({
+      no: h.no,
+      name: h.name,
+      odds: formatOdds(h.odds)
+    });
+
+    tanshoBody.insertRow().innerHTML = `
+      <tr>
+        <td>${h.no}</td>
+        <td>${h.name}</td>
+        <td class="${oddsClass(h.odds)}">${formatOdds(h.odds)}</td>
+      </tr>`;
+  });
+
+  tanshoCount.textContent = `${cnt} 点`;
+}
+
 // ===== CSV読み込み機能 =====
 function loadCSV(){
   const raceName = document.getElementById("raceName").value.trim();
@@ -816,6 +905,7 @@ function loadCSV(){
       updateWide();
       updateUmatan();
       updateUmaren();
+      updateTansho();
       updateInputOddsColor();
     })
     .catch(err=>{ alert(err.message); });
