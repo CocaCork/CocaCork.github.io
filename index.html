@@ -362,43 +362,45 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="w2"></td>`;
 }
 
-function syncHorseInputs(){
+function syncHorseInputs(sourceTable){
   const data = [];
 
-  // 1. どこかに入力されている値を収集
-  syncTables.forEach(cfg => {
-    [...cfg.table.rows].slice(1).forEach((row, i) => {
-      const nameInput = row.querySelector(cfg.nameSelector);
-      const oddsInput = row.querySelector(cfg.oddsSelector);
-      if(!data[i]) data[i] = { name: "", odds: "" };
+  // 入力元テーブルの設定を取得
+  const srcCfg = syncTables.find(c => c.table === sourceTable);
+  if(!srcCfg) return;
 
-      if(nameInput?.value) data[i].name = nameInput.value;
-      if(oddsInput?.value) data[i].odds = oddsInput.value;
-    });
+  // 1. 入力元テーブルのみ収集
+  [...srcCfg.table.rows].slice(1).forEach((row, i) => {
+    data[i] = {
+      name: row.querySelector(srcCfg.nameSelector)?.value ?? "",
+      odds: row.querySelector(srcCfg.oddsSelector)?.value ?? ""
+    };
   });
 
-  // 2. 全テーブルへ反映
+  // 2. 他テーブルへ反映
   syncTables.forEach(cfg => {
+    if(cfg.table === sourceTable) return;
+
     [...cfg.table.rows].slice(1).forEach((row, i) => {
       const nameInput = row.querySelector(cfg.nameSelector);
       const oddsInput = row.querySelector(cfg.oddsSelector);
 
-      if(nameInput && data[i]?.name) nameInput.value = data[i].name;
-      if(oddsInput && data[i]?.odds) oddsInput.value = data[i].odds;
+      if(nameInput) nameInput.value = data[i]?.name ?? "";
+      if(oddsInput) oddsInput.value = data[i]?.odds ?? "";
     });
   });
 }
 
 [triTable, triBoxTable, wideTable].forEach(tbl=>{
-  tbl.addEventListener("input",()=>{
-    syncHorseInputs();
+  tbl.addEventListener("input",(e)=>{
+    syncHorseInputs(e.currentTarget);
     updateTrifecta();
     updateTriBox();
     updateWide();
     updateInputOddsColor();
   });
-  tbl.addEventListener("change",()=>{
-    syncHorseInputs();
+  tbl.addEventListener("change",(e)=>{
+    syncHorseInputs(e.currentTarget);
     updateTrifecta();
     updateTriBox();
     updateWide();
@@ -540,8 +542,6 @@ function updateWide(){
   }));
   wideCount.textContent=`${cnt} 点`;
 }
-
-syncWideInputs();
 
 // ===== CSV読み込み機能 =====
 function loadCSV(){
