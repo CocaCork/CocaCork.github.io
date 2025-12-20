@@ -461,7 +461,7 @@ function syncHorseInputs(sourceTable){
   });
 }
 
-[triTable, triBoxTable, wideTable].forEach(tbl=>{
+[triTable, triBoxTable, wideTable, umatanTable].forEach(tbl=>{
   tbl.addEventListener("input",(e)=>{
     syncHorseInputs(e.currentTarget);
     updateTrifecta();
