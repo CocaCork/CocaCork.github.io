@@ -259,6 +259,24 @@ const wideTable = document.getElementById("wideTable");
 const wideBody  = document.getElementById("wideResult");
 const wideCount = document.getElementById("wideCount");
 
+const syncTables = [
+  {
+    table: triTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
+  },
+  {
+    table: triBoxTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
+  },
+  {
+    table: wideTable,
+    nameSelector: ".wName",
+    oddsSelector: ".wOdds"
+  }
+];
+
 function safeText(v){ return v && v.trim() !== "" ? v : "-"; }
 function formatOdds(v){ return isNaN(v)||v===""?"-":Number(v).toFixed(1); }
 
@@ -329,28 +347,49 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="w2"></td>`;
 }
 
-// 3連単に入力した馬名とオッズをワイドの方にも反映
-function syncWideInputs(){
-  [...triTable.rows].slice(1).forEach((r,i)=>{
-    const wr=wideTable.rows[i+1];
-    wr.querySelector(".wName").value=r.cells[1].children[0].value;
-    wr.querySelector(".wOdds").value=r.cells[2].children[0].value;
+function syncHorseInputs(){
+  const data = [];
+
+  // 1. どこかに入力されている値を収集
+  syncTables.forEach(cfg => {
+    [...cfg.table.rows].slice(1).forEach((row, i) => {
+      const nameInput = row.querySelector(cfg.nameSelector);
+      const oddsInput = row.querySelector(cfg.oddsSelector);
+      if(!data[i]) data[i] = { name: "", odds: "" };
+
+      if(nameInput?.value) data[i].name = nameInput.value;
+      if(oddsInput?.value) data[i].odds = oddsInput.value;
+    });
+  });
+
+  // 2. 全テーブルへ反映
+  syncTables.forEach(cfg => {
+    [...cfg.table.rows].slice(1).forEach((row, i) => {
+      const nameInput = row.querySelector(cfg.nameSelector);
+      const oddsInput = row.querySelector(cfg.oddsSelector);
+
+      if(nameInput && data[i]?.name) nameInput.value = data[i].name;
+      if(oddsInput && data[i]?.odds) oddsInput.value = data[i].odds;
+    });
   });
 }
 
-// ワイドに入力した馬名とオッズを3連単の方にも反映
-function syncTriInputs(){
-  [...wideTable.rows].slice(1).forEach((r,i)=>{
-    const triRow = triTable.rows[i+1];
-    triRow.cells[1].children[0].value = r.querySelector(".wName").value;
-    triRow.cells[2].children[0].value = r.querySelector(".wOdds").value;
+[triTable, triBoxTable, wideTable].forEach(tbl=>{
+  tbl.addEventListener("input",()=>{
+    syncHorseInputs();
+    updateTrifecta();
+    updateTriBox();
+    updateWide();
+    updateInputOddsColor();
   });
-}
-
-triTable.addEventListener("input",()=>{syncWideInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
-triTable.addEventListener("change",()=>{syncWideInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
-wideTable.addEventListener("input",()=>{syncTriInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
-wideTable.addEventListener("change",()=>{syncTriInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
+  tbl.addEventListener("change",()=>{
+    syncHorseInputs();
+    updateTrifecta();
+    updateTriBox();
+    updateWide();
+    updateInputOddsColor();
+  });
+});
 
 function updateTrifecta(){
   triBody.innerHTML="";
@@ -509,8 +548,9 @@ function loadCSV(){
           row.cells[2].children[0].value = odds;
         }
       });
-      syncWideInputs();
+      syncHorseInputs();
       updateTrifecta();
+      updateTriBox();
       updateWide();
       updateInputOddsColor();
     })
