@@ -287,7 +287,7 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="w2"></td>`;
 }
 
-// 3連単に入力した馬名とオッズをワイドの方にも反映させる
+// 3連単に入力した馬名とオッズをワイドの方にも反映
 function syncWideInputs(){
   [...triTable.rows].slice(1).forEach((r,i)=>{
     const wr=wideTable.rows[i+1];
@@ -296,7 +296,7 @@ function syncWideInputs(){
   });
 }
 
-// ワイドに入力した馬名とオッズを3連単の方にも反映させる
+// ワイドに入力した馬名とオッズを3連単の方にも反映
 function syncTriInputs(){
   [...wideTable.rows].slice(1).forEach((r,i)=>{
     const triRow = triTable.rows[i+1];
