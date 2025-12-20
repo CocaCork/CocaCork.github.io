@@ -24,6 +24,16 @@
 
   th { background: #f0f0f0; }
 
+  summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
   input[type="checkbox"] {
     transform: scale(1.8);
     cursor: pointer;
@@ -128,7 +138,8 @@
   <button onclick="loadCSV()">データ読込</button>
 </div>
 
-<h2>3連単フォーメーション</h2>
+<details>
+<summary>3連単フォーメーション</summary>
 
 <div class="container">
 <table id="triTable">
@@ -161,8 +172,10 @@
   </div>
 </div>
 </div>
+</details>
 
-<h2>ワイド（2頭）フォーメーション</h2>
+<details>
+<summary>ワイド（2頭）フォーメーション</summary>
 
 <div class="container">
 <table id="wideTable">
@@ -195,6 +208,7 @@
   </div>
 </div>
 </div>
+</details>
 
 <h2>メモ</h2>
 <div class="memo-area">
