@@ -280,6 +280,42 @@
 </div>
 </details>
 
+<details>
+<summary><h2>馬連</h2></summary>
+
+<div class="container">
+<table id="umarenTable">
+  <tr>
+    <th>馬番</th><th>馬名</th><th>オッズ</th>
+    <th>選択1</th><th>選択2</th>
+  </tr>
+</table>
+
+<div class="result-area">
+  <div class="header-bar">
+    <div class="count">
+      <span class="count-label">組み合わせ：</span>
+      <span id="umarenCount">0 点</span>
+    </div>
+    <button onclick="downloadCSV(umarenResults,'umaren')">CSV出力</button>
+  </div>
+
+  <div class="result-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th colspan="3">馬番</th>
+          <th colspan="3">馬名</th>
+          <th colspan="3">オッズ</th>
+        </tr>
+      </thead>
+      <tbody id="umarenResult"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+</details>
+
 <h2>メモ</h2>
 <div class="memo-area">
   <textarea placeholder="ここにメモを自由に記入できます"></textarea>
@@ -290,6 +326,7 @@ const triResults = [];
 const triBoxResults = [];
 const wideResults = [];
 const umatanResults = [];
+const umarenResults = [];
 
 const triTable = document.getElementById("triTable");
 const triBody  = document.getElementById("triResult");
@@ -306,6 +343,10 @@ const wideCount = document.getElementById("wideCount");
 const umatanTable = document.getElementById("umatanTable");
 const umatanBody  = document.getElementById("umatanResult");
 const umatanCount = document.getElementById("umatanCount");
+
+const umarenTable = document.getElementById("umarenTable");
+const umarenBody  = document.getElementById("umarenResult");
+const umarenCount = document.getElementById("umarenCount");
 
 const syncTables = [
   {
@@ -325,6 +366,11 @@ const syncTables = [
   },
   {
   table: umatanTable,
+  nameSelector: "td:nth-child(2) input",
+  oddsSelector: "td:nth-child(3) input"
+  },
+  {
+  table: umarenTable,
   nameSelector: "td:nth-child(2) input",
   oddsSelector: "td:nth-child(3) input"
   }
@@ -430,6 +476,13 @@ for(let i=1;i<=18;i++){
     <td><input type="number" step="0.1"></td>
     <td><input type="checkbox" class="u1"></td>
     <td><input type="checkbox" class="u2"></td>`;
+
+  umarenTable.insertRow().innerHTML=`
+    <th>${i}</th>
+    <td><input type="text"></td>
+    <td><input type="number" step="0.1"></td>
+    <td><input type="checkbox" class="r1"></td>
+    <td><input type="checkbox" class="r2"></td>`;
 }
 
 function syncHorseInputs(sourceTable){
@@ -461,7 +514,7 @@ function syncHorseInputs(sourceTable){
   });
 }
 
-[triTable, triBoxTable, wideTable, umatanTable].forEach(tbl=>{
+[triTable, triBoxTable, wideTable, umatanTable, umarenTable].forEach(tbl=>{
   tbl.addEventListener("input",(e)=>{
     syncHorseInputs(e.currentTarget);
     updateTrifecta();
@@ -476,6 +529,7 @@ function syncHorseInputs(sourceTable){
     updateTriBox();
     updateWide();
     updateUmatan();
+    updateUmaren();
     updateInputOddsColor();
   });
 });
@@ -680,6 +734,62 @@ function updateUmatan(){
   umatanCount.textContent = `${cnt} 点`;
 }
 
+function updateUmaren(){
+  umarenBody.innerHTML = "";
+  umarenResults.length = 0;
+
+  const rows = [...umarenTable.rows].slice(1);
+  const A = [], B = [];
+
+  rows.forEach(r=>{
+    const h = {
+      no: r.cells[0].textContent,
+      name: safeText(r.cells[1].children[0].value),
+      odds: r.cells[2].children[0].value
+    };
+    if(r.querySelector(".r1").checked) A.push(h);
+    if(r.querySelector(".r2").checked) B.push(h);
+  });
+
+  const used = new Set();
+  let cnt = 0;
+
+  A.forEach(a=>B.forEach(b=>{
+    if(a.no === b.no) return;
+
+    // ★ 順不同キー
+    const [h1,h2] = Number(a.no)<Number(b.no) ? [a,b] : [b,a];
+    const key = `${h1.no}-${h2.no}`;
+    if(used.has(key)) return;
+    used.add(key);
+
+    cnt++;
+    umarenResults.push({
+      no1:h1.no, no2:h2.no,
+      name1:h1.name, name2:h2.name,
+      odds1:formatOdds(h1.odds),
+      odds2:formatOdds(h2.odds)
+    });
+
+    umarenBody.insertRow().innerHTML = `
+      <tr>
+        <td class="no-border-right">${h1.no}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left">${h2.no}</td>
+
+        <td class="no-border-right">${h1.name}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left">${h2.name}</td>
+
+        <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
+      </tr>`;
+  }));
+
+  umarenCount.textContent = `${cnt} 点`;
+}
+
 // ===== CSV読み込み機能 =====
 function loadCSV(){
   const raceName = document.getElementById("raceName").value.trim();
@@ -704,6 +814,8 @@ function loadCSV(){
       updateTrifecta();
       updateTriBox();
       updateWide();
+      updateUmatan();
+      updateUmaren();
       updateInputOddsColor();
     })
     .catch(err=>{ alert(err.message); });
