@@ -24,19 +24,10 @@
 
   th { background: #f0f0f0; }
 
-  summary {
-  list-style: none;
-  cursor: pointer;
-  }
-  summary::-webkit-details-marker {
-    display: none;
-  }
+  summary { list-style: none; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
 
-  input[type="checkbox"] {
-    transform: scale(1.8);
-    cursor: pointer;
-  }
-
+  input[type="checkbox"] { transform: scale(1.8); cursor: pointer; }
   input[type="text"] { width: 120px; }
   input[type="number"] { width: 60px; }
 
@@ -53,20 +44,10 @@
     z-index: 2;
   }
 
-  .count {
-    font-size: 16px;
-    font-weight: bold;
-  }
+  .count { font-size: 16px; font-weight: bold; }
+  .count-label { color: #888; margin-right: 4px; }
 
-  .count-label {
-    color: #888;
-    margin-right: 4px;
-  }
-
-  button {
-    padding: 4px 12px;
-    cursor: pointer;
-  }
+  button { padding: 4px 12px; cursor: pointer; }
 
   .result-scroll {
     max-height: 640px;
@@ -74,7 +55,6 @@
     border-top: 1px solid #ccc;
   }
 
-  /* ===== 矢印専用セル ===== */
   .arrow-cell {
     width: 16px;
     padding: 0 2px;
@@ -84,16 +64,9 @@
     border-right: none;
   }
 
-  .no-border-right { 
-    border-right: none; 
-    padding-right: 4px;
-  }
-  .no-border-left  { 
-    border-left: none; 
-    padding-left: 4px;
-  }
+  .no-border-right { border-right: none; padding-right: 4px; }
+  .no-border-left  { border-left: none; padding-left: 4px; }
 
-  /* オッズ配色 */
   .odds-very-low  { color: #7A0000; }
   .odds-low       { color: #B00000; }
   .odds-mid-low   { color: #E06666; }
@@ -101,7 +74,6 @@
   .odds-high      { color: #38761D; }
   .odds-very-high { color: #274E13; }
 
-  /* 入力欄用オッズ背景色 */
   .bg-odds-very-low  { background-color: #7A0000; color: white; }
   .bg-odds-low       { background-color: #A00000; color: white; }
   .bg-odds-mid-low   { background-color: #CC4444; color: white; }
@@ -109,10 +81,7 @@
   .bg-odds-high      { background-color: #28661C; color: white; }
   .bg-odds-very-high { background-color: #1F470F; color: white; }
 
-  .memo-area {
-    margin-top: 20px;
-  }
-
+  .memo-area { margin-top: 20px; }
   .memo-area textarea {
     width: 100%;
     min-height: 180px;
@@ -121,146 +90,110 @@
     resize: vertical;
   }
 
-  .csv-load {
-    margin-bottom: 12px;
-  }
-
+  .csv-load { margin-bottom: 12px; }
   .csv-load input[type="text"] { width: 150px; margin-right: 6px; }
 </style>
 </head>
 <body>
 
-<!-- CSV読み込み用 -->
 <div class="csv-load">
   <input type="text" id="raceName" placeholder="ファイル名を入力">
   <button onclick="loadCSV()">データ読込</button>
 </div>
 
-<details>
+<!-- ================= 3連単 ================= -->
+<details open>
 <summary><h2>3連単フォーメーション</h2></summary>
-
 <div class="container">
 <table id="triTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>1着</th><th>2着</th><th>3着</th>
-  </tr>
+<tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>1着</th><th>2着</th><th>3着</th></tr>
 </table>
 
 <div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">組み合わせ：</span>
-      <span id="triCount">0 点</span>
-    </div>
-    <button onclick="downloadCSV(triResults,'trifecta')">CSV出力</button>
-  </div>
-
-  <div class="result-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th colspan="5">馬番</th>
-          <th colspan="5">馬名</th>
-          <th colspan="5">オッズ</th>
-        </tr>
-      </thead>
-      <tbody id="triResult"></tbody>
-    </table>
-  </div>
+<div class="header-bar">
+<div class="count"><span class="count-label">組み合わせ：</span><span id="triCount">0 点</span></div>
+<button onclick="downloadCSV(triResults,'trifecta')">CSV出力</button>
+</div>
+<div class="result-scroll">
+<table><tbody id="triResult"></tbody></table>
+</div>
 </div>
 </div>
 </details>
 
+<!-- ================= 3連複 ================= -->
 <details>
-<summary><h2>ワイド（2頭）フォーメーション</h2></summary>
-
+<summary><h2>3連複フォーメーション</h2></summary>
 <div class="container">
-<table id="wideTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>選択1</th><th>選択2</th>
-  </tr>
+<table id="triBoxTable">
+<tr><th>馬番</th><th>選択</th></tr>
 </table>
 
 <div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">組み合わせ：</span>
-      <span id="wideCount">0 点</span>
-    </div>
-    <button onclick="downloadCSV(wideResults,'wide')">CSV出力</button>
-  </div>
+<div class="header-bar">
+<div class="count"><span class="count-label">組み合わせ：</span><span id="triBoxCount">0 点</span></div>
+<button onclick="downloadCSV(triBoxResults,'trio')">CSV出力</button>
+</div>
+<div class="result-scroll">
+<table><tbody id="triBoxResult"></tbody></table>
+</div>
+</div>
+</div>
+</details>
 
-  <div class="result-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th colspan="3">馬番</th>
-          <th colspan="3">馬名</th>
-          <th colspan="3">オッズ</th>
-        </tr>
-      </thead>
-      <tbody id="wideResult"></tbody>
-    </table>
-  </div>
+<!-- ================= ワイド ================= -->
+<details>
+<summary><h2>ワイド（2頭）フォーメーション</h2></summary>
+<div class="container">
+<table id="wideTable">
+<tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択1</th><th>選択2</th></tr>
+</table>
+
+<div class="result-area">
+<div class="header-bar">
+<div class="count"><span class="count-label">組み合わせ：</span><span id="wideCount">0 点</span></div>
+<button onclick="downloadCSV(wideResults,'wide')">CSV出力</button>
+</div>
+<div class="result-scroll">
+<table><tbody id="wideResult"></tbody></table>
+</div>
+</div>
+</div>
+</details>
+
+<!-- ================= 馬単・馬連・単勝・複勝 ================= -->
+<details>
+<summary><h2>馬単・馬連・単勝・複勝</h2></summary>
+<div class="container">
+<table id="simpleTable">
+<tr>
+<th>馬番</th>
+<th>馬単1着</th><th>馬単2着</th>
+<th>馬連</th>
+<th>単勝</th>
+<th>複勝</th>
+</tr>
+</table>
+
+<div class="result-area">
+<div class="header-bar">
+<div class="count"><span class="count-label">組み合わせ：</span><span id="simpleCount">0 点</span></div>
+<button onclick="downloadCSV(simpleResults,'simple')">CSV出力</button>
+</div>
+<div class="result-scroll">
+<table><tbody id="simpleResult"></tbody></table>
+</div>
 </div>
 </div>
 </details>
 
 <h2>メモ</h2>
 <div class="memo-area">
-  <textarea placeholder="ここにメモを自由に記入できます"></textarea>
+<textarea placeholder="ここにメモを自由に記入できます"></textarea>
 </div>
 
 <script>
-const triResults = [];
-const wideResults = [];
-
-const triTable = document.getElementById("triTable");
-const triBody  = document.getElementById("triResult");
-const triCount = document.getElementById("triCount");
-
-const wideTable = document.getElementById("wideTable");
-const wideBody  = document.getElementById("wideResult");
-const wideCount = document.getElementById("wideCount");
-
-function safeText(v){ return v && v.trim() !== "" ? v : "-"; }
-function formatOdds(v){ return isNaN(v)||v===""?"-":Number(v).toFixed(1); }
-
-function updateInputOddsColor(){
-  // 3連単
-  [...triTable.rows].slice(1).forEach(r=>{
-    const input = r.cells[2].children[0];
-    const cls = oddsClass(input.value);
-    input.classList.remove("bg-odds-very-low","bg-odds-low","bg-odds-mid-low","bg-odds-mid-high","bg-odds-high","bg-odds-very-high");
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
-  });
-
-  // ワイド
-  [...wideTable.rows].slice(1).forEach(r=>{
-    const input = r.querySelector(".wOdds");
-    const cls = oddsClass(input.value);
-    input.classList.remove("bg-odds-very-low","bg-odds-low","bg-odds-mid-low","bg-odds-mid-high","bg-odds-high","bg-odds-very-high");
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
-  });
-}
-
-function oddsClass(v){
-  v = Number(v);
-  if (isNaN(v)) return "";
-  if (v<=5) return "odds-very-low";
-  if (v<=10) return "odds-low";
-  if (v<=25) return "odds-mid-low";
-  if (v<=50) return "odds-mid-high";
-  if (v<=100) return "odds-high";
-  return "odds-very-high";
-}
-
+/* ===== 共通処理 ===== */
 function downloadCSV(data,name){
   if(!data.length) return;
   const csv=[Object.keys(data[0]).join(","),...data.map(o=>Object.values(o).join(","))].join("\n");
@@ -270,161 +203,75 @@ function downloadCSV(data,name){
   a.click();
 }
 
+/* ===== 初期行生成 ===== */
 for(let i=1;i<=18;i++){
-  triTable.insertRow().innerHTML=`
-    <th>${i}</th>
-    <td><input type="text"></td>
-    <td><input type="number" step="0.1"></td>
-    <td><input type="checkbox" class="p1"></td>
-    <td><input type="checkbox" class="p2"></td>
-    <td><input type="checkbox" class="p3"></td>`;
-    
-  wideTable.insertRow().innerHTML=`
-    <th>${i}</th>
-    <td><input class="wName" style="width:120px;"></td>
-    <td><input class="wOdds" style="width:60px;"></td>
-    <td><input type="checkbox" class="w1"></td>
-    <td><input type="checkbox" class="w2"></td>`;
+  triTable.insertRow().innerHTML=`<th>${i}</th><td></td><td></td><td><input type="checkbox" class="p1"></td><td><input type="checkbox" class="p2"></td><td><input type="checkbox" class="p3"></td>`;
+  triBoxTable.insertRow().innerHTML=`<th>${i}</th><td><input type="checkbox"></td>`;
+  wideTable.insertRow().innerHTML=`<th>${i}</th><td></td><td></td><td><input type="checkbox" class="w1"></td><td><input type="checkbox" class="w2"></td>`;
+  simpleTable.insertRow().innerHTML=`<th>${i}</th>
+    <td><input type="checkbox" class="um1"></td>
+    <td><input type="checkbox" class="um2"></td>
+    <td><input type="checkbox" class="uren"></td>
+    <td><input type="checkbox" class="win"></td>
+    <td><input type="checkbox" class="place"></td>`;
 }
 
-// 3連単に入力した馬名とオッズをワイドの方にも反映
-function syncWideInputs(){
-  [...triTable.rows].slice(1).forEach((r,i)=>{
-    const wr=wideTable.rows[i+1];
-    wr.querySelector(".wName").value=r.cells[1].children[0].value;
-    wr.querySelector(".wOdds").value=r.cells[2].children[0].value;
-  });
-}
-
-// ワイドに入力した馬名とオッズを3連単の方にも反映
-function syncTriInputs(){
-  [...wideTable.rows].slice(1).forEach((r,i)=>{
-    const triRow = triTable.rows[i+1];
-    triRow.cells[1].children[0].value = r.querySelector(".wName").value;
-    triRow.cells[2].children[0].value = r.querySelector(".wOdds").value;
-  });
-}
-
-triTable.addEventListener("input",()=>{syncWideInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-triTable.addEventListener("change",()=>{syncWideInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-wideTable.addEventListener("input",()=>{syncTriInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-wideTable.addEventListener("change",()=>{syncTriInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-
-function updateTrifecta(){
-  triBody.innerHTML="";
-  triResults.length = 0;
-  const rows=[...triTable.rows].slice(1);
-  const A=[],B=[],C=[];
-  rows.forEach(r=>{
-    const h={no:r.cells[0].textContent,name:safeText(r.cells[1].children[0].value),odds:r.cells[2].children[0].value};
-    if(r.querySelector(".p1").checked)A.push(h);
-    if(r.querySelector(".p2").checked)B.push(h);
-    if(r.querySelector(".p3").checked)C.push(h);
-  });
-
+/* ===== 3連複 ===== */
+const triBoxResults=[];
+function updateTriBox(){
+  triBoxResult.innerHTML="";
+  triBoxResults.length=0;
+  const sel=[...triBoxTable.rows].slice(1).filter(r=>r.cells[1].firstChild.checked).map(r=>r.cells[0].textContent);
   let cnt=0;
-  A.forEach(a=>B.forEach(b=>C.forEach(c=>{
-    if(a.no!==b.no&&a.no!==c.no&&b.no!==c.no){
-      cnt++;
-      triResults.push({
-        no1: a.no, no2: b.no, no3: c.no,
-        name1: a.name, name2: b.name, name3: c.name,
-        odds1: formatOdds(a.odds), odds2: formatOdds(b.odds), odds3: formatOdds(c.odds)
-      });
-      triBody.insertRow().innerHTML=`
-      <tr>
-        <td class="no-border-right">${a.no}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left no-border-right">${b.no}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left">${c.no}</td>
-
-        <td class="no-border-right">${a.name}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left no-border-right">${b.name}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left">${c.name}</td>
-
-        <td class="no-border-right ${oddsClass(a.odds)}">${formatOdds(a.odds)}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
-      </tr>`;
-    }
-  })));
-  triCount.textContent=`${cnt} 点`;
+  for(let i=0;i<sel.length;i++)
+    for(let j=i+1;j<sel.length;j++)
+      for(let k=j+1;k<sel.length;k++){
+        cnt++;
+        triBoxResults.push({a:sel[i],b:sel[j],c:sel[k]});
+        triBoxResult.insertRow().innerHTML=`<td>${sel[i]}</td><td>→</td><td>${sel[j]}</td><td>→</td><td>${sel[k]}</td>`;
+      }
+  triBoxCount.textContent=`${cnt} 点`;
 }
+triBoxTable.addEventListener("change",updateTriBox);
 
-function updateWide(){
-  wideBody.innerHTML="";
-  wideResults.length = 0;
-  const rows=[...wideTable.rows].slice(1);
-  const A=[],B=[];
-  rows.forEach(r=>{
-    const h={no:r.cells[0].textContent,name:safeText(r.querySelector(".wName").value),odds:r.querySelector(".wOdds").value};
-    if(r.querySelector(".w1").checked)A.push(h);
-    if(r.querySelector(".w2").checked)B.push(h);
+/* ===== 馬単・馬連・単勝・複勝 ===== */
+const simpleResults=[];
+function updateSimple(){
+  simpleResult.innerHTML="";
+  simpleResults.length=0;
+  let cnt=0;
+  const rows=[...simpleTable.rows].slice(1);
+
+  rows.forEach(a=>{
+    rows.forEach(b=>{
+      if(a!==b && a.querySelector(".um1").checked && b.querySelector(".um2").checked){
+        cnt++; simpleResults.push({type:"馬単",a:a.cells[0].textContent,b:b.cells[0].textContent});
+        simpleResult.insertRow().innerHTML=`<td>馬単</td><td>${a.cells[0].textContent}→${b.cells[0].textContent}</td>`;
+      }
+    });
   });
 
-  let cnt=0;
-  A.forEach(a=>B.forEach(b=>{
-    if(a.no!==b.no){
-      const [h1,h2]=Number(a.no)<Number(b.no)?[a,b]:[b,a];
-      cnt++;
-      wideResults.push({
-        no1: h1.no, no2: h2.no,
-        name1: h1.name, name2: h2.name,
-        odds1: formatOdds(h1.odds), odds2: formatOdds(h2.odds)
-      });
-      wideBody.insertRow().innerHTML=`
-      <tr>
-        <td class="no-border-right">${h1.no}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left">${h2.no}</td>
-
-        <td class="no-border-right">${h1.name}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left">${h2.name}</td>
-
-        <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
-        <td class="arrow-cell">→</td>
-        <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
-      </tr>`;
+  const ren=rows.filter(r=>r.querySelector(".uren").checked).map(r=>r.cells[0].textContent);
+  for(let i=0;i<ren.length;i++)
+    for(let j=i+1;j<ren.length;j++){
+      cnt++; simpleResults.push({type:"馬連",a:ren[i],b:ren[j]});
+      simpleResult.insertRow().innerHTML=`<td>馬連</td><td>${ren[i]}-${ren[j]}</td>`;
     }
-  }));
-  wideCount.textContent=`${cnt} 点`;
+
+  rows.forEach(r=>{
+    if(r.querySelector(".win").checked){
+      cnt++; simpleResults.push({type:"単勝",a:r.cells[0].textContent});
+      simpleResult.insertRow().innerHTML=`<td>単勝</td><td>${r.cells[0].textContent}</td>`;
+    }
+    if(r.querySelector(".place").checked){
+      cnt++; simpleResults.push({type:"複勝",a:r.cells[0].textContent});
+      simpleResult.insertRow().innerHTML=`<td>複勝</td><td>${r.cells[0].textContent}</td>`;
+    }
+  });
+
+  simpleCount.textContent=`${cnt} 点`;
 }
-
-syncWideInputs();
-
-// ===== CSV読み込み機能 =====
-function loadCSV(){
-  const raceName = document.getElementById("raceName").value.trim();
-  if(!raceName) return;
-
-  fetch(`${raceName}.csv`)
-    .then(res => {
-      if(!res.ok) throw new Error("CSVファイルが見つかりません");
-      return res.text();
-    })
-    .then(text=>{
-      const lines = text.split("\n").map(l=>l.trim()).filter(l=>l);
-      lines.forEach(line=>{
-        const [no,name,odds] = line.split(",");
-        const row = triTable.rows[Number(no)];
-        if(row){
-          row.cells[1].children[0].value = name;
-          row.cells[2].children[0].value = odds;
-        }
-      });
-      syncWideInputs();
-      updateTrifecta();
-      updateWide();
-      updateInputOddsColor();
-    })
-    .catch(err=>{ alert(err.message); });
-}
+simpleTable.addEventListener("change",updateSimple);
 </script>
 
 </body>
