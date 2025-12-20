@@ -281,11 +281,26 @@ function safeText(v){ return v && v.trim() !== "" ? v : "-"; }
 function formatOdds(v){ return isNaN(v)||v===""?"-":Number(v).toFixed(1); }
 
 function updateInputOddsColor(){
+  const classes = [
+    "bg-odds-very-low","bg-odds-low","bg-odds-mid-low",
+    "bg-odds-mid-high","bg-odds-high","bg-odds-very-high"
+  ];
+
   // 3連単
   [...triTable.rows].slice(1).forEach(r=>{
     const input = r.cells[2].children[0];
     const cls = oddsClass(input.value);
-    input.classList.remove("bg-odds-very-low","bg-odds-low","bg-odds-mid-low","bg-odds-mid-high","bg-odds-high","bg-odds-very-high");
+    input.classList.remove(...classes);
+    if(input.value !== "" && cls){
+      input.classList.add("bg-" + cls);
+    }
+  });
+
+  // 3連複
+  [...triBoxTable.rows].slice(1).forEach(r=>{
+    const input = r.cells[2].children[0];
+    const cls = oddsClass(input.value);
+    input.classList.remove(...classes);
     if(input.value !== "" && cls){
       input.classList.add("bg-" + cls);
     }
@@ -295,7 +310,7 @@ function updateInputOddsColor(){
   [...wideTable.rows].slice(1).forEach(r=>{
     const input = r.querySelector(".wOdds");
     const cls = oddsClass(input.value);
-    input.classList.remove("bg-odds-very-low","bg-odds-low","bg-odds-mid-low","bg-odds-mid-high","bg-odds-high","bg-odds-very-high");
+    input.classList.remove(...classes);
     if(input.value !== "" && cls){
       input.classList.add("bg-" + cls);
     }
@@ -330,11 +345,11 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="p1"></td>
     <td><input type="checkbox" class="p2"></td>
     <td><input type="checkbox" class="p3"></td>`;
-
+  
   triBoxTable.insertRow().innerHTML=`
     <th>${i}</th>
-    <td><input></td>
-    <td><input type="number" step="0.1"></td>
+    <td><input type="text" style="width:120px;"></td>
+    <td><input type="number" step="0.1" style="width:60px;"></td>
     <td><input type="checkbox" class="b1"></td>
     <td><input type="checkbox" class="b2"></td>
     <td><input type="checkbox" class="b3"></td>`;
