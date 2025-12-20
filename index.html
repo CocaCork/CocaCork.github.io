@@ -173,6 +173,35 @@
 </details>
 
 <details>
+<summary><h2>3連複フォーメーション</h2></summary>
+
+<div class="container">
+<table id="triBoxTable">
+  <tr>
+    <th>馬番</th><th>馬名</th><th>オッズ</th>
+    <th>選択1</th><th>選択2</th><th>選択3</th>
+  </tr>
+</table>
+
+<div class="result-area">
+  <div class="header-bar">
+    <div class="count">
+      <span class="count-label">組み合わせ：</span>
+      <span id="triBoxCount">0 点</span>
+    </div>
+    <button onclick="downloadCSV(triBoxResults,'trio')">CSV出力</button>
+  </div>
+
+  <div class="result-scroll">
+    <table>
+      <tbody id="triBoxResult"></tbody>
+    </table>
+  </div>
+</div>
+</div>
+</details>
+
+<details>
 <summary><h2>ワイド（2頭）フォーメーション</h2></summary>
 
 <div class="container">
@@ -215,11 +244,16 @@
 
 <script>
 const triResults = [];
+const triBoxResults = [];
 const wideResults = [];
 
 const triTable = document.getElementById("triTable");
 const triBody  = document.getElementById("triResult");
 const triCount = document.getElementById("triCount");
+
+const triBoxTable = document.getElementById("triBoxTable");
+const triBoxBody  = document.getElementById("triBoxResult");
+const triBoxCount = document.getElementById("triBoxCount");
 
 const wideTable = document.getElementById("wideTable");
 const wideBody  = document.getElementById("wideResult");
@@ -278,6 +312,14 @@ for(let i=1;i<=18;i++){
     <td><input type="checkbox" class="p1"></td>
     <td><input type="checkbox" class="p2"></td>
     <td><input type="checkbox" class="p3"></td>`;
+
+  triBoxTable.insertRow().innerHTML=`
+    <th>${i}</th>
+    <td><input></td>
+    <td><input type="number" step="0.1"></td>
+    <td><input type="checkbox" class="b1"></td>
+    <td><input type="checkbox" class="b2"></td>
+    <td><input type="checkbox" class="b3"></td>`;
     
   wideTable.insertRow().innerHTML=`
     <th>${i}</th>
@@ -305,10 +347,10 @@ function syncTriInputs(){
   });
 }
 
-triTable.addEventListener("input",()=>{syncWideInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-triTable.addEventListener("change",()=>{syncWideInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-wideTable.addEventListener("input",()=>{syncTriInputs();updateTrifecta();updateWide();updateInputOddsColor();});
-wideTable.addEventListener("change",()=>{syncTriInputs();updateTrifecta();updateWide();updateInputOddsColor();});
+triTable.addEventListener("input",()=>{syncWideInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
+triTable.addEventListener("change",()=>{syncWideInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
+wideTable.addEventListener("input",()=>{syncTriInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
+wideTable.addEventListener("change",()=>{syncTriInputs();updateTrifecta();updateTriBox();updateWide();updateInputOddsColor();});
 
 function updateTrifecta(){
   triBody.innerHTML="";
@@ -354,6 +396,55 @@ function updateTrifecta(){
     }
   })));
   triCount.textContent=`${cnt} 点`;
+}
+
+function updateTriBox(){
+  triBoxBody.innerHTML = "";
+  triBoxResults.length = 0;
+
+  const rows=[...triBoxTable.rows].slice(1);
+  const A=[],B=[],C=[];
+
+  rows.forEach(r=>{
+    const h={
+      no:r.cells[0].textContent,
+      name:safeText(r.cells[1].children[0].value),
+      odds:r.cells[2].children[0].value
+    };
+    if(r.querySelector(".b1").checked) A.push(h);
+    if(r.querySelector(".b2").checked) B.push(h);
+    if(r.querySelector(".b3").checked) C.push(h);
+  });
+
+  const used = new Set();
+  let cnt=0;
+
+  A.forEach(a=>B.forEach(b=>C.forEach(c=>{
+    const nos=[a.no,b.no,c.no];
+    if(new Set(nos).size !== 3) return;
+
+    const key = [...nos].sort((x,y)=>x-y).join("-");
+    if(used.has(key)) return;
+    used.add(key);
+
+    cnt++;
+    triBoxResults.push({
+      no1:key.split("-")[0],
+      no2:key.split("-")[1],
+      no3:key.split("-")[2]
+    });
+
+    triBoxBody.insertRow().innerHTML=`
+      <tr>
+        <td class="no-border-right">${nos[0]}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left no-border-right">${nos[1]}</td>
+        <td class="arrow-cell">-</td>
+        <td class="no-border-left">${nos[2]}</td>
+      </tr>`;
+  })));
+
+  triBoxCount.textContent = `${cnt} 点`;
 }
 
 function updateWide(){
