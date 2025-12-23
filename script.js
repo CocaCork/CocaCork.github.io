@@ -72,6 +72,13 @@ const syncTables = [
   }
 ];
 
+function attachDisableHandler(tr, checkbox, updateCountFn){
+  checkbox.addEventListener("change", ()=>{
+    tr.classList.toggle("result-disabled", checkbox.checked);
+    updateCountFn();
+  });
+}
+
 function safeText(v){ return v && v.trim() !== "" ? v : "-"; }
 
 function formatOdds(v){ return isNaN(v)||v===""?"-":Number(v).toFixed(1); }
@@ -109,9 +116,19 @@ function oddsClass(v){
   return "odds-very-high";
 }
 
-function downloadCSV(data,name){
-  if(!data.length) return;
-  const csv=[Object.keys(data[0]).join(","),...data.map(o=>Object.values(o).join(","))].join("\n");
+function downloadCSV(data,name, body){
+  const rows = [...body.rows];
+  const enabled = rows
+    .filter(r => !r.querySelector(".disable-row")?.checked)
+    .map((r,i)=>data[i]);
+
+  if(!enabled.length) return;
+
+  const csv=[
+    Object.keys(enabled[0]).join(","),
+    ...enabled.map(o=>Object.values(o).join(","))
+  ].join("\n");
+
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download=name+".csv";
@@ -223,6 +240,36 @@ function syncHorseInputs(sourceTable){
   });
 });
 
+function updateTrifectaCount(){
+  const rows = [...triBody.rows];
+  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
+  triCount.textContent = `${enabled.length} 点`;
+}
+
+function updateTriBoxCount(){
+  const rows = [...triBoxBody.rows];
+  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
+  triBoxCount.textContent = `${enabled.length} 点`;
+}
+
+function updateWideCount(){
+  const rows = [...wideBody.rows];
+  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
+  wideCount.textContent = `${enabled.length} 点`;
+}
+
+function updateUmatanCount(){
+  const rows = [...umatanBody.rows];
+  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
+  umatanCount.textContent = `${enabled.length} 点`;
+}
+
+function updateUmarenCount(){
+  const rows = [...umarenBody.rows];
+  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
+  umarenCount.textContent = `${enabled.length} 点`;
+}
+
 function updateTrifecta(){
   triBody.innerHTML="";
   triResults.length = 0;
@@ -244,8 +291,11 @@ function updateTrifecta(){
         name1: a.name, name2: b.name, name3: c.name,
         odds1: formatOdds(a.odds), odds2: formatOdds(b.odds), odds3: formatOdds(c.odds)
       });
-      triBody.insertRow().innerHTML=`
-      <tr>
+      
+      const tr = triBody.insertRow();
+      tr.innerHTML = `
+      <td><input type="checkbox" class="disable-row"></td>
+      
       <td class="no-border-right">${a.no}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left no-border-right">${b.no}</td>
@@ -263,10 +313,13 @@ function updateTrifecta(){
       <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
-      </tr>`;
+      `;
+
+      const chk = tr.querySelector(".disable-row");
+      attachDisableHandler(tr, chk, updateTrifectaCount);
     }
   })));
-  triCount.textContent=`${cnt} 点`;
+  updateTrifectaCount();
 }
 
 function updateTriBox(){
@@ -307,9 +360,11 @@ function updateTriBox(){
       odds2:formatOdds(b.odds),
       odds3:formatOdds(c.odds)
     });
-
-    triBoxBody.insertRow().innerHTML = `
-    <tr>
+    
+    const tr = triBoxBody.insertRow();
+    tr.innerHTML = `
+    <td><input type="checkbox" class="disable-row"></td>
+    
     <td class="no-border-right">${a.no}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left no-border-right">${b.no}</td>
@@ -327,11 +382,13 @@ function updateTriBox(){
     <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
-    </tr>
     `;
+
+    const chk = tr.querySelector(".disable-row");
+    attachDisableHandler(tr, chk, updateTrifectaCount);
   })));
 
-  triBoxCount.textContent = `${cnt} 点`;
+  updateTriBoxCount();
 }
 
 function updateWide(){
@@ -355,8 +412,11 @@ function updateWide(){
         name1: h1.name, name2: h2.name,
         odds1: formatOdds(h1.odds), odds2: formatOdds(h2.odds)
       });
-      wideBody.insertRow().innerHTML=`
-      <tr>
+
+      const tr = wideBody.insertRow();
+      tr.innerHTML = `
+      <td><input type="checkbox" class="disable-row"></td>
+      
       <td class="no-border-right">${h1.no}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left">${h2.no}</td>
@@ -368,10 +428,13 @@ function updateWide(){
       <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
-      </tr>`;
+      `;
+
+      const chk = tr.querySelector(".disable-row");
+      attachDisableHandler(tr, chk, updateTrifectaCount);
     }
   }));
-  wideCount.textContent=`${cnt} 点`;
+  updateWideCount();
 }
 
 function updateUmatan(){
@@ -403,8 +466,10 @@ function updateUmatan(){
       odds2:formatOdds(b.odds)
     });
 
-    umatanBody.insertRow().innerHTML = `
-    <tr>
+    const tr = umatanBody.insertRow();
+    tr.innerHTML = `
+    <td><input type="checkbox" class="disable-row"></td>
+    
     <td class="no-border-right">${a.no}</td>
     <td class="arrow-cell">→</td>
     <td class="no-border-left">${b.no}</td>
@@ -416,11 +481,13 @@ function updateUmatan(){
     <td class="no-border-right ${oddsClass(a.odds)}">${formatOdds(a.odds)}</td>
     <td class="arrow-cell">→</td>
     <td class="no-border-left ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
-    </tr>
     `;
+
+    const chk = tr.querySelector(".disable-row");
+    attachDisableHandler(tr, chk, updateTrifectaCount);
   }));
 
-  umatanCount.textContent = `${cnt} 点`;
+  updateUmatanCount();
 }
 
 function updateUmaren(){
@@ -460,8 +527,10 @@ function updateUmaren(){
       odds2:formatOdds(h2.odds)
     });
 
-    umarenBody.insertRow().innerHTML = `
-    <tr>
+    const tr = umarenBody.insertRow();
+    tr.innerHTML = `
+    <td><input type="checkbox" class="disable-row"></td>
+    
     <td class="no-border-right">${h1.no}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left">${h2.no}</td>
@@ -473,10 +542,13 @@ function updateUmaren(){
     <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
-    </tr>`;
+    `;
+
+    const chk = tr.querySelector(".disable-row");
+    attachDisableHandler(tr, chk, updateTrifectaCount);
   }));
 
-  umarenCount.textContent = `${cnt} 点`;
+  updateUmarenCount();
 }
 
 function updateTansho(){
