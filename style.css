@@ -122,3 +122,10 @@ button {
   width: 150px;
   margin-right: 6px;
 }
+
+/* 結果行の除外表示 */
+.result-disabled {
+  background-color: #eee;
+  color: #888;
+}
+
