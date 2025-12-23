@@ -131,6 +131,6 @@ button {
 
 /* 結果行の除外表示 */
 .result-disabled {
-  background-color: #f8eaea;
-  color: #999;
+  background-color: #f3f3f3;
+  color: #b5b5b5;
 }
