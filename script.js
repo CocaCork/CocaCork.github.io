@@ -100,7 +100,7 @@ function updateInputOddsColor(){
 
 function oddsClass(v){
   v = Number(v);
-  if (isNaN(v)) return "";
+  if (isNaN(v) || v < 1) return "";
   if (v<=5) return "odds-very-low";
   if (v<=10) return "odds-low";
   if (v<=25) return "odds-mid-low";
