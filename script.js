@@ -76,80 +76,25 @@ function safeText(v){ return v && v.trim() !== "" ? v : "-"; }
 
 function formatOdds(v){ return isNaN(v)||v===""?"-":Number(v).toFixed(1); }
 
-function updateInputOddsColor(){
+function applyOddsColor(table, selector){
   const classes = [
     "bg-odds-very-low","bg-odds-low","bg-odds-mid-low",
     "bg-odds-mid-high","bg-odds-high","bg-odds-very-high"
   ];
 
-  // 3連単
-  [...triTable.rows].slice(1).forEach(r=>{
-    const input = r.cells[2].children[0];
-    const cls = oddsClass(input.value);
-    input.classList.remove(...classes);
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
-  });
+  [...table.rows].slice(1).forEach(r=>{
+    const input = r.querySelector(selector);
+    if(!input) return;
 
-  // 3連複
-  [...triBoxTable.rows].slice(1).forEach(r=>{
-    const input = r.cells[2].children[0];
-    const cls = oddsClass(input.value);
     input.classList.remove(...classes);
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
+    const cls = oddsClass(input.value);
+    if(cls) input.classList.add("bg-" + cls);
   });
+}
 
-  // ワイド
-  [...wideTable.rows].slice(1).forEach(r=>{
-    const input = r.querySelector(".wOdds");
-    const cls = oddsClass(input.value);
-    input.classList.remove(...classes);
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
-  });
-
-  // 馬単
-  [...umatanTable.rows].slice(1).forEach(r=>{
-    const input = r.cells[2].children[0];
-    const cls = oddsClass(input.value);
-    input.classList.remove(...classes);
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
-  });
-
-  // 馬連
-  [...umarenTable.rows].slice(1).forEach(r=>{
-    const input = r.cells[2].children[0];
-    const cls = oddsClass(input.value);
-    input.classList.remove(...classes);
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
-  });
-
-  // 単勝
-  [...tanshoTable.rows].slice(1).forEach(r=>{
-    const input = r.cells[2].children[0];
-    const cls = oddsClass(input.value);
-    input.classList.remove(...classes);
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
-  });
-
-  // 複勝
-  [...fukushoTable.rows].slice(1).forEach(r=>{
-    const input = r.cells[2].children[0];
-    const cls = oddsClass(input.value);
-    input.classList.remove(...classes);
-    if(input.value !== "" && cls){
-      input.classList.add("bg-" + cls);
-    }
+function updateInputOddsColor(){
+  syncTables.forEach(cfg=>{
+    applyOddsColor(cfg.table, cfg.oddsSelector);
   });
 }
 
