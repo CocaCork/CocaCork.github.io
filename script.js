@@ -304,9 +304,7 @@ function updateTrifecta(){
       });
       
       const tr = triBody.insertRow();
-      tr.innerHTML = `
-      <td><input type="checkbox" class="disable-row"></td>
-      
+      tr.innerHTML = `      
       <td class="no-border-right">${a.no}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left no-border-right">${b.no}</td>
@@ -324,6 +322,8 @@ function updateTrifecta(){
       <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
+
+      <td><input type="checkbox" class="disable-row"></td>
       `;
 
       const chk = tr.querySelector(".disable-row");
@@ -373,9 +373,7 @@ function updateTriBox(){
     });
     
     const tr = triBoxBody.insertRow();
-    tr.innerHTML = `
-    <td><input type="checkbox" class="disable-row"></td>
-    
+    tr.innerHTML = `    
     <td class="no-border-right">${a.no}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left no-border-right">${b.no}</td>
@@ -393,6 +391,8 @@ function updateTriBox(){
     <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
+
+    <td><input type="checkbox" class="disable-row"></td>
     `;
 
     const chk = tr.querySelector(".disable-row");
@@ -425,9 +425,7 @@ function updateWide(){
       });
 
       const tr = wideBody.insertRow();
-      tr.innerHTML = `
-      <td><input type="checkbox" class="disable-row"></td>
-      
+      tr.innerHTML = `      
       <td class="no-border-right">${h1.no}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left">${h2.no}</td>
@@ -439,6 +437,8 @@ function updateWide(){
       <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
+
+      <td><input type="checkbox" class="disable-row"></td>
       `;
 
       const chk = tr.querySelector(".disable-row");
@@ -478,9 +478,7 @@ function updateUmatan(){
     });
 
     const tr = umatanBody.insertRow();
-    tr.innerHTML = `
-    <td><input type="checkbox" class="disable-row"></td>
-    
+    tr.innerHTML = `    
     <td class="no-border-right">${a.no}</td>
     <td class="arrow-cell">→</td>
     <td class="no-border-left">${b.no}</td>
@@ -492,6 +490,8 @@ function updateUmatan(){
     <td class="no-border-right ${oddsClass(a.odds)}">${formatOdds(a.odds)}</td>
     <td class="arrow-cell">→</td>
     <td class="no-border-left ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
+
+    <td><input type="checkbox" class="disable-row"></td>
     `;
 
     const chk = tr.querySelector(".disable-row");
@@ -539,9 +539,7 @@ function updateUmaren(){
     });
 
     const tr = umarenBody.insertRow();
-    tr.innerHTML = `
-    <td><input type="checkbox" class="disable-row"></td>
-    
+    tr.innerHTML = `    
     <td class="no-border-right">${h1.no}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left">${h2.no}</td>
@@ -553,6 +551,8 @@ function updateUmaren(){
     <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
+
+    <td><input type="checkbox" class="disable-row"></td>
     `;
 
     const chk = tr.querySelector(".disable-row");
