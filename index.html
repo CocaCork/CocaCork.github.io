@@ -1002,7 +1002,7 @@ function loadCSV(){
   const raceName = document.getElementById("raceName").value.trim();
   if(!raceName) return;
 
-  fetch(`${raceName}.csv`)
+  fetch(`data/${raceName}.csv`)
     .then(res => {
       if(!res.ok) throw new Error("CSVファイルが見つかりません");
       return res.text();
