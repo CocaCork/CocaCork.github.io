@@ -385,7 +385,7 @@ function updateTriBox(){
     `;
 
     const chk = tr.querySelector(".disable-row");
-    attachDisableHandler(tr, chk, updateTrifectaCount);
+    attachDisableHandler(tr, chk, updateTriBoxCount);
   })));
 
   updateTriBoxCount();
@@ -431,7 +431,7 @@ function updateWide(){
       `;
 
       const chk = tr.querySelector(".disable-row");
-      attachDisableHandler(tr, chk, updateTrifectaCount);
+      attachDisableHandler(tr, chk, updateWideCount);
     }
   }));
   updateWideCount();
@@ -484,7 +484,7 @@ function updateUmatan(){
     `;
 
     const chk = tr.querySelector(".disable-row");
-    attachDisableHandler(tr, chk, updateTrifectaCount);
+    attachDisableHandler(tr, chk, updateUmatanCount);
   }));
 
   updateUmatanCount();
@@ -545,7 +545,7 @@ function updateUmaren(){
     `;
 
     const chk = tr.querySelector(".disable-row");
-    attachDisableHandler(tr, chk, updateTrifectaCount);
+    attachDisableHandler(tr, chk, updateUmarenCount);
   }));
 
   updateUmarenCount();
