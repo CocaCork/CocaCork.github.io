@@ -9,16 +9,20 @@
 <body>
 <!-- LocalStorage 保存／読込 -->
 <div class="race-storage">
-  <input type="text" id="saveRaceName" placeholder="レース名を入力">
-  <button onclick="saveStateByRace()">保存</button>
+  <div class="race-storage-left">
+    <input type="text" id="saveRaceName" placeholder="レース名を入力">
+    <button onclick="saveStateByRace()">保存</button>
 
-  <select id="raceSelect">
-    <option value="">保存済みレース</option>
-  </select>
-  <button onclick="loadStateByRace()">読み込み</button>
+    <select id="raceSelect">
+      <option value="">保存済みレース</option>
+    </select>
+    <button onclick="loadStateByRace()">読み込み</button>
+  </div>
+
+  <div class="race-storage-right">
+    <button id="clearStorageBtn">保存データを全削除</button>
+  </div>
 </div>
-
-<button id="clearStorageBtn">保存データを全削除</button>
 
 <details>
 <summary><h2>3連単</h2></summary>
