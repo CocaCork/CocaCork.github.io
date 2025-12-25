@@ -2,69 +2,61 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>馬券計算ツール</title>
+<title>馬券計算ツール（2セット対応）</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
 <!-- LocalStorage 保存／読込 -->
 <div class="race-storage">
   <div class="race-storage-left">
-  <div class="race-pair">
-    <input type="text" id="saveRaceName" placeholder="レース名を入力">
-    <button onclick="saveStateByRace()">保存</button>
+    <div class="race-pair">
+      <input type="text" id="saveRaceName" placeholder="レース名を入力">
+      <button onclick="saveStateByRace()">保存</button>
+    </div>
+    <div class="race-pair race-load-pair">
+      <select id="raceSelect">
+        <option value="">保存済みレース</option>
+      </select>
+      <button onclick="loadStateByRace()">読み込み</button>
+      <span id="savedAtInfo" class="saved-at-info"></span>
+    </div>
   </div>
-
-  <div class="race-pair race-load-pair">
-    <select id="raceSelect">
-      <option value="">保存済みレース</option>
-    </select>
-    <button onclick="loadStateByRace()">読み込み</button>
-
-    <span id="savedAtInfo" class="saved-at-info"></span>
-  </div>
-  </div>
-
   <div class="race-storage-right">
     <button id="clearStorageBtn">保存データを全削除</button>
   </div>
 </div>
 
+<!-- 各券種 -->
 <details>
 <summary><h2>3連単</h2></summary>
-
 <div class="container">
-  <!-- 1セット目 -->
+  <!-- 左セット -->
   <div class="combo-set">
-    <table id="triTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>1着</th><th>2着</th><th>3着</th>
-      </tr>
+    <table id="triTable1">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>1着</th><th>2着</th><th>3着</th></tr>
     </table>
-    
     <div class="result-area">
-      <table>
-        <tbody id="triResult1"></tbody>
-      </table>
-      <div class="count"><span id="triCount1">0 点</span></div>
+      <div class="header-bar">
+        <span>組み合わせ：<span id="triCount1">0 点</span></span>
+      </div>
+      <div class="result-scroll">
+        <table><tbody id="triResult1"></tbody></table>
+      </div>
     </div>
   </div>
-
-  <!-- 2セット目 -->
+  <!-- 右セット -->
   <div class="combo-set">
     <table id="triTable2">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>1着</th><th>2着</th><th>3着</th>
-      </tr>
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>1着</th><th>2着</th><th>3着</th></tr>
     </table>
-    
     <div class="result-area">
-      <table>
-        <tbody id="triResult2"></tbody>
-      </table>
-      <div class="count"><span id="triCount2">0 点</span></div>
+      <div class="header-bar">
+        <span>組み合わせ：<span id="triCount2">0 点</span></span>
+      </div>
+      <div class="result-scroll">
+        <table><tbody id="triResult2"></tbody></table>
+      </div>
     </div>
   </div>
 </div>
@@ -72,226 +64,153 @@
 
 <details>
 <summary><h2>3連複</h2></summary>
-
 <div class="container">
-<table id="triBoxTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>選択1</th><th>選択2</th><th>選択3</th>
-  </tr>
-</table>
-
-<div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">組み合わせ：</span>
-      <span id="triBoxCount">0 点</span>
+  <div class="combo-set">
+    <table id="triBoxTable1">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択1</th><th>選択2</th><th>選択3</th></tr>
+    </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="triBoxCount1">0 点</span></span>
+      <table><tbody id="triBoxResult1"></tbody></table>
     </div>
   </div>
-
-  <div class="result-scroll">
-  <table>
-    <thead>
-      <tr>
-        <th colspan="5">馬番</th>
-        <th colspan="5">馬名</th>
-        <th colspan="5">オッズ</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody id="triBoxResult"></tbody>
-  </table>
+  <div class="combo-set">
+    <table id="triBoxTable2">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択1</th><th>選択2</th><th>選択3</th></tr>
+    </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="triBoxCount2">0 点</span></span>
+      <table><tbody id="triBoxResult2"></tbody></table>
+    </div>
   </div>
-</div>
 </div>
 </details>
 
 <details>
 <summary><h2>ワイド</h2></summary>
-
 <div class="container">
-<table id="wideTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>選択1</th><th>選択2</th>
-  </tr>
-</table>
-
-<div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">組み合わせ：</span>
-      <span id="wideCount">0 点</span>
+  <div class="combo-set">
+    <table id="wideTable1">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択1</th><th>選択2</th></tr>
+    </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="wideCount1">0 点</span></span>
+      <table><tbody id="wideResult1"></tbody></table>
     </div>
   </div>
-
-  <div class="result-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th colspan="3">馬番</th>
-          <th colspan="3">馬名</th>
-          <th colspan="3">オッズ</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="wideResult"></tbody>
+  <div class="combo-set">
+    <table id="wideTable2">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択1</th><th>選択2</th></tr>
     </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="wideCount2">0 点</span></span>
+      <table><tbody id="wideResult2"></tbody></table>
+    </div>
   </div>
-</div>
 </div>
 </details>
 
 <details>
 <summary><h2>馬単</h2></summary>
-
 <div class="container">
-<table id="umatanTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>1着</th><th>2着</th>
-  </tr>
-</table>
-
-<div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">組み合わせ：</span>
-      <span id="umatanCount">0 点</span>
+  <div class="combo-set">
+    <table id="umatanTable1">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>1着</th><th>2着</th></tr>
+    </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="umatanCount1">0 点</span></span>
+      <table><tbody id="umatanResult1"></tbody></table>
     </div>
   </div>
-
-  <div class="result-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th colspan="3">馬番</th>
-          <th colspan="3">馬名</th>
-          <th colspan="3">オッズ</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="umatanResult"></tbody>
+  <div class="combo-set">
+    <table id="umatanTable2">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>1着</th><th>2着</th></tr>
     </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="umatanCount2">0 点</span></span>
+      <table><tbody id="umatanResult2"></tbody></table>
+    </div>
   </div>
-</div>
 </div>
 </details>
 
 <details>
 <summary><h2>馬連</h2></summary>
-
 <div class="container">
-<table id="umarenTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>選択1</th><th>選択2</th>
-  </tr>
-</table>
-
-<div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">組み合わせ：</span>
-      <span id="umarenCount">0 点</span>
+  <div class="combo-set">
+    <table id="umarenTable1">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択1</th><th>選択2</th></tr>
+    </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="umarenCount1">0 点</span></span>
+      <table><tbody id="umarenResult1"></tbody></table>
     </div>
   </div>
-
-  <div class="result-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th colspan="3">馬番</th>
-          <th colspan="3">馬名</th>
-          <th colspan="3">オッズ</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="umarenResult"></tbody>
+  <div class="combo-set">
+    <table id="umarenTable2">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択1</th><th>選択2</th></tr>
     </table>
+    <div class="result-area">
+      <span>組み合わせ：<span id="umarenCount2">0 点</span></span>
+      <table><tbody id="umarenResult2"></tbody></table>
+    </div>
   </div>
-</div>
 </div>
 </details>
 
 <details>
 <summary><h2>単勝</h2></summary>
-
 <div class="container">
-<table id="tanshoTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>選択</th>
-  </tr>
-</table>
-
-<div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">点数：</span>
-      <span id="tanshoCount">0 点</span>
+  <div class="combo-set">
+    <table id="tanshoTable1">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択</th></tr>
+    </table>
+    <div class="result-area">
+      <span>点数：<span id="tanshoCount1">0 点</span></span>
+      <table><tbody id="tanshoResult1"></tbody></table>
     </div>
   </div>
-
-  <div class="result-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>馬番</th>
-          <th>馬名</th>
-          <th>オッズ</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tanshoResult"></tbody>
+  <div class="combo-set">
+    <table id="tanshoTable2">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択</th></tr>
     </table>
+    <div class="result-area">
+      <span>点数：<span id="tanshoCount2">0 点</span></span>
+      <table><tbody id="tanshoResult2"></tbody></table>
+    </div>
   </div>
-</div>
 </div>
 </details>
 
 <details>
 <summary><h2>複勝</h2></summary>
-
 <div class="container">
-<table id="fukushoTable">
-  <tr>
-    <th>馬番</th><th>馬名</th><th>オッズ</th>
-    <th>選択</th>
-  </tr>
-</table>
-
-<div class="result-area">
-  <div class="header-bar">
-    <div class="count">
-      <span class="count-label">点数：</span>
-      <span id="fukushoCount">0 点</span>
+  <div class="combo-set">
+    <table id="fukushoTable1">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択</th></tr>
+    </table>
+    <div class="result-area">
+      <span>点数：<span id="fukushoCount1">0 点</span></span>
+      <table><tbody id="fukushoResult1"></tbody></table>
     </div>
   </div>
-
-  <div class="result-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>馬番</th>
-          <th>馬名</th>
-          <th>オッズ</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="fukushoResult"></tbody>
+  <div class="combo-set">
+    <table id="fukushoTable2">
+      <tr><th>馬番</th><th>馬名</th><th>オッズ</th><th>選択</th></tr>
     </table>
+    <div class="result-area">
+      <span>点数：<span id="fukushoCount2">0 点</span></span>
+      <table><tbody id="fukushoResult2"></tbody></table>
+    </div>
   </div>
-</div>
 </div>
 </details>
 
 <h2>メモ</h2>
-
 <div class="memo-area">
   <textarea id="raceMemo" placeholder="ここにメモを自由に記入できます"></textarea>
 </div>
 
-<script src="script.js"></script>
+<script src="script2.js"></script>
 </body>
 </html>
