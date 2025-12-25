@@ -265,10 +265,8 @@ function updateTrifecta(){
     if(r.querySelector(".p3").checked)C.push(h);
   });
 
-  let cnt=0;
   A.forEach(a=>B.forEach(b=>C.forEach(c=>{
     if(a.no!==b.no&&a.no!==c.no&&b.no!==c.no){
-      cnt++;
       
       const tr = triBody.insertRow();
       tr.innerHTML = `      
@@ -318,7 +316,6 @@ function updateTriBox(){
   });
 
   const used = new Set();
-  let cnt = 0;
 
   A.forEach(a=>B.forEach(b=>C.forEach(c=>{
     if(a.no===b.no || a.no===c.no || b.no===c.no) return;
@@ -327,8 +324,6 @@ function updateTriBox(){
     const key = [a.no,b.no,c.no].sort((x,y)=>x-y).join("-");
     if(used.has(key)) return;
     used.add(key);
-
-    cnt++;
     
     const tr = triBoxBody.insertRow();
     tr.innerHTML = `    
@@ -371,11 +366,9 @@ function updateWide(){
     if(r.querySelector(".w2").checked)B.push(h);
   });
 
-  let cnt=0;
   A.forEach(a=>B.forEach(b=>{
     if(a.no!==b.no){
       const [h1,h2]=Number(a.no)<Number(b.no)?[a,b]:[b,a];
-      cnt++;
 
       const tr = wideBody.insertRow();
       tr.innerHTML = `      
@@ -417,11 +410,8 @@ function updateUmatan(){
     if(r.querySelector(".u2").checked) B.push(h);
   });
 
-  let cnt = 0;
   A.forEach(a=>B.forEach(b=>{
     if(a.no === b.no) return;
-
-    cnt++;
 
     const tr = umatanBody.insertRow();
     tr.innerHTML = `    
@@ -464,7 +454,6 @@ function updateUmaren(){
   });
 
   const used = new Set();
-  let cnt = 0;
 
   A.forEach(a=>B.forEach(b=>{
     if(a.no === b.no) return;
@@ -474,8 +463,6 @@ function updateUmaren(){
     const key = `${h1.no}-${h2.no}`;
     if(used.has(key)) return;
     used.add(key);
-
-    cnt++;
 
     const tr = umarenBody.insertRow();
     tr.innerHTML = `    
