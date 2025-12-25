@@ -631,8 +631,10 @@ function saveStateByRace(){
     return;
   }
 
+  const savedAt = Date.now();
+
   const data = {
-    savedAt: Date.now(),
+    savedAt,
     state: buildStateObject()
   };
 
@@ -642,6 +644,13 @@ function saveStateByRace(){
   );
 
   refreshRaceList();
+
+  const sel = document.getElementById("raceSelect");
+  sel.value = race;
+  
+  document.getElementById("savedAtInfo").textContent =
+    `最終保存：${formatDateTime(savedAt)}`;
+
   alert("保存しました");
 }
 
