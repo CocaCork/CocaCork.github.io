@@ -583,7 +583,11 @@ function buildStateObject(){
     umaren:   [...umarenBody.rows].map(r => r.querySelector(".disable-row")?.checked || false)
   };
 
-  return { horses, resultDisabled };
+  return {
+    horses,
+    resultDisabled,
+    memo: document.getElementById("raceMemo").value   // ← ★追加
+  };
 }
 
 // 保存済みレース一覧を更新
@@ -680,7 +684,6 @@ function restoreFromStateObject(state){
   updateUmaren();
   updateTansho();
   updateFukusho();
-
   updateInputOddsColor();
 
   // 除外状態
@@ -698,6 +701,8 @@ function restoreFromStateObject(state){
       if(chk) chk.checked = v;
     });
   });
+  
+  document.getElementById("raceMemo").value = state.memo || "";
 }
 
 // 初期化処理（ページ起動時）
