@@ -5,6 +5,17 @@
 <title>馬券計算ツール</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
+<!-- LocalStorage 保存／読込 -->
+<div class="csv-load">
+  <input type="text" id="saveRaceName" placeholder="レース名を入力">
+  <button onclick="saveStateByRace()">保存</button>
+
+  <select id="raceSelect">
+    <option value="">保存済みレース</option>
+  </select>
+  <button onclick="loadStateByRace()">読み込み</button>
+</div>
   
 <body>
 <!-- CSV読み込み用 -->
