@@ -170,3 +170,15 @@ button {
   background-color: #f8eaea;
   color: #999;
 }
+
+.single-folds {
+  display: flex;
+  gap: 20px; /* テーブル間の余白 */
+  align-items: flex-start; /* 高さを揃える */
+}
+
+.single-folds details {
+  flex: 1; /* 横幅を均等に */
+  min-width: 300px; /* 最低幅を設定して崩れないように */
+}
+
