@@ -141,6 +141,19 @@ button {
   gap: 6px;    /* ← 入力とボタンの距離 */
 }
 
+/* 保存日時表示 */
+.saved-at-info {
+  margin-left: 10px;
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* 読み込みペアだけ少し余裕を */
+.race-load-pair {
+  gap: 6px;
+}
+
 .race-storage-right {
   margin-left: auto;
 }
