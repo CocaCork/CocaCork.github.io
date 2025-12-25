@@ -122,11 +122,28 @@ button {
   resize: vertical;
 }
 
-.race-storage { margin-bottom: 12px; }
+.race-storage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
 
-.race-storage input[type="text"] {
-  width: 150px;
-  margin-right: 6px;
+.race-storage-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.race-storage-right {
+  margin-left: auto;
+}
+
+#clearStorageBtn {
+  background: #fbeaea;
+  border: 1px solid #b00000;
+  color: #b00000;
+  font-weight: bold;
 }
 
 /* 結果行の除外表示 */
