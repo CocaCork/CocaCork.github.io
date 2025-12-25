@@ -705,6 +705,8 @@ function restoreFromStateObject(state){
     fukushoTable.rows[i+1].querySelector(".f1").checked = h.f1;
   });
 
+  syncHorseInputs(triTable);
+
   // 再計算
   updateTrifecta();
   updateTriBox();
