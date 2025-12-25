@@ -791,7 +791,7 @@ window.addEventListener("load", ()=>{
 
 document.getElementById("clearStorageBtn").addEventListener("click", clearAllSavedData);
 
-// データ全削除処理
+// 全削除処理
 function clearAllSavedData(){
   if(!confirm("保存している全レースデータを削除します。\nこの操作は元に戻せません。よろしいですか？")){
     return;
