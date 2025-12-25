@@ -705,6 +705,14 @@ window.addEventListener("load", ()=>{
   refreshRaceList();
 });
 
+// 保存済みレース選択 → レース名入力欄に反映
+document.getElementById("raceSelect").addEventListener("change", e => {
+  const race = e.target.value;
+  if (race) {
+    document.getElementById("saveRaceName").value = race;
+  }
+});
+
 document.getElementById("clearStorageBtn").addEventListener("click", clearAllSavedData);
 
 // 全削除処理
