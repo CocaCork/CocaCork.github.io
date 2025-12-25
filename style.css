@@ -132,7 +132,13 @@ button {
 .race-storage-left {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 32px;   /* ← ペア同士の距離 */
+}
+
+.race-pair {
+  display: flex;
+  align-items: center;
+  gap: 6px;    /* ← 入力とボタンの距離 */
 }
 
 .race-storage-right {
