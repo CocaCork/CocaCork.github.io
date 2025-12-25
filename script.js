@@ -630,6 +630,195 @@ function updateFukusho(){
   fukushoCount.textContent = `${cnt} 点`;
 }
 
+function buildStateObject(){
+  const horses = [];
+
+  for(let i=1;i<=18;i++){
+    const row = triTable.rows[i];
+    horses.push({
+      name: row.cells[1].children[0].value,
+      odds: row.cells[2].children[0].value,
+
+      p1: row.querySelector(".p1")?.checked || false,
+      p2: row.querySelector(".p2")?.checked || false,
+      p3: row.querySelector(".p3")?.checked || false,
+
+      b1: triBoxTable.rows[i].querySelector(".b1")?.checked || false,
+      b2: triBoxTable.rows[i].querySelector(".b2")?.checked || false,
+      b3: triBoxTable.rows[i].querySelector(".b3")?.checked || false,
+
+      w1: wideTable.rows[i].querySelector(".w1")?.checked || false,
+      w2: wideTable.rows[i].querySelector(".w2")?.checked || false,
+
+      u1: umatanTable.rows[i].querySelector(".u1")?.checked || false,
+      u2: umatanTable.rows[i].querySelector(".u2")?.checked || false,
+
+      r1: umarenTable.rows[i].querySelector(".r1")?.checked || false,
+      r2: umarenTable.rows[i].querySelector(".r2")?.checked || false,
+
+      t1: tanshoTable.rows[i].querySelector(".t1")?.checked || false,
+      f1: fukushoTable.rows[i].querySelector(".f1")?.checked || false
+    });
+  }
+
+  const resultDisabled = {
+    trifecta: [...triBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
+    trio:     [...triBoxBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
+    wide:     [...wideBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
+    umatan:   [...umatanBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
+    umaren:   [...umarenBody.rows].map(r => r.querySelector(".disable-row")?.checked || false)
+  };
+
+  return { horses, resultDisabled };
+}
+
+// 保存済みレース一覧を更新
+function refreshRaceList(){
+  const sel = document.getElementById("raceSelect");
+  sel.innerHTML = `<option value="">保存済みレース</option>`;
+
+  Object.keys(localStorage)
+    .filter(k => k.startsWith("betState_"))
+    .forEach(k=>{
+      const race = k.replace("betState_","");
+      const opt = document.createElement("option");
+      opt.value = race;
+      opt.textContent = race;
+      sel.appendChild(opt);
+    });
+}
+
+// 状態保存
+function saveStateByRace(){
+  const race = document.getElementById("saveRaceName").value.trim();
+  if(!race){
+    alert("レース名を入力してください");
+    return;
+  }
+
+  const data = {
+    savedAt: Date.now(),
+    state: buildStateObject()
+  };
+
+  localStorage.setItem(
+    `betState_${race}`,
+    JSON.stringify(data)
+  );
+
+  refreshRaceList();
+  alert("保存しました");
+}
+
+// 状態読み込み
+function loadStateByRace(){
+  const race = document.getElementById("raceSelect").value;
+  if(!race){
+    alert("レースを選択してください");
+    return;
+  }
+
+  const json = localStorage.getItem(`betState_${race}`);
+  if(!json){
+    alert("データが見つかりません");
+    refreshRaceList();
+    return;
+  }
+
+  const obj = JSON.parse(json);
+  restoreFromStateObject(obj.state);
+}
+
+// 状態を画面に反映する関数
+function restoreFromStateObject(state){
+  state.horses.forEach((h,i)=>{
+    const r = triTable.rows[i+1];
+
+    r.cells[1].children[0].value = h.name;
+    r.cells[2].children[0].value = h.odds;
+
+    r.querySelector(".p1").checked = h.p1;
+    r.querySelector(".p2").checked = h.p2;
+    r.querySelector(".p3").checked = h.p3;
+
+    triBoxTable.rows[i+1].querySelector(".b1").checked = h.b1;
+    triBoxTable.rows[i+1].querySelector(".b2").checked = h.b2;
+    triBoxTable.rows[i+1].querySelector(".b3").checked = h.b3;
+
+    wideTable.rows[i+1].querySelector(".w1").checked = h.w1;
+    wideTable.rows[i+1].querySelector(".w2").checked = h.w2;
+
+    umatanTable.rows[i+1].querySelector(".u1").checked = h.u1;
+    umatanTable.rows[i+1].querySelector(".u2").checked = h.u2;
+
+    umarenTable.rows[i+1].querySelector(".r1").checked = h.r1;
+    umarenTable.rows[i+1].querySelector(".r2").checked = h.r2;
+
+    tanshoTable.rows[i+1].querySelector(".t1").checked = h.t1;
+    fukushoTable.rows[i+1].querySelector(".f1").checked = h.f1;
+  });
+
+  // 再計算
+  updateTrifecta();
+  updateTriBox();
+  updateWide();
+  updateUmatan();
+  updateUmaren();
+  updateTansho();
+  updateFukusho();
+
+  // 除外状態
+  Object.entries(state.resultDisabled).forEach(([key,arr])=>{
+    const body = {
+      trifecta: triBody,
+      trio: triBoxBody,
+      wide: wideBody,
+      umatan: umatanBody,
+      umaren: umarenBody
+    }[key];
+
+    arr.forEach((v,i)=>{
+      const chk = body.rows[i]?.querySelector(".disable-row");
+      if(chk) chk.checked = v;
+    });
+  });
+}
+
+// 初期化処理（ページ起動時）
+window.addEventListener("load", ()=>{
+  refreshRaceList();
+});
+
+document.getElementById("clearStorageBtn").addEventListener("click", clearAllSavedData);
+
+// データ全削除処理
+function clearAllSavedData(){
+  if(!confirm("保存している全レースデータを削除します。\nこの操作は元に戻せません。よろしいですか？")){
+    return;
+  }
+
+  const keysToDelete = [];
+
+  for(let i=0; i<localStorage.length; i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith("betState_")){
+      keysToDelete.push(key);
+    }
+  }
+
+  keysToDelete.forEach(k => localStorage.removeItem(k));
+
+  // 保存一覧管理キーも削除（使っている場合）
+  localStorage.removeItem("betState_list");
+
+  alert("保存データをすべて削除しました。");
+
+  // 保存一覧UIを更新している場合
+  if(typeof updateSavedRaceList === "function"){
+    updateSavedRaceList();
+  }
+}
+
 // ===== CSV読み込み機能 =====
 function loadCSV(){
   const raceName = document.getElementById("raceName").value.trim();
