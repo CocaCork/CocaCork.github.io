@@ -10,19 +10,20 @@
 <!-- LocalStorage 保存／読込 -->
 <div class="race-storage">
   <div class="race-storage-left">
-    <div class="race-pair">
-      <input type="text" id="saveRaceName" placeholder="レース名を入力">
-      <button onclick="saveStateByRace()">保存</button>
-    </div>
-    
-    <div class="race-pair">
-      <select id="raceSelect">
-        <option value="">保存済みレース</option>
-      </select>
-      <button onclick="loadStateByRace()">読み込み</button>
+  <div class="race-pair">
+    <input type="text" id="saveRaceName" placeholder="レース名を入力">
+    <button onclick="saveStateByRace()">保存</button>
+  </div>
 
-      <span id="savedAtInfo" class="saved-at-info"></span>
-    </div>
+  <div class="race-pair race-load-pair">
+    <select id="raceSelect">
+      <option value="">保存済みレース</option>
+    </select>
+    <button onclick="loadStateByRace()">読み込み</button>
+
+    <!-- ★ ここに配置 -->
+    <span id="savedAtInfo" class="saved-at-info"></span>
+  </div>
   </div>
 
   <div class="race-storage-right">
