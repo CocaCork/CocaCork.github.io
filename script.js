@@ -1,11 +1,3 @@
-const triResults = [];
-const triBoxResults = [];
-const wideResults = [];
-const umatanResults = [];
-const umarenResults = [];
-const tanshoResults = [];
-const fukushoResults = [];
-
 const triTable = document.getElementById("triTable");
 const triBody  = document.getElementById("triResult");
 const triCount = document.getElementById("triCount");
@@ -264,7 +256,6 @@ function updateUmarenCount(){
 
 function updateTrifecta(){
   triBody.innerHTML="";
-  triResults.length = 0;
   const rows=[...triTable.rows].slice(1);
   const A=[],B=[],C=[];
   rows.forEach(r=>{
@@ -278,11 +269,6 @@ function updateTrifecta(){
   A.forEach(a=>B.forEach(b=>C.forEach(c=>{
     if(a.no!==b.no&&a.no!==c.no&&b.no!==c.no){
       cnt++;
-      triResults.push({
-        no1: a.no, no2: b.no, no3: c.no,
-        name1: a.name, name2: b.name, name3: c.name,
-        odds1: formatOdds(a.odds), odds2: formatOdds(b.odds), odds3: formatOdds(c.odds)
-      });
       
       const tr = triBody.insertRow();
       tr.innerHTML = `      
@@ -316,7 +302,6 @@ function updateTrifecta(){
 
 function updateTriBox(){
   triBoxBody.innerHTML = "";
-  triBoxResults.length = 0;
 
   const rows = [...triBoxTable.rows].slice(1);
   const A = [], B = [], C = [];
@@ -344,14 +329,6 @@ function updateTriBox(){
     used.add(key);
 
     cnt++;
-
-    triBoxResults.push({
-      no1:a.no, no2:b.no, no3:c.no,
-      name1:a.name, name2:b.name, name3:c.name,
-      odds1:formatOdds(a.odds),
-      odds2:formatOdds(b.odds),
-      odds3:formatOdds(c.odds)
-    });
     
     const tr = triBoxBody.insertRow();
     tr.innerHTML = `    
@@ -385,7 +362,7 @@ function updateTriBox(){
 
 function updateWide(){
   wideBody.innerHTML="";
-  wideResults.length = 0;
+  
   const rows=[...wideTable.rows].slice(1);
   const A=[],B=[];
   rows.forEach(r=>{
@@ -399,11 +376,6 @@ function updateWide(){
     if(a.no!==b.no){
       const [h1,h2]=Number(a.no)<Number(b.no)?[a,b]:[b,a];
       cnt++;
-      wideResults.push({
-        no1: h1.no, no2: h2.no,
-        name1: h1.name, name2: h2.name,
-        odds1: formatOdds(h1.odds), odds2: formatOdds(h2.odds)
-      });
 
       const tr = wideBody.insertRow();
       tr.innerHTML = `      
@@ -431,7 +403,6 @@ function updateWide(){
 
 function updateUmatan(){
   umatanBody.innerHTML = "";
-  umatanResults.length = 0;
 
   const rows = [...umatanTable.rows].slice(1);
   const A = [], B = [];
@@ -451,12 +422,6 @@ function updateUmatan(){
     if(a.no === b.no) return;
 
     cnt++;
-    umatanResults.push({
-      no1:a.no, no2:b.no,
-      name1:a.name, name2:b.name,
-      odds1:formatOdds(a.odds),
-      odds2:formatOdds(b.odds)
-    });
 
     const tr = umatanBody.insertRow();
     tr.innerHTML = `    
@@ -484,7 +449,6 @@ function updateUmatan(){
 
 function updateUmaren(){
   umarenBody.innerHTML = "";
-  umarenResults.length = 0;
 
   const rows = [...umarenTable.rows].slice(1);
   const A = [], B = [];
@@ -512,12 +476,6 @@ function updateUmaren(){
     used.add(key);
 
     cnt++;
-    umarenResults.push({
-      no1:h1.no, no2:h2.no,
-      name1:h1.name, name2:h2.name,
-      odds1:formatOdds(h1.odds),
-      odds2:formatOdds(h2.odds)
-    });
 
     const tr = umarenBody.insertRow();
     tr.innerHTML = `    
@@ -545,7 +503,6 @@ function updateUmaren(){
 
 function updateTansho(){
   tanshoBody.innerHTML = "";
-  tanshoResults.length = 0;
 
   const rows = [...tanshoTable.rows].slice(1);
   let cnt = 0;
@@ -560,11 +517,6 @@ function updateTansho(){
     };
 
     cnt++;
-    tanshoResults.push({
-      no: h.no,
-      name: h.name,
-      odds: formatOdds(h.odds)
-    });
 
     tanshoBody.insertRow().innerHTML = `
     <tr>
@@ -579,7 +531,6 @@ function updateTansho(){
 
 function updateFukusho(){
   fukushoBody.innerHTML = "";
-  fukushoResults.length = 0;
 
   const rows = [...fukushoTable.rows].slice(1);
   let cnt = 0;
@@ -594,11 +545,6 @@ function updateFukusho(){
     };
 
     cnt++;
-    fukushoResults.push({
-      no: h.no,
-      name: h.name,
-      odds: formatOdds(h.odds)
-    });
 
     fukushoBody.insertRow().innerHTML = `
     <tr>
@@ -788,14 +734,6 @@ function clearAllSavedData(){
   }
 
   keysToDelete.forEach(k => localStorage.removeItem(k));
-
-  // 保存一覧管理キーも削除（使っている場合）
-  localStorage.removeItem("betState_list");
-
+  
   alert("保存データをすべて削除しました。");
-
-  // 保存一覧UIを更新している場合
-  if(typeof updateSavedRaceList === "function"){
-    updateSavedRaceList();
-  }
 }
