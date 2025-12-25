@@ -590,6 +590,17 @@ function buildStateObject(){
   };
 }
 
+function formatDateTime(ts){
+  const d = new Date(ts);
+  return d.toLocaleString("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
 // 保存済みレース一覧を更新
 function refreshRaceList(){
   const sel = document.getElementById("raceSelect");
@@ -599,11 +610,16 @@ function refreshRaceList(){
     .filter(k => k.startsWith("betState_"))
     .forEach(k=>{
       const race = k.replace("betState_","");
+      const data = JSON.parse(localStorage.getItem(k));
+
       const opt = document.createElement("option");
       opt.value = race;
       opt.textContent = race;
+      opt.dataset.savedAt = data.savedAt;   // ★保持
       sel.appendChild(opt);
     });
+
+  document.getElementById("savedAtInfo").textContent = "";
 }
 
 // 状態保存
@@ -645,6 +661,9 @@ function loadStateByRace(){
 
   const obj = JSON.parse(json);
   restoreFromStateObject(obj.state);
+
+  document.getElementById("savedAtInfo").textContent =
+    `最終保存：${formatDateTime(obj.savedAt)}`;
 }
 
 // 状態を画面に反映する関数
@@ -710,12 +729,22 @@ window.addEventListener("load", ()=>{
   refreshRaceList();
 });
 
-// 保存済みレース選択 → レース名入力欄に反映
+// 保存済みレース選択 → レース名＆保存日時を表示
 document.getElementById("raceSelect").addEventListener("change", e => {
-  const race = e.target.value;
-  if (race) {
-    document.getElementById("saveRaceName").value = race;
+  const sel = e.target;
+  const opt = sel.selectedOptions[0];
+
+  if (!opt || !opt.dataset.savedAt) {
+    document.getElementById("savedAtInfo").textContent = "";
+    return;
   }
+
+  // レース名を入力欄に反映
+  document.getElementById("saveRaceName").value = opt.value;
+
+  // 保存日時を表示
+  document.getElementById("savedAtInfo").textContent =
+    `最終保存：${formatDateTime(opt.dataset.savedAt)}`;
 });
 
 document.getElementById("clearStorageBtn").addEventListener("click", clearAllSavedData);
