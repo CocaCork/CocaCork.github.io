@@ -122,9 +122,9 @@ button {
   resize: vertical;
 }
 
-.csv-load { margin-bottom: 12px; }
+.race-storage { margin-bottom: 12px; }
 
-.csv-load input[type="text"] {
+.race-storage input[type="text"] {
   width: 150px;
   margin-right: 6px;
 }
