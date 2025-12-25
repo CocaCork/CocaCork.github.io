@@ -127,25 +127,6 @@ function oddsClass(v){
   return "odds-very-high";
 }
 
-function downloadCSV(data,name, body){
-  const rows = [...body.rows];
-  const enabled = rows
-    .filter(r => !r.querySelector(".disable-row")?.checked)
-    .map((r,i)=>data[i]);
-
-  if(!enabled.length) return;
-
-  const csv=[
-    Object.keys(enabled[0]).join(","),
-    ...enabled.map(o=>Object.values(o).join(","))
-  ].join("\n");
-
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
-  a.download=name+".csv";
-  a.click();
-}
-
 for(let i=1;i<=18;i++){
   triTable.insertRow().innerHTML=`
   <th>${i}</th>
@@ -817,37 +798,4 @@ function clearAllSavedData(){
   if(typeof updateSavedRaceList === "function"){
     updateSavedRaceList();
   }
-}
-
-// ===== CSV読み込み機能 =====
-function loadCSV(){
-  const raceName = document.getElementById("raceName").value.trim();
-  if(!raceName) return;
-
-  fetch(`data/${raceName}.csv`)
-    .then(res => {
-      if(!res.ok) throw new Error("CSVファイルが見つかりません");
-      return res.text();
-    })
-    .then(text=>{
-      const lines = text.split("\n").map(l=>l.trim()).filter(l=>l);
-      lines.forEach(line=>{
-        const [no,name,odds] = line.split(",");
-        const row = triTable.rows[Number(no)];
-        if(row){
-          row.cells[1].children[0].value = name;
-          row.cells[2].children[0].value = odds;
-        }
-      });
-      syncHorseInputs(triTable);
-      updateTrifecta();
-      updateTriBox();
-      updateWide();
-      updateUmatan();
-      updateUmaren();
-      updateTansho();
-      updateFukusho();
-      updateInputOddsColor();
-    })
-    .catch(err=>{ alert(err.message); });
 }
