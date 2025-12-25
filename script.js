@@ -681,6 +681,8 @@ function restoreFromStateObject(state){
   updateTansho();
   updateFukusho();
 
+  updateInputOddsColor();
+
   // 除外状態
   Object.entries(state.resultDisabled).forEach(([key,arr])=>{
     const body = {
