@@ -591,7 +591,8 @@ function buildStateObject(){
 }
 
 function formatDateTime(ts){
-  const d = new Date(ts);
+  const d = new Date(Number(ts));
+  if (isNaN(d.getTime())) return "";
   return d.toLocaleString("ja-JP", {
     year: "numeric",
     month: "2-digit",
@@ -615,7 +616,7 @@ function refreshRaceList(){
       const opt = document.createElement("option");
       opt.value = race;
       opt.textContent = race;
-      opt.dataset.savedAt = data.savedAt;   // ★保持
+      opt.dataset.savedAt = String(data.savedAt);
       sel.appendChild(opt);
     });
 
