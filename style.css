@@ -179,6 +179,5 @@ button {
 
 .single-folds details {
   flex: 1; /* 横幅を均等に */
-  min-width: 300px; /* 最低幅を設定して崩れないように */
 }
 
