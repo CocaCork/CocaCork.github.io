@@ -22,9 +22,17 @@ const tanshoTable = document.getElementById("tanshoTable");
 const tanshoBody  = document.getElementById("tanshoResult");
 const tanshoCount = document.getElementById("tanshoCount");
 
+const tanshoTable2 = document.getElementById("tanshoTable2");
+const tanshoBody2  = document.getElementById("tanshoResult2");
+const tanshoCount2 = document.getElementById("tanshoCount2");
+
 const fukushoTable = document.getElementById("fukushoTable");
 const fukushoBody  = document.getElementById("fukushoResult");
 const fukushoCount = document.getElementById("fukushoCount");
+
+const fukushoTable2 = document.getElementById("fukushoTable2");
+const fukushoBody2  = document.getElementById("fukushoResult2");
+const fukushoCount2 = document.getElementById("fukushoCount2");
 
 // テーブルと更新関数の対応表
 const tableUpdateMap = new Map([
@@ -34,7 +42,9 @@ const tableUpdateMap = new Map([
   [umatanTable,  updateUmatan],
   [umarenTable,  updateUmaren],
   [tanshoTable,  updateTansho],
+  [tanshoTable2,  updateTansho],
   [fukushoTable, updateFukusho],
+  [fukushoTable2, updateFukusho],
 ]);
 
 const syncTables = [
@@ -69,7 +79,17 @@ const syncTables = [
   oddsSelector: "td:nth-child(3) input"
   },
   {
+  table: tanshoTable2,
+  nameSelector: "td:nth-child(2) input",
+  oddsSelector: "td:nth-child(3) input"
+  },
+  {
   table: fukushoTable,
+  nameSelector: "td:nth-child(2) input",
+  oddsSelector: "td:nth-child(3) input"
+  },
+  {
+  table: fukushoTable2,
   nameSelector: "td:nth-child(2) input",
   oddsSelector: "td:nth-child(3) input"
   }
@@ -163,7 +183,19 @@ for(let i=1;i<=18;i++){
   <td><input type="number" step="0.1"></td>
   <td><input type="checkbox" class="t1"></td>`;
 
+  tanshoTable2.insertRow().innerHTML = `
+  <th>${i}</th>
+  <td><input type="text"></td>
+  <td><input type="number" step="0.1"></td>
+  <td><input type="checkbox" class="tt1"></td>`;
+
   fukushoTable.insertRow().innerHTML = `
+  <th>${i}</th>
+  <td><input type="text"></td>
+  <td><input type="number" step="0.1"></td>
+  <td><input type="checkbox" class="f1"></td>`;
+
+  fukushoTable2.insertRow().innerHTML = `
   <th>${i}</th>
   <td><input type="text"></td>
   <td><input type="number" step="0.1"></td>
@@ -199,7 +231,15 @@ function syncHorseInputs(sourceTable){
   });
 }
 
-[ triTable, triBoxTable, wideTable, umatanTable, umarenTable, tanshoTable, fukushoTable].forEach(tbl => {
+[
+  triTable,
+  triBoxTable,
+  wideTable,
+  umatanTable,
+  umarenTable,
+  tanshoTable, tanshoTable2,
+  fukushoTable, fukushoTable2
+].forEach(tbl => {
   // 馬名・オッズ入力 → 全券種更新
   tbl.addEventListener("input", e => {
     if (e.target.type === "text" || e.target.type === "number") {
@@ -209,8 +249,10 @@ function syncHorseInputs(sourceTable){
       updateWide();
       updateUmatan();
       updateUmaren();
-      updateTansho();
-      updateFukusho();
+      updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
+      updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
+      updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
+      updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1");
       updateInputOddsColor();
     }
   });
@@ -488,14 +530,14 @@ function updateUmaren(){
   updateUmarenCount();
 }
 
-function updateTansho(){
-  tanshoBody.innerHTML = "";
+function updateTansho(table, body, count, cls){
+  body.innerHTML = "";
 
-  const rows = [...tanshoTable.rows].slice(1);
+  const rows = [...table.rows].slice(1);
   let cnt = 0;
 
   rows.forEach(r=>{
-    if(!r.querySelector(".t1").checked) return;
+    if(!r.querySelector(cls).checked) return;
 
     const h = {
       no: r.cells[0].textContent,
@@ -505,7 +547,7 @@ function updateTansho(){
 
     cnt++;
 
-    tanshoBody.insertRow().innerHTML = `
+    body.insertRow().innerHTML = `
     <tr>
     <td>${h.no}</td>
     <td>${h.name}</td>
@@ -513,17 +555,17 @@ function updateTansho(){
     </tr>`;
   });
 
-  tanshoCount.textContent = `${cnt} 点`;
+  count.textContent = `${cnt} 点`;
 }
 
-function updateFukusho(){
-  fukushoBody.innerHTML = "";
+function updateFukusho(table, body, count, cls){
+  body.innerHTML = "";
 
-  const rows = [...fukushoTable.rows].slice(1);
+  const rows = [...table.rows].slice(1);
   let cnt = 0;
 
   rows.forEach(r=>{
-    if(!r.querySelector(".f1").checked) return;
+    if(!r.querySelector(cls).checked) return;
 
     const h = {
       no: r.cells[0].textContent,
@@ -533,7 +575,7 @@ function updateFukusho(){
 
     cnt++;
 
-    fukushoBody.insertRow().innerHTML = `
+    body.insertRow().innerHTML = `
     <tr>
     <td>${h.no}</td>
     <td>${h.name}</td>
@@ -541,7 +583,7 @@ function updateFukusho(){
     </tr>`;
   });
 
-  fukushoCount.textContent = `${cnt} 点`;
+  count.textContent = `${cnt} 点`;
 }
 
 function buildStateObject(){
@@ -571,7 +613,10 @@ function buildStateObject(){
       r2: umarenTable.rows[i].querySelector(".r2")?.checked || false,
 
       t1: tanshoTable.rows[i].querySelector(".t1")?.checked || false,
-      f1: fukushoTable.rows[i].querySelector(".f1")?.checked || false
+      tt1: tanshoTable2.rows[i].querySelector(".tt1")?.checked || false,
+      
+      f1: fukushoTable.rows[i].querySelector(".f1")?.checked || false,
+      ff1: fukushoTable2.rows[i].querySelector(".ff1")?.checked || false
     });
   }
 
@@ -586,7 +631,7 @@ function buildStateObject(){
   return {
     horses,
     resultDisabled,
-    memo: document.getElementById("raceMemo").value   // ← ★追加
+    memo: document.getElementById("raceMemo").value
   };
 }
 
@@ -702,7 +747,10 @@ function restoreFromStateObject(state){
     umarenTable.rows[i+1].querySelector(".r2").checked = h.r2;
 
     tanshoTable.rows[i+1].querySelector(".t1").checked = h.t1;
+    tanshoTable2.rows[i+1].querySelector(".tt1").checked = h.tt1;
+    
     fukushoTable.rows[i+1].querySelector(".f1").checked = h.f1;
+    fukushoTable2.rows[i+1].querySelector(".ff1").checked = h.ff1;
   });
 
   syncHorseInputs(triTable);
@@ -713,8 +761,10 @@ function restoreFromStateObject(state){
   updateWide();
   updateUmatan();
   updateUmaren();
-  updateTansho();
-  updateFukusho();
+  updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
+  updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
+  updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
+  updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1");
   updateInputOddsColor();
 
   // 除外状態
