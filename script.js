@@ -41,10 +41,10 @@ const tableUpdateMap = new Map([
   [wideTable,    updateWide],
   [umatanTable,  updateUmatan],
   [umarenTable,  updateUmaren],
-  [tanshoTable,  updateTansho],
-  [tanshoTable2,  updateTansho],
-  [fukushoTable, updateFukusho],
-  [fukushoTable2, updateFukusho],
+  [tanshoTable, () => updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1")],
+  [tanshoTable2, () => updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1")],
+  [fukushoTable, () => updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1")],
+  [fukushoTable2, () => updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1")],
 ]);
 
 const syncTables = [
@@ -199,7 +199,7 @@ for(let i=1;i<=18;i++){
   <th>${i}</th>
   <td><input type="text"></td>
   <td><input type="number" step="0.1"></td>
-  <td><input type="checkbox" class="f1"></td>`;
+  <td><input type="checkbox" class="ff1"></td>`;
 }
 
 function syncHorseInputs(sourceTable){
