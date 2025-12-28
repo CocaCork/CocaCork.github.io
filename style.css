@@ -184,7 +184,7 @@ button {
 
 .single-folds {
   display: flex;
-  gap: 20px; /* テーブル間の余白 */
+  gap: 50px; /* テーブル間の余白 */
   align-items: flex-start; /* 高さを揃える */
 }
 
