@@ -19,10 +19,6 @@ th, td {
 
 th { background: #f0f0f0; }
 
-.details1 {
-  background: #FFCCFF;
-}
-
 summary {
   list-style: none;
   cursor: pointer;
