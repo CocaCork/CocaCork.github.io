@@ -3,10 +3,6 @@ body {
   padding: 20px;
 }
 
-h2 {
-  margin-top: 40px;
-}
-
 .container {
   display: flex;
   gap: 20px;
@@ -31,6 +27,7 @@ th {
 details {
   border: 1px solid #ccc;
   border-radius: 6px;
+  padding: 8px;
 }
 
 summary {
