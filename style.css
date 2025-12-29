@@ -195,11 +195,23 @@ button {
   margin-right: 10px;
 }
 
+#deleteRaceBtn:hover {
+  background: #ffd6d6;
+  border-color: #d00000;
+  color: #8b0000;
+}
+
 #clearStorageBtn {
   background: #fbeaea;
   border: 1px solid #b00000;
   color: #b00000;
   font-weight: bold;
+}
+
+#clearStorageBtn:hover {
+  background: #ffd6d6;
+  border-color: #d00000;
+  color: #8b0000;
 }
 
 .single-folds {
