@@ -36,6 +36,7 @@ details {
 summary {
   list-style: none;
   cursor: pointer;
+  padding: 8px;
 }
 
 summary h2 {
