@@ -151,10 +151,10 @@ function applyLockState(){
 
   if(isLocked){
     btn.textContent = "🔒 ロック解除";
-    label.textContent = "現在：ロック中（編集不可）";
+    label.textContent = "現在：ロック中";
     label.style.color = "#b00000";
   }else{
-    btn.textContent = "🔓 編集可能";
+    btn.textContent = "🔓 ロック";
     label.textContent = "現在：編集可能";
     label.style.color = "#006400";
   }
