@@ -134,7 +134,9 @@ function getLockTargets(){
     ...document.querySelectorAll(
       'input[type="text"], input[type="number"], input[type="checkbox"]'
     )
-  ];
+  ].filter(el =>
+    el.id !== "saveRaceName"
+  );
 }
 
 let isLocked = false;
