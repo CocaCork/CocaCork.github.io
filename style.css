@@ -41,12 +41,6 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-/* 除外チェックを赤系に */
-.disable-row {
-  transform: scale(1.2);
-  accent-color: #b00000;
-}
-
 input[type="text"] { width: 120px; }
 input[type="number"] { width: 60px; }
 
@@ -178,12 +172,6 @@ button {
   border: 1px solid #b00000;
   color: #b00000;
   font-weight: bold;
-}
-
-/* 結果行の除外表示 */
-.result-disabled {
-  background-color: #f8eaea;
-  color: #999;
 }
 
 .single-folds {
