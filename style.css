@@ -183,6 +183,10 @@ button {
   gap: 6px;
 }
 
+.input-lock {
+  margin-left: 100px;
+}
+
 .race-storage-right {
   margin-left: auto;
 }
