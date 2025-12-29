@@ -183,6 +183,10 @@ button {
   gap: 6px;
 }
 
+#lockToggleBtn {
+  width: 120px;
+}
+
 #lockStateLabel {
   margin-left:8px;
   margin-right:100px;
