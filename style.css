@@ -6,9 +6,9 @@ body {
 
 .container {
   display: flex;
+  margin: 8px;
   gap: 20px;
   align-items: flex-start;
-  margin: 8px;
 }
 
 table {
@@ -40,10 +40,6 @@ summary {
   padding-left: 8px;
   padding-top: 5px;
   padding-bottom: 5px;
-}
-
-details:open > summary {
-  padding-bottom: 8px;
 }
 
 summary::-webkit-details-marker {
