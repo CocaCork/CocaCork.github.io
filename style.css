@@ -59,6 +59,7 @@ input[type="text"] { width: 120px; }
 
 .odds-input {
   width: 60px;
+  text-align: right;
 }
 
 .result-area {
@@ -99,7 +100,7 @@ input[type="text"] { width: 120px; }
 .bet-input {
   width: 40px;
   text-align: right;
-  margin-left: 5px;
+  margin-left: 8px;
 }
 
 button {
