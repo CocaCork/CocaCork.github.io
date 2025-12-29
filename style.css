@@ -47,6 +47,7 @@ summary {
 }
 
 details:open > summary {
+  padding-left: 0;
   padding-bottom: 8px;
 }
 
