@@ -33,6 +33,10 @@ details {
   background: #ffffff;
 }
 
+details:open {
+  padding: 8px;
+}
+
 summary {
   list-style: none;
   cursor: pointer;
