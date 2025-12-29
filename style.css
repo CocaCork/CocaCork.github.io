@@ -12,6 +12,7 @@ body {
 
 table {
   border-collapse: collapse;
+  background: #ffffff;
 }
 
 th, td {
@@ -30,6 +31,7 @@ details {
   border-radius: 6px;
   padding: 8px;
   margin-bottom: 10px;
+  background: #ffffff;
 }
 
 summary {
