@@ -1,45 +1,49 @@
 const triTable = document.getElementById("triTable");
-const triBody  = document.getElementById("triResult");
+const triBody = document.getElementById("triResult");
 const triCount = document.getElementById("triCount");
 
 const triBoxTable = document.getElementById("triBoxTable");
-const triBoxBody  = document.getElementById("triBoxResult");
+const triBoxBody = document.getElementById("triBoxResult");
 const triBoxCount = document.getElementById("triBoxCount");
 
 const wideTable = document.getElementById("wideTable");
-const wideBody  = document.getElementById("wideResult");
+const wideBody = document.getElementById("wideResult");
 const wideCount = document.getElementById("wideCount");
 
+const wideTable2 = document.getElementById("wideTable2");
+const wideBody2 = document.getElementById("wideResult2");
+const wideCount2 = document.getElementById("wideCount2");
+
 const umatanTable = document.getElementById("umatanTable");
-const umatanBody  = document.getElementById("umatanResult");
+const umatanBody = document.getElementById("umatanResult");
 const umatanCount = document.getElementById("umatanCount");
 
 const umatanTable2 = document.getElementById("umatanTable2");
-const umatanBody2  = document.getElementById("umatanResult2");
+const umatanBody2 = document.getElementById("umatanResult2");
 const umatanCount2 = document.getElementById("umatanCount2");
 
 const umarenTable = document.getElementById("umarenTable");
-const umarenBody  = document.getElementById("umarenResult");
+const umarenBody = document.getElementById("umarenResult");
 const umarenCount = document.getElementById("umarenCount");
 
 const umarenTable2 = document.getElementById("umarenTable2");
-const umarenBody2  = document.getElementById("umarenResult2");
+const umarenBody2 = document.getElementById("umarenResult2");
 const umarenCount2 = document.getElementById("umarenCount2");
 
 const tanshoTable = document.getElementById("tanshoTable");
-const tanshoBody  = document.getElementById("tanshoResult");
+const tanshoBody = document.getElementById("tanshoResult");
 const tanshoCount = document.getElementById("tanshoCount");
 
 const tanshoTable2 = document.getElementById("tanshoTable2");
-const tanshoBody2  = document.getElementById("tanshoResult2");
+const tanshoBody2 = document.getElementById("tanshoResult2");
 const tanshoCount2 = document.getElementById("tanshoCount2");
 
 const fukushoTable = document.getElementById("fukushoTable");
-const fukushoBody  = document.getElementById("fukushoResult");
+const fukushoBody = document.getElementById("fukushoResult");
 const fukushoCount = document.getElementById("fukushoCount");
 
 const fukushoTable2 = document.getElementById("fukushoTable2");
-const fukushoBody2  = document.getElementById("fukushoResult2");
+const fukushoBody2 = document.getElementById("fukushoResult2");
 const fukushoCount2 = document.getElementById("fukushoCount2");
 
 const syncTables = [
@@ -55,8 +59,13 @@ const syncTables = [
   },
   {
     table: wideTable,
-    nameSelector: ".wName",
-    oddsSelector: ".wOdds"
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
+  },
+  {
+    table: wideTable2,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
   table: umatanTable,
@@ -156,10 +165,17 @@ for(let i=1;i<=18;i++){
     
   wideTable.insertRow().innerHTML=`
   <th>${i}</th>
-  <td><input class="wName" style="width:120px;"></td>
-  <td><input class="wOdds" style="width:60px;"></td>
+  <td><input type="text" style="width:120px;"></td>
+  <td><input type="number" step="0.1" style="width:60px;"></td>
   <td><input type="checkbox" class="w1"></td>
   <td><input type="checkbox" class="w2"></td>`;
+
+  wideTable2.insertRow().innerHTML=`
+  <th>${i}</th>
+  <td><input type="text" style="width:120px;"></td>
+  <td><input type="number" step="0.1" style="width:60px;"></td>
+  <td><input type="checkbox" class="ww1"></td>
+  <td><input type="checkbox" class="ww2"></td>`;
 
   umatanTable.insertRow().innerHTML=`
   <th>${i}</th>
@@ -246,7 +262,7 @@ function syncHorseInputs(sourceTable){
 [
   triTable,
   triBoxTable,
-  wideTable,
+  wideTable, wideTable2,
   umatanTable, umatanTable2,
   umarenTable, umarenTable2,
   tanshoTable, tanshoTable2,
@@ -258,7 +274,8 @@ function syncHorseInputs(sourceTable){
       syncHorseInputs(tbl);
       updateTrifecta();
       updateTriBox();
-      updateWide();
+      updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
+      updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
       updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
       updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
       updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
@@ -276,7 +293,8 @@ function syncHorseInputs(sourceTable){
     if (e.target.type === "checkbox") {
       updateTrifecta();
       updateTriBox();
-      updateWide();
+      updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
+      updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
       updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
       updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
       updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
@@ -381,22 +399,26 @@ function updateTriBox(){
   triBoxCount.textContent = `${triBoxBody.rows.length} 点`;
 }
 
-function updateWide(){
-  wideBody.innerHTML="";
+function updateWide(table, body, count, cls1, cls2){
+  body.innerHTML="";
   
-  const rows=[...wideTable.rows].slice(1);
+  const rows=[...table.rows].slice(1);
   const A=[],B=[];
   rows.forEach(r=>{
-    const h={no:r.cells[0].textContent,name:safeText(r.querySelector(".wName").value),odds:r.querySelector(".wOdds").value};
-    if(r.querySelector(".w1").checked)A.push(h);
-    if(r.querySelector(".w2").checked)B.push(h);
+    const h = {
+      no: r.cells[0].textContent,
+      name: safeText(r.querySelector("td:nth-child(2) input").value),
+      odds: r.querySelector("td:nth-child(3) input").value
+    };
+    if(r.querySelector(cls1).checked)A.push(h);
+    if(r.querySelector(cls2).checked)B.push(h);
   });
 
   A.forEach(a=>B.forEach(b=>{
     if(a.no!==b.no){
       const [h1,h2]=Number(a.no)<Number(b.no)?[a,b]:[b,a];
 
-      const tr = wideBody.insertRow();
+      const tr = body.insertRow();
       tr.innerHTML = `      
       <td class="no-border-right">${h1.no}</td>
       <td class="arrow-cell">→</td>
@@ -413,7 +435,7 @@ function updateWide(){
     }
   }));
   
-  wideCount.textContent = `${wideBody.rows.length} 点`;
+  count.textContent = `${body.rows.length} 点`;
 }
 
 function updateUmatan(table, body, count, cls1, cls2){
@@ -576,6 +598,9 @@ function buildStateObject(){
       w1: wideTable.rows[i].querySelector(".w1")?.checked || false,
       w2: wideTable.rows[i].querySelector(".w2")?.checked || false,
 
+      ww1: wideTable2.rows[i].querySelector(".ww1")?.checked || false,
+      ww2: wideTable2.rows[i].querySelector(".ww2")?.checked || false,
+
       u1: umatanTable.rows[i].querySelector(".u1")?.checked || false,
       u2: umatanTable.rows[i].querySelector(".u2")?.checked || false,
 
@@ -707,6 +732,9 @@ function restoreFromStateObject(state){
     wideTable.rows[i+1].querySelector(".w1").checked = h.w1;
     wideTable.rows[i+1].querySelector(".w2").checked = h.w2;
 
+    wideTable2.rows[i+1].querySelector(".ww1").checked = h.ww1;
+    wideTable2.rows[i+1].querySelector(".ww2").checked = h.ww2;
+
     umatanTable.rows[i+1].querySelector(".u1").checked = h.u1;
     umatanTable.rows[i+1].querySelector(".u2").checked = h.u2;
 
@@ -731,7 +759,8 @@ function restoreFromStateObject(state){
   // 再計算
   updateTrifecta();
   updateTriBox();
-  updateWide();
+  updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
+  updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
   updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
   updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
   updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
