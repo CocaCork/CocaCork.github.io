@@ -316,8 +316,8 @@ function syncHorseInputs(sourceTable){
   tbl.addEventListener("input", e => {
     if (e.target.type === "text" || e.target.type === "number") {
       syncHorseInputs(tbl);
-      updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3");
-      updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3");
+      updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3", "tri");
+      updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3", "tri2");
       updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
       updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
       updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
@@ -825,9 +825,17 @@ function restoreFromStateObject(state){
 
   syncHorseInputs(triTable);
 
+  // 金額の復元
+  if (state.betAmounts) {
+    Object.entries(state.betAmounts).forEach(([key, value]) => {
+      const input = document.querySelector(`.bet-input[data-key="${key}"]`);
+      if (input) input.value = value;
+    });
+  }
+
   // 再計算
-  updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3");
-  updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3");
+  updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3", "tri");
+  updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3", "tri2");
   updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
   updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
   updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
@@ -843,16 +851,6 @@ function restoreFromStateObject(state){
   updateInputOddsColor();
   
   document.getElementById("raceMemo").value = state.memo || "";
-
-  // 金額の復元
-  if (state.betAmounts) {
-    Object.entries(state.betAmounts).forEach(([key, value]) => {
-      const input = document.querySelector(`.bet-input[data-key="${key}"]`);
-      if (input) input.value = value;
-    });
-  }
-
-  updatePay("tri", Number(triCount.textContent.replace(/\D/g, "")));
 }
 
 // 初期化処理（ページ起動時）
