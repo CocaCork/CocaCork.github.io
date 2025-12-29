@@ -28,6 +28,12 @@ th {
   background: #f0f0f0;
 }
 
+details {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+}
+
 summary {
   list-style: none;
   cursor: pointer;
