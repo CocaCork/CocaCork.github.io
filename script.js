@@ -151,6 +151,7 @@ function applyLockState(){
 
   if(isLocked){
     btn.textContent = "🔒 ロック解除";
+    btn.style.background = "#fbeaea";
     label.textContent = "現在：ロック中";
     label.style.color = "#b00000";
   }else{
