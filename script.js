@@ -38,20 +38,6 @@ const fukushoTable2 = document.getElementById("fukushoTable2");
 const fukushoBody2  = document.getElementById("fukushoResult2");
 const fukushoCount2 = document.getElementById("fukushoCount2");
 
-// テーブルと更新関数の対応表
-const tableUpdateMap = new Map([
-  [triTable,     updateTrifecta],
-  [triBoxTable,  updateTriBox],
-  [wideTable,    updateWide],
-  [umatanTable,  updateUmatan],
-  [umarenTable, () => updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2")],
-  [umarenTable2, () => updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2")],
-  [tanshoTable, () => updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1")],
-  [tanshoTable2, () => updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1")],
-  [fukushoTable, () => updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1")],
-  [fukushoTable2, () => updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1")],
-]);
-
 const syncTables = [
   {
     table: triTable,
@@ -271,8 +257,16 @@ function syncHorseInputs(sourceTable){
   // チェックボックス → 該当券種だけ更新
   tbl.addEventListener("change", e => {
     if (e.target.type === "checkbox") {
-      const updateFn = tableUpdateMap.get(tbl);
-      if (updateFn) updateFn();
+      updateTrifecta();
+      updateTriBox();
+      updateWide();
+      updateUmatan();
+      updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
+      updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
+      updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
+      updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
+      updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
+      updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1");
     }
   });
 });
