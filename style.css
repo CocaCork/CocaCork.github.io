@@ -69,6 +69,7 @@ input[type="number"] { width: 60px; }
 
 .result-area tbody {
   font-size: 14px;
+  font-weight: bold;
 }
 
 .header-bar {
