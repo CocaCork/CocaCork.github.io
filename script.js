@@ -882,7 +882,33 @@ document.getElementById("raceSelect").addEventListener("change", e => {
     `最終保存：${formatDateTime(opt.dataset.savedAt)}`;
 });
 
-document.getElementById("clearStorageBtn").addEventListener("click", clearAllSavedData);
+// 選択したレースの削除処理
+function deleteSelectedRace(){
+  const sel = document.getElementById("raceSelect");
+  const race = sel.value;
+
+  if (!race) {
+    alert("削除するレースを選択してください");
+    return;
+  }
+
+  if (!confirm(`「${race}」を削除します。\nこの操作は元に戻せません。よろしいですか？`)) {
+    return;
+  }
+
+  localStorage.removeItem(`betState_${race}`);
+
+  // UI更新
+  refreshRaceList();
+  sel.value = "";
+
+  document.getElementById("saveRaceName").value = "";
+  document.getElementById("savedAtInfo").textContent = "";
+
+  alert("選択したレースを削除しました");
+}
+
+document.getElementById("deleteRaceBtn").addEventListener("click", deleteSelectedRace);
 
 // 全削除処理
 function clearAllSavedData(){
@@ -903,6 +929,8 @@ function clearAllSavedData(){
   
   alert("保存データをすべて削除しました。");
 }
+
+document.getElementById("clearStorageBtn").addEventListener("click", clearAllSavedData);
 
 document.addEventListener("input", e => {
   if (!e.target.classList.contains("bet-input")) return;
