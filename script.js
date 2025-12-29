@@ -157,7 +157,7 @@ function applyLockState(){
     label.style.color = "#b00000";
   }else{
     btn.textContent = "🔓 ロック";
-    btn.style.background = "#fbeaea";
+    btn.style.background = "#e6f4e6";
     btn.style.color = "#006400";
     label.textContent = "現在：編集可能";
     label.style.color = "#006400";
