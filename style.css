@@ -27,7 +27,8 @@ th {
 details {
   border: 1px solid #ccc;
   border-radius: 6px;
-  margin-bottom: 8px;
+  padding: 8px;
+  margin-bottom: 10px;
 }
 
 summary {
