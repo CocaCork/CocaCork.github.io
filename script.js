@@ -14,6 +14,10 @@ const umatanTable = document.getElementById("umatanTable");
 const umatanBody  = document.getElementById("umatanResult");
 const umatanCount = document.getElementById("umatanCount");
 
+const umatanTable2 = document.getElementById("umatanTable2");
+const umatanBody2  = document.getElementById("umatanResult2");
+const umatanCount2 = document.getElementById("umatanCount2");
+
 const umarenTable = document.getElementById("umarenTable");
 const umarenBody  = document.getElementById("umarenResult");
 const umarenCount = document.getElementById("umarenCount");
@@ -56,6 +60,11 @@ const syncTables = [
   },
   {
   table: umatanTable,
+  nameSelector: "td:nth-child(2) input",
+  oddsSelector: "td:nth-child(3) input"
+  },
+  {
+  table: umatanTable2,
   nameSelector: "td:nth-child(2) input",
   oddsSelector: "td:nth-child(3) input"
   },
@@ -159,6 +168,13 @@ for(let i=1;i<=18;i++){
   <td><input type="checkbox" class="u1"></td>
   <td><input type="checkbox" class="u2"></td>`;
 
+  umatanTable2.insertRow().innerHTML=`
+  <th>${i}</th>
+  <td><input type="text"></td>
+  <td><input type="number" step="0.1"></td>
+  <td><input type="checkbox" class="uu1"></td>
+  <td><input type="checkbox" class="uu2"></td>`;
+
   umarenTable.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text"></td>
@@ -231,7 +247,7 @@ function syncHorseInputs(sourceTable){
   triTable,
   triBoxTable,
   wideTable,
-  umatanTable,
+  umatanTable, umatanTable2,
   umarenTable, umarenTable2,
   tanshoTable, tanshoTable2,
   fukushoTable, fukushoTable2
@@ -243,7 +259,8 @@ function syncHorseInputs(sourceTable){
       updateTrifecta();
       updateTriBox();
       updateWide();
-      updateUmatan();
+      updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
+      updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
       updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
       updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
       updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
@@ -260,7 +277,8 @@ function syncHorseInputs(sourceTable){
       updateTrifecta();
       updateTriBox();
       updateWide();
-      updateUmatan();
+      updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
+      updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
       updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
       updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
       updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
@@ -398,10 +416,10 @@ function updateWide(){
   wideCount.textContent = `${wideBody.rows.length} 点`;
 }
 
-function updateUmatan(){
-  umatanBody.innerHTML = "";
+function updateUmatan(table, body, count, cls1, cls2){
+  body.innerHTML = "";
 
-  const rows = [...umatanTable.rows].slice(1);
+  const rows = [...table.rows].slice(1);
   const A = [], B = [];
 
   rows.forEach(r=>{
@@ -410,14 +428,14 @@ function updateUmatan(){
       name: safeText(r.cells[1].children[0].value),
       odds: r.cells[2].children[0].value
     };
-    if(r.querySelector(".u1").checked) A.push(h);
-    if(r.querySelector(".u2").checked) B.push(h);
+    if(r.querySelector(cls1).checked) A.push(h);
+    if(r.querySelector(cls2).checked) B.push(h);
   });
 
   A.forEach(a=>B.forEach(b=>{
     if(a.no === b.no) return;
 
-    const tr = umatanBody.insertRow();
+    const tr = body.insertRow();
     tr.innerHTML = `    
     <td class="no-border-right">${a.no}</td>
     <td class="arrow-cell">→</td>
@@ -433,7 +451,7 @@ function updateUmatan(){
     `;
   }));
 
-  umatanCount.textContent = `${umatanBody.rows.length} 点`;
+  count.textContent = `${body.rows.length} 点`;
 }
 
 function updateUmaren(table, body, count, cls1, cls2){
@@ -560,6 +578,9 @@ function buildStateObject(){
 
       u1: umatanTable.rows[i].querySelector(".u1")?.checked || false,
       u2: umatanTable.rows[i].querySelector(".u2")?.checked || false,
+
+      uu1: umatanTable2.rows[i].querySelector(".uu1")?.checked || false,
+      uu2: umatanTable2.rows[i].querySelector(".uu2")?.checked || false,
 
       r1: umarenTable.rows[i].querySelector(".r1")?.checked || false,
       r2: umarenTable.rows[i].querySelector(".r2")?.checked || false,
@@ -689,6 +710,9 @@ function restoreFromStateObject(state){
     umatanTable.rows[i+1].querySelector(".u1").checked = h.u1;
     umatanTable.rows[i+1].querySelector(".u2").checked = h.u2;
 
+    umatanTable2.rows[i+1].querySelector(".uu1").checked = h.uu1;
+    umatanTable2.rows[i+1].querySelector(".uu2").checked = h.uu2;
+
     umarenTable.rows[i+1].querySelector(".r1").checked = h.r1;
     umarenTable.rows[i+1].querySelector(".r2").checked = h.r2;
 
@@ -708,7 +732,8 @@ function restoreFromStateObject(state){
   updateTrifecta();
   updateTriBox();
   updateWide();
-  updateUmatan();
+  updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
+  updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
   updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
   updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
   updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
