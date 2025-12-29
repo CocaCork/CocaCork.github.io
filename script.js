@@ -318,18 +318,18 @@ function syncHorseInputs(sourceTable){
       syncHorseInputs(tbl);
       updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3", "tri");
       updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3", "tri2");
-      updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
-      updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
-      updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
-      updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
-      updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
-      updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
-      updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
-      updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
-      updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
-      updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
-      updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
-      updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1");
+      updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3", "triBox");
+      updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3", "triBox2");
+      updateWide(wideTable, wideBody, wideCount, ".w1", ".w2", "wide");
+      updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2", "wide2");
+      updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2", "umatan");
+      updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2", "umatan2");
+      updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2", "umaren");
+      updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2", "umaren2");
+      updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1", "tansho");
+      updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1", "tansho2");
+      updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1", "fukusho");
+      updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1", "fukusho2");
       updateInputOddsColor();
     }
   });
@@ -339,18 +339,18 @@ function syncHorseInputs(sourceTable){
     if (e.target.type === "checkbox") {
       updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3", "tri");
       updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3", "tri2");
-      updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
-      updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
-      updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
-      updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
-      updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
-      updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
-      updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
-      updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
-      updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
-      updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
-      updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
-      updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1");
+      updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3", "triBox");
+      updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3", "triBox2");
+      updateWide(wideTable, wideBody, wideCount, ".w1", ".w2", "wide");
+      updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2", "wide2");
+      updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2", "umatan");
+      updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2", "umatan2");
+      updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2", "umaren");
+      updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2", "umaren2");
+      updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1", "tansho");
+      updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1", "tansho2");
+      updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1", "fukusho");
+      updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1", "fukusho2");
     }
   });
 });
@@ -400,7 +400,7 @@ function updateTrifecta(table, body, count, cls1, cls2, cls3, moneyCls){
   updatePay(moneyCls, body.rows.length);
 }
 
-function updateTriBox(table, body, count, cls1, cls2, cls3){
+function updateTriBox(table, body, count, cls1, cls2, cls3, moneyCls){
   body.innerHTML = "";
 
   const rows = [...table.rows].slice(1);
@@ -450,9 +450,10 @@ function updateTriBox(table, body, count, cls1, cls2, cls3){
   })));
 
   count.textContent = `${body.rows.length} 点`;
+  updatePay(moneyCls, body.rows.length);
 }
 
-function updateWide(table, body, count, cls1, cls2){
+function updateWide(table, body, count, cls1, cls2, moneyCls){
   body.innerHTML="";
   
   const rows=[...table.rows].slice(1);
@@ -489,9 +490,10 @@ function updateWide(table, body, count, cls1, cls2){
   }));
   
   count.textContent = `${body.rows.length} 点`;
+  updatePay(moneyCls, body.rows.length);
 }
 
-function updateUmatan(table, body, count, cls1, cls2){
+function updateUmatan(table, body, count, cls1, cls2, moneyCls){
   body.innerHTML = "";
 
   const rows = [...table.rows].slice(1);
@@ -527,9 +529,10 @@ function updateUmatan(table, body, count, cls1, cls2){
   }));
 
   count.textContent = `${body.rows.length} 点`;
+  updatePay(moneyCls, body.rows.length);
 }
 
-function updateUmaren(table, body, count, cls1, cls2){
+function updateUmaren(table, body, count, cls1, cls2, moneyCls){
   body.innerHTML = "";
 
   const rows = [...table.rows].slice(1);
@@ -573,9 +576,10 @@ function updateUmaren(table, body, count, cls1, cls2){
   }));
 
   count.textContent = `${body.rows.length} 点`;
+  updatePay(moneyCls, body.rows.length);
 }
 
-function updateTansho(table, body, count, cls){
+function updateTansho(table, body, count, cls, moneyCls){
   body.innerHTML = "";
 
   const rows = [...table.rows].slice(1);
@@ -598,9 +602,10 @@ function updateTansho(table, body, count, cls){
   });
 
   count.textContent = `${body.rows.length} 点`;
+  updatePay(moneyCls, body.rows.length);
 }
 
-function updateFukusho(table, body, count, cls){
+function updateFukusho(table, body, count, cls, moneyCls){
   body.innerHTML = "";
 
   const rows = [...table.rows].slice(1);
@@ -623,6 +628,7 @@ function updateFukusho(table, body, count, cls){
   });
 
   count.textContent = `${body.rows.length} 点`;
+  updatePay(moneyCls, body.rows.length);
 }
 
 function buildStateObject(){
@@ -836,18 +842,18 @@ function restoreFromStateObject(state){
   // 再計算
   updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3", "tri");
   updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3", "tri2");
-  updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
-  updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
-  updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
-  updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
-  updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
-  updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2");
-  updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
-  updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
-  updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
-  updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
-  updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
-  updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1");
+  updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3", "triBox");
+  updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3", "triBox2");
+  updateWide(wideTable, wideBody, wideCount, ".w1", ".w2", "wide");
+  updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2", "wide2");
+  updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2", "umatan");
+  updateUmatan(umatanTable2, umatanBody2, umatanCount2, ".uu1", ".uu2", "umatan2");
+  updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2", "umaren");
+  updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2", "umaren2");
+  updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1", "tansho");
+  updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1", "tansho2");
+  updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1", "fukusho");
+  updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1", "fukusho2");
   updateInputOddsColor();
   
   document.getElementById("raceMemo").value = state.memo || "";
