@@ -129,6 +129,42 @@ const syncTables = [
 
 function safeText(v){ return v && v.trim() !== "" ? v : "-"; }
 
+function getLockTargets(){
+  return [
+    ...document.querySelectorAll(
+      'input[type="text"], input[type="number"], input[type="checkbox"]'
+    )
+  ];
+}
+
+let isLocked = false;
+
+function applyLockState(){
+  getLockTargets().forEach(el => {
+    // ロックボタン自身は除外
+    if (el.id === "lockToggleBtn") return;
+    el.disabled = isLocked;
+  });
+
+  const btn = document.getElementById("lockToggleBtn");
+  const label = document.getElementById("lockStateLabel");
+
+  if(isLocked){
+    btn.textContent = "🔒 ロック解除";
+    label.textContent = "現在：ロック中（編集不可）";
+    label.style.color = "#b00000";
+  }else{
+    btn.textContent = "🔓 編集可能";
+    label.textContent = "現在：編集可能";
+    label.style.color = "#006400";
+  }
+}
+
+document.getElementById("lockToggleBtn").addEventListener("click", ()=>{
+  isLocked = !isLocked;
+  applyLockState();
+});
+
 function formatOdds(v){ return isNaN(v)||v===""?"-":Number(v).toFixed(1); }
 
 function applyOddsColor(table, selector){
@@ -690,7 +726,8 @@ function buildStateObject(){
   return {
     horses,
     memo: document.getElementById("raceMemo").value,
-    betAmounts
+    betAmounts,
+    isLocked
   };
 }
 
@@ -855,6 +892,10 @@ function restoreFromStateObject(state){
   updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1", "fukusho");
   updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1", "fukusho2");
   updateInputOddsColor();
+
+  // ロック状態の復元
+  isLocked = !!state.isLocked;
+  applyLockState();
   
   document.getElementById("raceMemo").value = state.memo || "";
 }
@@ -862,6 +903,7 @@ function restoreFromStateObject(state){
 // 初期化処理（ページ起動時）
 window.addEventListener("load", ()=>{
   refreshRaceList();
+  applyLockState();
 });
 
 // 保存済みレース選択 → レース名＆保存日時を表示
