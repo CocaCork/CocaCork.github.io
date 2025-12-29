@@ -97,8 +97,9 @@ input[type="text"] { width: 120px; }
 }
 
 .bet-input {
-  width: 30px;
+  width: 40px;
   text-align: right;
+  margin-left: 5px;
 }
 
 button {
