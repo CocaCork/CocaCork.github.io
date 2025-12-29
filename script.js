@@ -105,13 +105,6 @@ const syncTables = [
   }
 ];
 
-function attachDisableHandler(tr, checkbox, updateCountFn){
-  checkbox.addEventListener("change", ()=>{
-    tr.classList.toggle("result-disabled", checkbox.checked);
-    updateCountFn();
-  });
-}
-
 function safeText(v){ return v && v.trim() !== "" ? v : "-"; }
 
 function formatOdds(v){ return isNaN(v)||v===""?"-":Number(v).toFixed(1); }
@@ -284,36 +277,6 @@ function syncHorseInputs(sourceTable){
   });
 });
 
-function updateTrifectaCount(){
-  const rows = [...triBody.rows];
-  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
-  triCount.textContent = `${enabled.length} 点`;
-}
-
-function updateTriBoxCount(){
-  const rows = [...triBoxBody.rows];
-  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
-  triBoxCount.textContent = `${enabled.length} 点`;
-}
-
-function updateWideCount(){
-  const rows = [...wideBody.rows];
-  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
-  wideCount.textContent = `${enabled.length} 点`;
-}
-
-function updateUmatanCount(){
-  const rows = [...umatanBody.rows];
-  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
-  umatanCount.textContent = `${enabled.length} 点`;
-}
-
-function updateUmarenCount(body, count){
-  const rows = [...body.rows];
-  const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
-  count.textContent = `${enabled.length} 点`;
-}
-
 function updateTrifecta(){
   triBody.innerHTML="";
   const rows=[...triTable.rows].slice(1);
@@ -347,15 +310,11 @@ function updateTrifecta(){
       <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
-
-      <td><input type="checkbox" class="disable-row"></td>
       `;
-
-      const chk = tr.querySelector(".disable-row");
-      attachDisableHandler(tr, chk, updateTrifectaCount);
     }
   })));
-  updateTrifectaCount();
+  
+  triCount.textContent = `${triBody.rows.length} 点`;
 }
 
 function updateTriBox(){
@@ -404,15 +363,10 @@ function updateTriBox(){
     <td class="no-border-left no-border-right ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left ${oddsClass(c.odds)}">${formatOdds(c.odds)}</td>
-
-    <td><input type="checkbox" class="disable-row"></td>
     `;
-
-    const chk = tr.querySelector(".disable-row");
-    attachDisableHandler(tr, chk, updateTriBoxCount);
   })));
 
-  updateTriBoxCount();
+  triBoxCount.textContent = `${triBoxBody.rows.length} 点`;
 }
 
 function updateWide(){
@@ -443,15 +397,11 @@ function updateWide(){
       <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
       <td class="arrow-cell">→</td>
       <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
-
-      <td><input type="checkbox" class="disable-row"></td>
       `;
-
-      const chk = tr.querySelector(".disable-row");
-      attachDisableHandler(tr, chk, updateWideCount);
     }
   }));
-  updateWideCount();
+  
+  wideCount.textContent = `${wideBody.rows.length} 点`;
 }
 
 function updateUmatan(){
@@ -486,15 +436,10 @@ function updateUmatan(){
     <td class="no-border-right ${oddsClass(a.odds)}">${formatOdds(a.odds)}</td>
     <td class="arrow-cell">→</td>
     <td class="no-border-left ${oddsClass(b.odds)}">${formatOdds(b.odds)}</td>
-
-    <td><input type="checkbox" class="disable-row"></td>
     `;
-
-    const chk = tr.querySelector(".disable-row");
-    attachDisableHandler(tr, chk, updateUmatanCount);
   }));
 
-  updateUmatanCount();
+  umatanCount.textContent = `${umatanBody.rows.length} 点`;
 }
 
 function updateUmaren(table, body, count, cls1, cls2){
@@ -537,15 +482,10 @@ function updateUmaren(table, body, count, cls1, cls2){
     <td class="no-border-right ${oddsClass(h1.odds)}">${formatOdds(h1.odds)}</td>
     <td class="arrow-cell">-</td>
     <td class="no-border-left ${oddsClass(h2.odds)}">${formatOdds(h2.odds)}</td>
-
-    <td><input type="checkbox" class="disable-row"></td>
     `;
-
-    const chk = tr.querySelector(".disable-row");
-    attachDisableHandler(tr, chk, () => updateUmarenCount(body, count));
   }));
 
-  updateUmarenCount(body, count);
+  count.textContent = `${body.rows.length} 点`;
 }
 
 function updateTansho(table, body, count, cls){
@@ -641,18 +581,8 @@ function buildStateObject(){
     });
   }
 
-  const resultDisabled = {
-    trifecta: [...triBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
-    trio:     [...triBoxBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
-    wide:     [...wideBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
-    umatan:   [...umatanBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
-    umaren:   [...umarenBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
-    umaren2:   [...umarenBody2.rows].map(r => r.querySelector(".disable-row")?.checked || false)
-  };
-
   return {
     horses,
-    resultDisabled,
     memo: document.getElementById("raceMemo").value
   };
 }
@@ -792,23 +722,6 @@ function restoreFromStateObject(state){
   updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
   updateFukusho(fukushoTable2, fukushoBody2, fukushoCount2, ".ff1");
   updateInputOddsColor();
-
-  // 除外状態
-  Object.entries(state.resultDisabled).forEach(([key,arr])=>{
-    const body = {
-      trifecta: triBody,
-      trio: triBoxBody,
-      wide: wideBody,
-      umatan: umatanBody,
-      umaren: umarenBody,
-      umaren2: umarenBody2
-    }[key];
-
-    arr.forEach((v,i)=>{
-      const chk = body.rows[i]?.querySelector(".disable-row");
-      if(chk) chk.checked = v;
-    });
-  });
   
   document.getElementById("raceMemo").value = state.memo || "";
 }
