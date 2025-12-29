@@ -18,6 +18,10 @@ const umarenTable = document.getElementById("umarenTable");
 const umarenBody  = document.getElementById("umarenResult");
 const umarenCount = document.getElementById("umarenCount");
 
+const umarenTable2 = document.getElementById("umarenTable2");
+const umarenBody2  = document.getElementById("umarenResult2");
+const umarenCount2 = document.getElementById("umarenCount2");
+
 const tanshoTable = document.getElementById("tanshoTable");
 const tanshoBody  = document.getElementById("tanshoResult");
 const tanshoCount = document.getElementById("tanshoCount");
@@ -40,7 +44,8 @@ const tableUpdateMap = new Map([
   [triBoxTable,  updateTriBox],
   [wideTable,    updateWide],
   [umatanTable,  updateUmatan],
-  [umarenTable,  updateUmaren],
+  [umarenTable, () => updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2")],
+  [umarenTable2, () => updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2")],
   [tanshoTable, () => updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1")],
   [tanshoTable2, () => updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1")],
   [fukushoTable, () => updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1")],
@@ -70,6 +75,11 @@ const syncTables = [
   },
   {
   table: umarenTable,
+  nameSelector: "td:nth-child(2) input",
+  oddsSelector: "td:nth-child(3) input"
+  },
+  {
+  table: umarenTable2,
   nameSelector: "td:nth-child(2) input",
   oddsSelector: "td:nth-child(3) input"
   },
@@ -177,6 +187,13 @@ for(let i=1;i<=18;i++){
   <td><input type="checkbox" class="r1"></td>
   <td><input type="checkbox" class="r2"></td>`;
 
+  umarenTable2.insertRow().innerHTML=`
+  <th>${i}</th>
+  <td><input type="text"></td>
+  <td><input type="number" step="0.1"></td>
+  <td><input type="checkbox" class="rr1"></td>
+  <td><input type="checkbox" class="rr2"></td>`;
+
   tanshoTable.insertRow().innerHTML = `
   <th>${i}</th>
   <td><input type="text"></td>
@@ -236,7 +253,7 @@ function syncHorseInputs(sourceTable){
   triBoxTable,
   wideTable,
   umatanTable,
-  umarenTable,
+  umarenTable, umarenTable2,
   tanshoTable, tanshoTable2,
   fukushoTable, fukushoTable2
 ].forEach(tbl => {
@@ -248,7 +265,8 @@ function syncHorseInputs(sourceTable){
       updateTriBox();
       updateWide();
       updateUmatan();
-      updateUmaren();
+      updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
+      updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
       updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
       updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
       updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
@@ -290,10 +308,10 @@ function updateUmatanCount(){
   umatanCount.textContent = `${enabled.length} 点`;
 }
 
-function updateUmarenCount(){
-  const rows = [...umarenBody.rows];
+function updateUmarenCount(body, count){
+  const rows = [...body.rows];
   const enabled = rows.filter(r => !r.querySelector(".disable-row")?.checked);
-  umarenCount.textContent = `${enabled.length} 点`;
+  count.textContent = `${enabled.length} 点`;
 }
 
 function updateTrifecta(){
@@ -479,10 +497,10 @@ function updateUmatan(){
   updateUmatanCount();
 }
 
-function updateUmaren(){
-  umarenBody.innerHTML = "";
+function updateUmaren(table, body, count, cls1, cls2){
+  body.innerHTML = "";
 
-  const rows = [...umarenTable.rows].slice(1);
+  const rows = [...table.rows].slice(1);
   const A = [], B = [];
 
   rows.forEach(r=>{
@@ -491,8 +509,8 @@ function updateUmaren(){
       name: safeText(r.cells[1].children[0].value),
       odds: r.cells[2].children[0].value
     };
-    if(r.querySelector(".r1").checked) A.push(h);
-    if(r.querySelector(".r2").checked) B.push(h);
+    if(r.querySelector(cls1).checked) A.push(h);
+    if(r.querySelector(cls2).checked) B.push(h);
   });
 
   const used = new Set();
@@ -506,7 +524,7 @@ function updateUmaren(){
     if(used.has(key)) return;
     used.add(key);
 
-    const tr = umarenBody.insertRow();
+    const tr = body.insertRow();
     tr.innerHTML = `    
     <td class="no-border-right">${h1.no}</td>
     <td class="arrow-cell">-</td>
@@ -527,7 +545,7 @@ function updateUmaren(){
     attachDisableHandler(tr, chk, updateUmarenCount);
   }));
 
-  updateUmarenCount();
+  updateUmarenCount(body, count);
 }
 
 function updateTansho(table, body, count, cls){
@@ -612,6 +630,9 @@ function buildStateObject(){
       r1: umarenTable.rows[i].querySelector(".r1")?.checked || false,
       r2: umarenTable.rows[i].querySelector(".r2")?.checked || false,
 
+      rr1: umarenTable2.rows[i].querySelector(".rr1")?.checked || false,
+      rr2: umarenTable2.rows[i].querySelector(".rr2")?.checked || false,
+
       t1: tanshoTable.rows[i].querySelector(".t1")?.checked || false,
       tt1: tanshoTable2.rows[i].querySelector(".tt1")?.checked || false,
       
@@ -625,7 +646,8 @@ function buildStateObject(){
     trio:     [...triBoxBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
     wide:     [...wideBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
     umatan:   [...umatanBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
-    umaren:   [...umarenBody.rows].map(r => r.querySelector(".disable-row")?.checked || false)
+    umaren:   [...umarenBody.rows].map(r => r.querySelector(".disable-row")?.checked || false),
+    umaren2:   [...umarenBody2.rows].map(r => r.querySelector(".disable-row")?.checked || false)
   };
 
   return {
@@ -746,6 +768,9 @@ function restoreFromStateObject(state){
     umarenTable.rows[i+1].querySelector(".r1").checked = h.r1;
     umarenTable.rows[i+1].querySelector(".r2").checked = h.r2;
 
+    umarenTable2.rows[i+1].querySelector(".rr1").checked = h.rr1;
+    umarenTable2.rows[i+1].querySelector(".rr2").checked = h.rr2;
+
     tanshoTable.rows[i+1].querySelector(".t1").checked = h.t1;
     tanshoTable2.rows[i+1].querySelector(".tt1").checked = h.tt1;
     
@@ -760,7 +785,8 @@ function restoreFromStateObject(state){
   updateTriBox();
   updateWide();
   updateUmatan();
-  updateUmaren();
+  updateUmaren(umarenTable, umarenBody, umarenCount, ".r1", ".r2");
+  updateUmaren(umarenTable2, umarenBody2, umarenCount2, ".rr1", ".rr2");
   updateTansho(tanshoTable, tanshoBody, tanshoCount, ".t1");
   updateTansho(tanshoTable2, tanshoBody2, tanshoCount2, ".tt1");
   updateFukusho(fukushoTable, fukushoBody, fukushoCount, ".f1");
@@ -774,7 +800,8 @@ function restoreFromStateObject(state){
       trio: triBoxBody,
       wide: wideBody,
       umatan: umatanBody,
-      umaren: umarenBody
+      umaren: umarenBody,
+      umaren2: umarenBody2
     }[key];
 
     arr.forEach((v,i)=>{
