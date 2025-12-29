@@ -164,6 +164,16 @@ function oddsClass(v){
   return "odds-very-high";
 }
 
+function updatePay(key, count) {
+  const input = document.querySelector(`.bet-input[data-key="${key}"]`);
+  const pay = document.getElementById(`${key}Pay`);
+  if (!input || !pay) return;
+
+  const unit = Number(input.value || 0);
+  const amount = unit * 100;
+  pay.textContent = (count * amount).toLocaleString();
+}
+
 for(let i=1;i<=18;i++){
   triTable.insertRow().innerHTML=`
   <th>${i}</th>
@@ -387,6 +397,7 @@ function updateTrifecta(table, body, count, cls1, cls2, cls3){
   })));
   
   count.textContent = `${body.rows.length} 点`;
+  updatePay("tri", body.rows.length);
 }
 
 function updateTriBox(table, body, count, cls1, cls2, cls3){
@@ -665,9 +676,15 @@ function buildStateObject(){
     });
   }
 
+  const betAmounts = {};
+  document.querySelectorAll(".bet-input").forEach(i => {
+    betAmounts[i.dataset.key] = i.value;
+  });
+
   return {
     horses,
-    memo: document.getElementById("raceMemo").value
+    memo: document.getElementById("raceMemo").value,
+    betAmounts
   };
 }
 
@@ -826,6 +843,16 @@ function restoreFromStateObject(state){
   updateInputOddsColor();
   
   document.getElementById("raceMemo").value = state.memo || "";
+
+  // 金額の復元
+  if (state.betAmounts) {
+    Object.entries(state.betAmounts).forEach(([key, value]) => {
+      const input = document.querySelector(`.bet-input[data-key="${key}"]`);
+      if (input) input.value = value;
+    });
+  }
+
+  updatePay("tri", Number(triCount.textContent.replace(/\D/g, "")));
 }
 
 // 初期化処理（ページ起動時）
@@ -872,3 +899,13 @@ function clearAllSavedData(){
   
   alert("保存データをすべて削除しました。");
 }
+
+document.addEventListener("input", e => {
+  if (!e.target.classList.contains("bet-input")) return;
+
+  const key = e.target.dataset.key;
+  const countText = document.getElementById(`${key}Count`)?.textContent || "";
+  const count = Number(countText.replace(/\D/g, ""));
+  updatePay(key, count);
+});
+
