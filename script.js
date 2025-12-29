@@ -337,8 +337,8 @@ function syncHorseInputs(sourceTable){
   // チェックボックス → 該当券種だけ更新
   tbl.addEventListener("change", e => {
     if (e.target.type === "checkbox") {
-      updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3");
-      updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3");
+      updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3", "tri");
+      updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3", "tri2");
       updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
       updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
       updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
@@ -355,7 +355,7 @@ function syncHorseInputs(sourceTable){
   });
 });
 
-function updateTrifecta(table, body, count, cls1, cls2, cls3){
+function updateTrifecta(table, body, count, cls1, cls2, cls3, moneyCls){
   body.innerHTML="";
   const rows=[...table.rows].slice(1);
   const A=[],B=[],C=[];
@@ -397,7 +397,7 @@ function updateTrifecta(table, body, count, cls1, cls2, cls3){
   })));
   
   count.textContent = `${body.rows.length} 点`;
-  updatePay("tri", body.rows.length);
+  updatePay(moneyCls, body.rows.length);
 }
 
 function updateTriBox(table, body, count, cls1, cls2, cls3){
