@@ -6,6 +6,10 @@ const triBoxTable = document.getElementById("triBoxTable");
 const triBoxBody = document.getElementById("triBoxResult");
 const triBoxCount = document.getElementById("triBoxCount");
 
+const triBoxTable2 = document.getElementById("triBoxTable2");
+const triBoxBody2 = document.getElementById("triBoxResult2");
+const triBoxCount2 = document.getElementById("triBoxCount2");
+
 const wideTable = document.getElementById("wideTable");
 const wideBody = document.getElementById("wideResult");
 const wideCount = document.getElementById("wideCount");
@@ -54,6 +58,11 @@ const syncTables = [
   },
   {
     table: triBoxTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
+  },
+  {
+    table: triBoxTable2,
     nameSelector: "td:nth-child(2) input",
     oddsSelector: "td:nth-child(3) input"
   },
@@ -162,6 +171,14 @@ for(let i=1;i<=18;i++){
   <td><input type="checkbox" class="b1"></td>
   <td><input type="checkbox" class="b2"></td>
   <td><input type="checkbox" class="b3"></td>`;
+
+  triBoxTable2.insertRow().innerHTML=`
+  <th>${i}</th>
+  <td><input type="text" style="width:120px;"></td>
+  <td><input type="number" step="0.1" style="width:60px;"></td>
+  <td><input type="checkbox" class="bb1"></td>
+  <td><input type="checkbox" class="bb2"></td>
+  <td><input type="checkbox" class="bb3"></td>`;
     
   wideTable.insertRow().innerHTML=`
   <th>${i}</th>
@@ -261,7 +278,7 @@ function syncHorseInputs(sourceTable){
 
 [
   triTable,
-  triBoxTable,
+  triBoxTable, triBoxTable2,
   wideTable, wideTable2,
   umatanTable, umatanTable2,
   umarenTable, umarenTable2,
@@ -273,7 +290,8 @@ function syncHorseInputs(sourceTable){
     if (e.target.type === "text" || e.target.type === "number") {
       syncHorseInputs(tbl);
       updateTrifecta();
-      updateTriBox();
+      updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
+      updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
       updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
       updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
       updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
@@ -292,7 +310,8 @@ function syncHorseInputs(sourceTable){
   tbl.addEventListener("change", e => {
     if (e.target.type === "checkbox") {
       updateTrifecta();
-      updateTriBox();
+      updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
+      updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
       updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
       updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
       updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
@@ -351,10 +370,10 @@ function updateTrifecta(){
   triCount.textContent = `${triBody.rows.length} 点`;
 }
 
-function updateTriBox(){
-  triBoxBody.innerHTML = "";
+function updateTriBox(table, body, count, cls1, cls2, cls3){
+  body.innerHTML = "";
 
-  const rows = [...triBoxTable.rows].slice(1);
+  const rows = [...table.rows].slice(1);
   const A = [], B = [], C = [];
 
   rows.forEach(r=>{
@@ -363,9 +382,9 @@ function updateTriBox(){
       name: safeText(r.querySelector("td:nth-child(2) input").value),
       odds: r.querySelector("td:nth-child(3) input").value
     };
-    if(r.querySelector(".b1").checked) A.push(h);
-    if(r.querySelector(".b2").checked) B.push(h);
-    if(r.querySelector(".b3").checked) C.push(h);
+    if(r.querySelector(cls1).checked) A.push(h);
+    if(r.querySelector(cls2).checked) B.push(h);
+    if(r.querySelector(cls3).checked) C.push(h);
   });
 
   const used = new Set();
@@ -378,7 +397,7 @@ function updateTriBox(){
     if(used.has(key)) return;
     used.add(key);
     
-    const tr = triBoxBody.insertRow();
+    const tr = body.insertRow();
     tr.innerHTML = `    
     <td class="no-border-right">${a.no}</td>
     <td class="arrow-cell">-</td>
@@ -400,7 +419,7 @@ function updateTriBox(){
     `;
   })));
 
-  triBoxCount.textContent = `${triBoxBody.rows.length} 点`;
+  count.textContent = `${body.rows.length} 点`;
 }
 
 function updateWide(table, body, count, cls1, cls2){
@@ -593,6 +612,10 @@ function buildStateObject(){
       b2: triBoxTable.rows[i].querySelector(".b2")?.checked || false,
       b3: triBoxTable.rows[i].querySelector(".b3")?.checked || false,
 
+      bb1: triBoxTable2.rows[i].querySelector(".bb1")?.checked || false,
+      bb2: triBoxTable2.rows[i].querySelector(".bb2")?.checked || false,
+      bb3: triBoxTable2.rows[i].querySelector(".bb3")?.checked || false,
+
       w1: wideTable.rows[i].querySelector(".w1")?.checked || false,
       w2: wideTable.rows[i].querySelector(".w2")?.checked || false,
 
@@ -727,6 +750,10 @@ function restoreFromStateObject(state){
     triBoxTable.rows[i+1].querySelector(".b2").checked = h.b2;
     triBoxTable.rows[i+1].querySelector(".b3").checked = h.b3;
 
+    triBoxTable2.rows[i+1].querySelector(".bb1").checked = h.bb1;
+    triBoxTable2.rows[i+1].querySelector(".bb2").checked = h.bb2;
+    triBoxTable2.rows[i+1].querySelector(".bb3").checked = h.bb3;
+
     wideTable.rows[i+1].querySelector(".w1").checked = h.w1;
     wideTable.rows[i+1].querySelector(".w2").checked = h.w2;
 
@@ -756,7 +783,8 @@ function restoreFromStateObject(state){
 
   // 再計算
   updateTrifecta();
-  updateTriBox();
+  updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
+  updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
   updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
   updateWide(wideTable2, wideBody2, wideCount2, ".ww1", ".ww2");
   updateUmatan(umatanTable, umatanBody, umatanCount, ".u1", ".u2");
