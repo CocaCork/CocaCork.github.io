@@ -542,7 +542,7 @@ function updateUmaren(table, body, count, cls1, cls2){
     `;
 
     const chk = tr.querySelector(".disable-row");
-    attachDisableHandler(tr, chk, updateUmarenCount);
+    attachDisableHandler(tr, chk, () => updateUmarenCount(body, count));
   }));
 
   updateUmarenCount(body, count);
