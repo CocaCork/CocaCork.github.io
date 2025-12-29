@@ -926,6 +926,14 @@ function clearAllSavedData(){
   }
 
   keysToDelete.forEach(k => localStorage.removeItem(k));
+
+  refreshRaceList();
+
+  const sel = document.getElementById("raceSelect");
+  sel.value = "";
+
+  document.getElementById("saveRaceName").value = "";
+  document.getElementById("savedAtInfo").textContent = "";
   
   alert("保存データをすべて削除しました。");
 }
