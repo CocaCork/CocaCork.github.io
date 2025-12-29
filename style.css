@@ -187,6 +187,10 @@ button {
   margin-left: auto;
 }
 
+#deleteRaceBtn {
+  margin-left: 50px
+}
+
 #clearStorageBtn {
   background: #fbeaea;
   border: 1px solid #b00000;
