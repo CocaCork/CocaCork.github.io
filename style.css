@@ -38,6 +38,11 @@ summary {
   list-style: none;
   cursor: pointer;
 }
+
+summary h2 {
+  margin: 0;
+}
+
 summary::-webkit-details-marker {
   display: none;
 }
