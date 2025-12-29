@@ -68,44 +68,44 @@ const syncTables = [
     oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: umatanTable,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: umatanTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: umatanTable2,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: umatanTable2,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: umarenTable,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: umarenTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: umarenTable2,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: umarenTable2,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: tanshoTable,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: tanshoTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: tanshoTable2,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: tanshoTable2,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: fukushoTable,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: fukushoTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   },
   {
-  table: fukushoTable2,
-  nameSelector: "td:nth-child(2) input",
-  oddsSelector: "td:nth-child(3) input"
+    table: fukushoTable2,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
   }
 ];
 
@@ -312,7 +312,11 @@ function updateTrifecta(){
   const rows=[...triTable.rows].slice(1);
   const A=[],B=[],C=[];
   rows.forEach(r=>{
-    const h={no:r.cells[0].textContent,name:safeText(r.cells[1].children[0].value),odds:r.cells[2].children[0].value};
+    const h = {
+      no: r.cells[0].textContent,
+      name: safeText(r.querySelector("td:nth-child(2) input").value),
+      odds: r.querySelector("td:nth-child(3) input").value
+    };
     if(r.querySelector(".p1").checked)A.push(h);
     if(r.querySelector(".p2").checked)B.push(h);
     if(r.querySelector(".p3").checked)C.push(h);
@@ -356,8 +360,8 @@ function updateTriBox(){
   rows.forEach(r=>{
     const h = {
       no: r.cells[0].textContent,
-      name: safeText(r.cells[1].children[0].value),
-      odds: r.cells[2].children[0].value
+      name: safeText(r.querySelector("td:nth-child(2) input").value),
+      odds: r.querySelector("td:nth-child(3) input").value
     };
     if(r.querySelector(".b1").checked) A.push(h);
     if(r.querySelector(".b2").checked) B.push(h);
@@ -447,8 +451,8 @@ function updateUmatan(table, body, count, cls1, cls2){
   rows.forEach(r=>{
     const h = {
       no: r.cells[0].textContent,
-      name: safeText(r.cells[1].children[0].value),
-      odds: r.cells[2].children[0].value
+      name: safeText(r.querySelector("td:nth-child(2) input").value),
+      odds: r.querySelector("td:nth-child(3) input").value
     };
     if(r.querySelector(cls1).checked) A.push(h);
     if(r.querySelector(cls2).checked) B.push(h);
@@ -485,8 +489,8 @@ function updateUmaren(table, body, count, cls1, cls2){
   rows.forEach(r=>{
     const h = {
       no: r.cells[0].textContent,
-      name: safeText(r.cells[1].children[0].value),
-      odds: r.cells[2].children[0].value
+      name: safeText(r.querySelector("td:nth-child(2) input").value),
+      odds: r.querySelector("td:nth-child(3) input").value
     };
     if(r.querySelector(cls1).checked) A.push(h);
     if(r.querySelector(cls2).checked) B.push(h);
@@ -526,18 +530,15 @@ function updateTansho(table, body, count, cls){
   body.innerHTML = "";
 
   const rows = [...table.rows].slice(1);
-  let cnt = 0;
 
   rows.forEach(r=>{
     if(!r.querySelector(cls).checked) return;
-
+    
     const h = {
       no: r.cells[0].textContent,
-      name: safeText(r.cells[1].children[0].value),
-      odds: r.cells[2].children[0].value
+      name: safeText(r.querySelector("td:nth-child(2) input").value),
+      odds: r.querySelector("td:nth-child(3) input").value
     };
-
-    cnt++;
 
     body.insertRow().innerHTML = `
     <tr>
@@ -547,25 +548,22 @@ function updateTansho(table, body, count, cls){
     </tr>`;
   });
 
-  count.textContent = `${cnt} 点`;
+  count.textContent = `${body.rows.length} 点`;
 }
 
 function updateFukusho(table, body, count, cls){
   body.innerHTML = "";
 
   const rows = [...table.rows].slice(1);
-  let cnt = 0;
 
   rows.forEach(r=>{
     if(!r.querySelector(cls).checked) return;
-
+    
     const h = {
       no: r.cells[0].textContent,
-      name: safeText(r.cells[1].children[0].value),
-      odds: r.cells[2].children[0].value
+      name: safeText(r.querySelector("td:nth-child(2) input").value),
+      odds: r.querySelector("td:nth-child(3) input").value
     };
-
-    cnt++;
 
     body.insertRow().innerHTML = `
     <tr>
@@ -575,7 +573,7 @@ function updateFukusho(table, body, count, cls){
     </tr>`;
   });
 
-  count.textContent = `${cnt} 点`;
+  count.textContent = `${body.rows.length} 点`;
 }
 
 function buildStateObject(){
