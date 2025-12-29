@@ -2,57 +2,57 @@ const triTable = document.getElementById("triTable");
 const triBody = document.getElementById("triResult");
 const triCount = document.getElementById("triCount");
 
-const triTable2 = document.getElementById("triTable2");
-const triBody2 = document.getElementById("triResult2");
-const triCount2 = document.getElementById("triCount2");
+const triTable2 = document.getElementById("tri2Table");
+const triBody2 = document.getElementById("tri2Result");
+const triCount2 = document.getElementById("tri2Count");
 
 const triBoxTable = document.getElementById("triBoxTable");
 const triBoxBody = document.getElementById("triBoxResult");
 const triBoxCount = document.getElementById("triBoxCount");
 
-const triBoxTable2 = document.getElementById("triBoxTable2");
-const triBoxBody2 = document.getElementById("triBoxResult2");
-const triBoxCount2 = document.getElementById("triBoxCount2");
+const triBoxTable2 = document.getElementById("triBox2Table");
+const triBoxBody2 = document.getElementById("triBox2Result");
+const triBoxCount2 = document.getElementById("triBox2Count");
 
 const wideTable = document.getElementById("wideTable");
 const wideBody = document.getElementById("wideResult");
 const wideCount = document.getElementById("wideCount");
 
-const wideTable2 = document.getElementById("wideTable2");
-const wideBody2 = document.getElementById("wideResult2");
-const wideCount2 = document.getElementById("wideCount2");
+const wideTable2 = document.getElementById("wide2Table");
+const wideBody2 = document.getElementById("wide2Result");
+const wideCount2 = document.getElementById("wide2Count");
 
 const umatanTable = document.getElementById("umatanTable");
 const umatanBody = document.getElementById("umatanResult");
 const umatanCount = document.getElementById("umatanCount");
 
-const umatanTable2 = document.getElementById("umatanTable2");
-const umatanBody2 = document.getElementById("umatanResult2");
-const umatanCount2 = document.getElementById("umatanCount2");
+const umatanTable2 = document.getElementById("umatan2Table");
+const umatanBody2 = document.getElementById("umatan2Result");
+const umatanCount2 = document.getElementById("umatan2Count");
 
 const umarenTable = document.getElementById("umarenTable");
 const umarenBody = document.getElementById("umarenResult");
 const umarenCount = document.getElementById("umarenCount");
 
-const umarenTable2 = document.getElementById("umarenTable2");
-const umarenBody2 = document.getElementById("umarenResult2");
-const umarenCount2 = document.getElementById("umarenCount2");
+const umarenTable2 = document.getElementById("umaren2Table");
+const umarenBody2 = document.getElementById("umaren2Result");
+const umarenCount2 = document.getElementById("umaren2Count");
 
 const tanshoTable = document.getElementById("tanshoTable");
 const tanshoBody = document.getElementById("tanshoResult");
 const tanshoCount = document.getElementById("tanshoCount");
 
-const tanshoTable2 = document.getElementById("tanshoTable2");
-const tanshoBody2 = document.getElementById("tanshoResult2");
-const tanshoCount2 = document.getElementById("tanshoCount2");
+const tanshoTable2 = document.getElementById("tansho2Table");
+const tanshoBody2 = document.getElementById("tansho2Result");
+const tanshoCount2 = document.getElementById("tansho2Count");
 
 const fukushoTable = document.getElementById("fukushoTable");
 const fukushoBody = document.getElementById("fukushoResult");
 const fukushoCount = document.getElementById("fukushoCount");
 
-const fukushoTable2 = document.getElementById("fukushoTable2");
-const fukushoBody2 = document.getElementById("fukushoResult2");
-const fukushoCount2 = document.getElementById("fukushoCount2");
+const fukushoTable2 = document.getElementById("fukusho2Table");
+const fukushoBody2 = document.getElementById("fukusho2Result");
+const fukushoCount2 = document.getElementById("fukusho2Count");
 
 const syncTables = [
   {
