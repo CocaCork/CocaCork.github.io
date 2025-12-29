@@ -2,6 +2,10 @@ const triTable = document.getElementById("triTable");
 const triBody = document.getElementById("triResult");
 const triCount = document.getElementById("triCount");
 
+const triTable2 = document.getElementById("triTable2");
+const triBody2 = document.getElementById("triResult2");
+const triCount2 = document.getElementById("triCount2");
+
 const triBoxTable = document.getElementById("triBoxTable");
 const triBoxBody = document.getElementById("triBoxResult");
 const triBoxCount = document.getElementById("triBoxCount");
@@ -53,6 +57,11 @@ const fukushoCount2 = document.getElementById("fukushoCount2");
 const syncTables = [
   {
     table: triTable,
+    nameSelector: "td:nth-child(2) input",
+    oddsSelector: "td:nth-child(3) input"
+  },
+  {
+    table: triTable2,
     nameSelector: "td:nth-child(2) input",
     oddsSelector: "td:nth-child(3) input"
   },
@@ -163,6 +172,14 @@ for(let i=1;i<=18;i++){
   <td><input type="checkbox" class="p1"></td>
   <td><input type="checkbox" class="p2"></td>
   <td><input type="checkbox" class="p3"></td>`;
+
+  triTable2.insertRow().innerHTML=`
+  <th>${i}</th>
+  <td><input type="text"></td>
+  <td><input type="number" step="0.1"></td>
+  <td><input type="checkbox" class="pp1"></td>
+  <td><input type="checkbox" class="pp2"></td>
+  <td><input type="checkbox" class="pp3"></td>`;
   
   triBoxTable.insertRow().innerHTML=`
   <th>${i}</th>
@@ -277,7 +294,7 @@ function syncHorseInputs(sourceTable){
 }
 
 [
-  triTable,
+  triTable, triTable2,
   triBoxTable, triBoxTable2,
   wideTable, wideTable2,
   umatanTable, umatanTable2,
@@ -289,7 +306,8 @@ function syncHorseInputs(sourceTable){
   tbl.addEventListener("input", e => {
     if (e.target.type === "text" || e.target.type === "number") {
       syncHorseInputs(tbl);
-      updateTrifecta();
+      updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3");
+      updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3");
       updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
       updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
       updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
@@ -309,7 +327,8 @@ function syncHorseInputs(sourceTable){
   // チェックボックス → 該当券種だけ更新
   tbl.addEventListener("change", e => {
     if (e.target.type === "checkbox") {
-      updateTrifecta();
+      updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3");
+      updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3");
       updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
       updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
       updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
@@ -326,9 +345,9 @@ function syncHorseInputs(sourceTable){
   });
 });
 
-function updateTrifecta(){
-  triBody.innerHTML="";
-  const rows=[...triTable.rows].slice(1);
+function updateTrifecta(table, body, count, cls1, cls2, cls3){
+  body.innerHTML="";
+  const rows=[...table.rows].slice(1);
   const A=[],B=[],C=[];
   rows.forEach(r=>{
     const h = {
@@ -336,15 +355,15 @@ function updateTrifecta(){
       name: safeText(r.querySelector("td:nth-child(2) input").value),
       odds: r.querySelector("td:nth-child(3) input").value
     };
-    if(r.querySelector(".p1").checked)A.push(h);
-    if(r.querySelector(".p2").checked)B.push(h);
-    if(r.querySelector(".p3").checked)C.push(h);
+    if(r.querySelector(cls1).checked)A.push(h);
+    if(r.querySelector(cls2).checked)B.push(h);
+    if(r.querySelector(cls3).checked)C.push(h);
   });
 
   A.forEach(a=>B.forEach(b=>C.forEach(c=>{
     if(a.no!==b.no&&a.no!==c.no&&b.no!==c.no){
       
-      const tr = triBody.insertRow();
+      const tr = body.insertRow();
       tr.innerHTML = `      
       <td class="no-border-right">${a.no}</td>
       <td class="arrow-cell">→</td>
@@ -367,7 +386,7 @@ function updateTrifecta(){
     }
   })));
   
-  triCount.textContent = `${triBody.rows.length} 点`;
+  count.textContent = `${body.rows.length} 点`;
 }
 
 function updateTriBox(table, body, count, cls1, cls2, cls3){
@@ -608,6 +627,10 @@ function buildStateObject(){
       p2: row.querySelector(".p2")?.checked || false,
       p3: row.querySelector(".p3")?.checked || false,
 
+      pp1: triTable2.rows[i].querySelector(".pp1")?.checked || false,
+      pp2: triTable2.rows[i].querySelector(".pp2")?.checked || false,
+      pp3: triTable2.rows[i].querySelector(".pp3")?.checked || false,
+
       b1: triBoxTable.rows[i].querySelector(".b1")?.checked || false,
       b2: triBoxTable.rows[i].querySelector(".b2")?.checked || false,
       b3: triBoxTable.rows[i].querySelector(".b3")?.checked || false,
@@ -746,6 +769,10 @@ function restoreFromStateObject(state){
     r.querySelector(".p2").checked = h.p2;
     r.querySelector(".p3").checked = h.p3;
 
+    triTable2.rows[i+1].querySelector(".pp1").checked = h.pp1;
+    triTable2.rows[i+1].querySelector(".pp2").checked = h.pp2;
+    triTable2.rows[i+1].querySelector(".pp3").checked = h.pp3;
+
     triBoxTable.rows[i+1].querySelector(".b1").checked = h.b1;
     triBoxTable.rows[i+1].querySelector(".b2").checked = h.b2;
     triBoxTable.rows[i+1].querySelector(".b3").checked = h.b3;
@@ -782,7 +809,8 @@ function restoreFromStateObject(state){
   syncHorseInputs(triTable);
 
   // 再計算
-  updateTrifecta();
+  updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3");
+  updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3");
   updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3");
   updateTriBox(triBoxTable2, triBoxBody2, triBoxCount2, ".bb1", ".bb2", ".bb3");
   updateWide(wideTable, wideBody, wideCount, ".w1", ".w2");
