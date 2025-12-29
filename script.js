@@ -168,7 +168,7 @@ for(let i=1;i<=18;i++){
   triTable.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="p1"></td>
   <td><input type="checkbox" class="p2"></td>
   <td><input type="checkbox" class="p3"></td>`;
@@ -176,7 +176,7 @@ for(let i=1;i<=18;i++){
   triTable2.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="pp1"></td>
   <td><input type="checkbox" class="pp2"></td>
   <td><input type="checkbox" class="pp3"></td>`;
@@ -184,7 +184,7 @@ for(let i=1;i<=18;i++){
   triBoxTable.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text" style="width:120px;"></td>
-  <td><input type="number" step="0.1" style="width:60px;"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="b1"></td>
   <td><input type="checkbox" class="b2"></td>
   <td><input type="checkbox" class="b3"></td>`;
@@ -192,7 +192,7 @@ for(let i=1;i<=18;i++){
   triBoxTable2.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text" style="width:120px;"></td>
-  <td><input type="number" step="0.1" style="width:60px;"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="bb1"></td>
   <td><input type="checkbox" class="bb2"></td>
   <td><input type="checkbox" class="bb3"></td>`;
@@ -200,67 +200,67 @@ for(let i=1;i<=18;i++){
   wideTable.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text" style="width:120px;"></td>
-  <td><input type="number" step="0.1" style="width:60px;"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="w1"></td>
   <td><input type="checkbox" class="w2"></td>`;
 
   wideTable2.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text" style="width:120px;"></td>
-  <td><input type="number" step="0.1" style="width:60px;"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="ww1"></td>
   <td><input type="checkbox" class="ww2"></td>`;
 
   umatanTable.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="u1"></td>
   <td><input type="checkbox" class="u2"></td>`;
 
   umatanTable2.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="uu1"></td>
   <td><input type="checkbox" class="uu2"></td>`;
 
   umarenTable.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="r1"></td>
   <td><input type="checkbox" class="r2"></td>`;
 
   umarenTable2.insertRow().innerHTML=`
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="rr1"></td>
   <td><input type="checkbox" class="rr2"></td>`;
 
   tanshoTable.insertRow().innerHTML = `
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="t1"></td>`;
 
   tanshoTable2.insertRow().innerHTML = `
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="tt1"></td>`;
 
   fukushoTable.insertRow().innerHTML = `
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="f1"></td>`;
 
   fukushoTable2.insertRow().innerHTML = `
   <th>${i}</th>
   <td><input type="text"></td>
-  <td><input type="number" step="0.1"></td>
+  <td><input type="number" step="0.1" class="odds-input"></td>
   <td><input type="checkbox" class="ff1"></td>`;
 }
 
