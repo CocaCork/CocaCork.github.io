@@ -237,10 +237,10 @@ button {
 
 /* チェックが1つでも入っている券種 */
 .ticket-active {
-  background-color: #ffe5cc;   /* 薄いオレンジ */
-  border-color: #ff9933;
+  background-color: #ffd9b3;
+  border-color: #ff9900;
 }
 
 .ticket-active summary {
-  background-color: #ffd1a3;   /* 見出しは少し濃く */
+  background-color: #ffcc99;
 }
