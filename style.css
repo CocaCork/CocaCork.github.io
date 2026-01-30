@@ -235,3 +235,12 @@ button {
   flex: 1; /* 横幅を均等に */
 }
 
+/* チェックが1つでも入っている券種 */
+.ticket-active {
+  background-color: #ffe5cc;   /* 薄いオレンジ */
+  border-color: #ff9933;
+}
+
+.ticket-active summary {
+  background-color: #ffd1a3;   /* 見出しは少し濃く */
+}
