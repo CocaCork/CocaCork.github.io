@@ -204,6 +204,26 @@ function oddsClass(v){
   return "odds-very-high";
 }
 
+function updateTicketHighlight(detailsEl) {
+  const checkboxes = detailsEl.querySelectorAll('input[type="checkbox"]');
+  const hasChecked = Array.from(checkboxes).some(cb => cb.checked);
+
+  detailsEl.classList.toggle('ticket-active', hasChecked);
+}
+
+document.querySelectorAll('details').forEach(details => {
+  const checkboxes = details.querySelectorAll('input[type="checkbox"]');
+
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', () => {
+      updateTicketHighlight(details);
+    });
+  });
+
+  // 初期状態（保存データ読込時など）にも反映
+  updateTicketHighlight(details);
+});
+
 function updatePay(key, count) {
   const input = document.querySelector(`.bet-input[data-key="${key}"]`);
   const pay = document.getElementById(`${key}Pay`);
@@ -994,4 +1014,3 @@ document.addEventListener("input", e => {
   const count = Number(countText.replace(/\D/g, ""));
   updatePay(key, count);
 });
-
