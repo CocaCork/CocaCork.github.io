@@ -204,25 +204,15 @@ function oddsClass(v){
   return "odds-very-high";
 }
 
-function updateTicketHighlight(detailsEl) {
-  const checkboxes = detailsEl.querySelectorAll('input[type="checkbox"]');
-  const hasChecked = Array.from(checkboxes).some(cb => cb.checked);
+function updateTicketHighlightFromTable(table) {
+  const details = table.closest("details");
+  if (!details) return;
 
-  detailsEl.classList.toggle('ticket-active', hasChecked);
+  const hasChecked =
+    table.querySelectorAll('input[type="checkbox"]:checked').length > 0;
+
+  details.classList.toggle("ticket-active", hasChecked);
 }
-
-document.querySelectorAll('details').forEach(details => {
-  const checkboxes = details.querySelectorAll('input[type="checkbox"]');
-
-  checkboxes.forEach(cb => {
-    cb.addEventListener('change', () => {
-      updateTicketHighlight(details);
-    });
-  });
-
-  // 初期状態（保存データ読込時など）にも反映
-  updateTicketHighlight(details);
-});
 
 function updatePay(key, count) {
   const input = document.querySelector(`.bet-input[data-key="${key}"]`);
@@ -397,6 +387,8 @@ function syncHorseInputs(sourceTable){
   // チェックボックス → 該当券種だけ更新
   tbl.addEventListener("change", e => {
     if (e.target.type === "checkbox") {
+      updateTicketHighlightFromTable(tbl); 
+      
       updateTrifecta(triTable, triBody, triCount, ".p1", ".p2", ".p3", "tri");
       updateTrifecta(triTable2, triBody2, triCount2, ".pp1", ".pp2", ".pp3", "tri2");
       updateTriBox(triBoxTable, triBoxBody, triBoxCount, ".b1", ".b2", ".b3", "triBox");
@@ -922,6 +914,14 @@ function restoreFromStateObject(state){
   applyLockState();
   
   document.getElementById("raceMemo").value = state.memo || "";
+
+  [triTable, triTable2,
+   triBoxTable, triBoxTable2,
+   wideTable, wideTable2,
+   umatanTable, umatanTable2,
+   umarenTable, umarenTable2,
+   tanshoTable, tanshoTable2,
+   fukushoTable, fukushoTable2].forEach(updateTicketHighlightFromTable);
 }
 
 // 初期化処理（ページ起動時）
