@@ -8,7 +8,12 @@
     body { font-family: sans-serif; padding: 20px; }
     input, select, button { margin: 5px; }
     table { border-collapse: collapse; margin-top: 15px; }
-    td, th { border: 1px solid #ccc; padding: 5px 10px; }
+    td, th {
+      border: 1px solid #ccc;
+      padding: 5px 10px;
+      text-align: center;      /* 横中央 */
+      vertical-align: middle;  /* 縦中央 */
+    }
     .win { background-color: #d0f0ff; }
     
     .filter-hit {
@@ -33,7 +38,7 @@
   <h2>🐎 馬の登録</h2>
   <div style="display: flex; gap: 30px; align-items: flex-start;">
     <div>
-      <input type="text" id="horseName" placeholder="馬名">
+      <input type="text" id="horseName" placeholder="馬名を入力">
       <button onclick="addHorse()">追加</button>
     </div>
     
