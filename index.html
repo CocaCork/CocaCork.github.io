@@ -10,6 +10,11 @@
     table { border-collapse: collapse; margin-top: 15px; }
     td, th { border: 1px solid #ccc; padding: 5px 10px; }
     .win { background-color: #d0f0ff; }
+    
+    .filter-hit {
+      color: red;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -219,13 +224,16 @@
       
       const tr = document.createElement("tr");
       
+      const isWinnerHit = filter && m.winner === filter;
+      const isLoserHit = filter && m.loser === filter;
+      
       tr.innerHTML = `
       <td>${m.date}</td>
       <td>${m.race}</td>
       <td>${m.distance}m</td>
       <td>${m.surface}</td>
-      <td class="win">${m.winner}</td>
-      <td>${m.loser}</td>
+      <td class="win ${isWinnerHit ? 'filter-hit' : ''}">${m.winner}</td>
+      <td class="${isLoserHit ? 'filter-hit' : ''}">${m.loser}</td>
       <td>${m.margin}</td>
       <td><button onclick="deleteMatch(${originalIndex})">削除</button></td>
       `;
