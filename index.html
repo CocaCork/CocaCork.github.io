@@ -14,6 +14,18 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 
 <body>
 
+<h2>💾 データ保存・読込</h2>
+
+<input type="text" id="saveName" placeholder="保存名を入力">
+
+<button onclick="saveData()">保存</button>
+
+<select id="loadSelect"></select>
+<button onclick="loadData()">読込</button>
+<button onclick="deleteData()">削除</button>
+
+<hr>
+
 <h2>🐎 馬の登録</h2>
 <input type="text" id="horseName" placeholder="馬名">
 <button onclick="addHorse()">追加</button>
@@ -94,6 +106,8 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <script>
 let horses = JSON.parse(localStorage.getItem("horses")) || [];
 let matches = JSON.parse(localStorage.getItem("matches")) || [];
+
+let allData = JSON.parse(localStorage.getItem("allData")) || {};
 
 function save() {
   localStorage.setItem("horses", JSON.stringify(horses));
@@ -228,6 +242,67 @@ function addMatch() {
   render();
 }
 
+  // 保存関数
+  function saveData() {
+  const name = document.getElementById("saveName").value.trim();
+  if (!name) {
+    alert("保存名を入力してください");
+    return;
+  }
+
+  allData[name] = {
+    horses: horses,
+    matches: matches
+  };
+
+  localStorage.setItem("allData", JSON.stringify(allData));
+  updateSaveList();
+
+  alert("保存しました");
+}
+
+  // 読込関数
+function loadData() {
+  const name = document.getElementById("loadSelect").value;
+  if (!name) return;
+
+  const data = allData[name];
+  if (!data) return;
+
+  horses = data.horses || [];
+  matches = data.matches || [];
+
+  save(); // 通常データにも反映
+  render();
+}
+
+  // 削除関数
+function deleteData() {
+  const name = document.getElementById("loadSelect").value;
+  if (!name) return;
+
+  if (!confirm("削除しますか？")) return;
+
+  delete allData[name];
+  localStorage.setItem("allData", JSON.stringify(allData));
+
+  updateSaveList();
+}
+
+  // プルダウン更新
+function updateSaveList() {
+  const sel = document.getElementById("loadSelect");
+  sel.innerHTML = "";
+
+  Object.keys(allData).forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
+  updateSaveList();
 render();
 </script>
 
