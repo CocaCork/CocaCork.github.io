@@ -107,15 +107,10 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <script>
 let isDirty = false;
   
-let horses = JSON.parse(localStorage.getItem("horses")) || [];
-let matches = JSON.parse(localStorage.getItem("matches")) || [];
+let horses = [];
+let matches = [];
 
 let allData = JSON.parse(localStorage.getItem("allData")) || {};
-
-function save() {
-  localStorage.setItem("horses", JSON.stringify(horses));
-  localStorage.setItem("matches", JSON.stringify(matches));
-}
 
 function addHorse() {
   const name = document.getElementById("horseName").value.trim();
@@ -274,8 +269,7 @@ function loadData() {
 
   horses = data.horses || [];
   matches = data.matches || [];
-
-  save(); // 通常データにも反映
+  
   render();
 }
 
