@@ -23,6 +23,7 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <select id="loadSelect"></select>
 <button onclick="loadData()">読込</button>
 <button onclick="deleteData()">削除</button>
+<button onclick="deleteAllData()">全削除</button>
 
 <hr>
 
@@ -289,6 +290,19 @@ function deleteData() {
   localStorage.setItem("allData", JSON.stringify(allData));
 
   updateSaveList();
+}
+
+  function deleteAllData() {
+  if (!confirm("すべての保存データと現在のデータを削除しますか？")) return;
+
+  // 保存データ削除
+  allData = {};
+  localStorage.removeItem("allData");
+
+  // UI更新
+  updateSaveList();
+
+  alert("保存データをすべて削除しました");
 }
 
   // プルダウン更新
