@@ -2,623 +2,164 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>馬券計算ツール</title>
-<link rel="stylesheet" href="style.css">
+<title>直接対決記録ツール</title>
+<style>
+body { font-family: sans-serif; padding: 20px; }
+input, select, button { margin: 5px; }
+table { border-collapse: collapse; margin-top: 15px; }
+td, th { border: 1px solid #ccc; padding: 5px 10px; }
+.win { background-color: #d0f0ff; }
+</style>
 </head>
 
 <body>
-<!-- LocalStorage 保存／読込 -->
-<div class="race-storage">
-  <div class="race-storage-left">
-    <div class="race-pair">
-      <input type="text" id="saveRaceName" placeholder="レース名を入力">
-      <button onclick="saveStateByRace()">保存</button>
-    </div>
-    
-    <div class="race-pair race-load-pair">
-      <select id="raceSelect">
-        <option value="">保存済みレース</option>
-      </select>
-      <button onclick="loadStateByRace()">読み込み</button>
-      
-      <span id="savedAtInfo" class="saved-at-info"></span>
-    </div>
-  </div>
-  
-  <div class="right-button">
-    <button id="lockToggleBtn">🔓</button>
-    <span id="lockStateLabel">現在：編集可能</span>
-    
-    <button id="deleteRaceBtn">選択レース削除</button>
-    <button id="clearStorageBtn">保存データを全削除</button>
-  </div>
-</div>
 
-<!-- 3連単 -->
-<div class="single-folds">
-  <details>
-  <summary><h2>3連単</h2></summary>
-  
-  <div class="container">
-    <table id="triTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>1着</th><th>2着</th><th>3着</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="triCount">0 点</span>
-          
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="tri">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="triPay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="5">馬番</th>
-              <th colspan="5">馬名</th>
-              <th colspan="5">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="triResult"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-  
-  <details>
-  <summary><h2>3連単</h2></summary>
-  
-  <div class="container">
-    <table id="tri2Table">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>1着</th><th>2着</th><th>3着</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="tri2Count">0 点</span>
+<h2>🐎 馬の登録</h2>
+<input type="text" id="horseName" placeholder="馬名">
+<button onclick="addHorse()">追加</button>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="tri2">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="tri2Pay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="5">馬番</th>
-              <th colspan="5">馬名</th>
-              <th colspan="5">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="tri2Result"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-</div>
+<ul id="horseList"></ul>
 
-<!-- 3連複 -->
-<div class="single-folds">
-  <details>
-  <summary><h2>3連複</h2></summary>
-    
-  <div class="container">
-    <table id="triBoxTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択1</th><th>選択2</th><th>選択3</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="triBoxCount">0 点</span>
+<hr>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="triBox">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="triBoxPay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="5">馬番</th>
-              <th colspan="5">馬名</th>
-              <th colspan="5">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="triBoxResult"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-  
-  <details>
-  <summary><h2>3連複</h2></summary>
-    
-  <div class="container">
-    <table id="triBox2Table">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択1</th><th>選択2</th><th>選択3</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="triBox2Count">0 点</span>
+<h2>⚔️ 対戦結果入力</h2>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="triBox2">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="triBox2Pay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="5">馬番</th>
-              <th colspan="5">馬名</th>
-              <th colspan="5">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="triBox2Result"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-</div>
+馬A：<select id="horseA"></select>
+馬B：<select id="horseB"></select>
 
-<!-- ワイド -->
-<div class="single-folds">
-  <details>
-  <summary><h2>ワイド</h2></summary>
-    
-  <div class="container">
-    <table id="wideTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択1</th><th>選択2</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="wideCount">0 点</span>
+<br>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="wide">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="widePay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="3">馬番</th>
-              <th colspan="3">馬名</th>
-              <th colspan="3">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="wideResult"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-  
-  <details>
-  <summary><h2>ワイド</h2></summary>
-    
-  <div class="container">
-    <table id="wide2Table">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択1</th><th>選択2</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="wide2Count">0 点</span>
+勝者：<select id="winner"></select>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="wide2">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="wide2Pay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="3">馬番</th>
-              <th colspan="3">馬名</th>
-              <th colspan="3">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="wide2Result"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-</div>
+<br><br>
 
-<!-- 馬単 -->
-<div class="single-folds">
-  <details>
-  <summary><h2>馬単</h2></summary>
-    
-  <div class="container">
-    <table id="umatanTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>1着</th><th>2着</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="umatanCount">0 点</span>
+レース名：<input type="text" id="raceName">
+日付：<input type="date" id="raceDate">
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="umatan">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="umatanPay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="3">馬番</th>
-              <th colspan="3">馬名</th>
-              <th colspan="3">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="umatanResult"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-  
-  <details>
-  <summary><h2>馬単</h2></summary>
-    
-  <div class="container">
-    <table id="umatan2Table">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>1着</th><th>2着</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="umatan2Count">0 点</span>
+<br>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="umatan2">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="umatan2Pay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="3">馬番</th>
-              <th colspan="3">馬名</th>
-              <th colspan="3">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="umatan2Result"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-</div>
+距離：
+<input type="number" id="distance" placeholder="例：1200">
 
-<!-- 馬連 -->
-<div class="single-folds">
-  <details>
-  <summary><h2>馬連</h2></summary>
+馬場：
+<select id="surface">
+  <option value="芝">芝</option>
+  <option value="ダート">ダート</option>
+</select>
 
-  <div class="container">
-    <table id="umarenTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択1</th><th>選択2</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="umarenCount">0 点</span>
+<br>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="umaren">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="umarenPay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="3">馬番</th>
-              <th colspan="3">馬名</th>
-              <th colspan="3">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="umarenResult"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-  
-  <details>
-  <summary><h2>馬連</h2></summary>
+<button onclick="addMatch()">結果を追加</button>
 
-  <div class="container">
-    <table id="umaren2Table">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択1</th><th>選択2</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="umaren2Count">0 点</span>
+<hr>
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="umaren2">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="umaren2Pay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th colspan="3">馬番</th>
-              <th colspan="3">馬名</th>
-              <th colspan="3">オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="umaren2Result"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-</div>
+<h2>📊 対戦結果一覧</h2>
+<table>
+<thead>
+<tr>
+<th>日付</th>
+<th>レース</th>
+<th>距離</th>
+<th>馬場</th>
+<th>馬A</th>
+<th>馬B</th>
+<th>勝者</th>
+</tr>
+</thead>
+<tbody id="resultTable"></tbody>
+</table>
 
-<!-- 単勝 -->
-<div class="single-folds">
-  <details>
-  <summary><h2>単勝</h2></summary>
-  
-  <div class="container">
-    <table id="tanshoTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="tanshoCount">0 点</span>
+<script>
+let horses = JSON.parse(localStorage.getItem("horses")) || [];
+let matches = JSON.parse(localStorage.getItem("matches")) || [];
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="tansho">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="tanshoPay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>馬番</th>
-              <th>馬名</th>
-              <th>オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="tanshoResult"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-  
-  <details>
-  <summary><h2>単勝</h2></summary>
-  
-  <div class="container">
-    <table id="tansho2Table">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="tansho2Count">0 点</span>
+function save() {
+  localStorage.setItem("horses", JSON.stringify(horses));
+  localStorage.setItem("matches", JSON.stringify(matches));
+}
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="tansho2">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="tansho2Pay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>馬番</th>
-              <th>馬名</th>
-              <th>オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="tansho2Result"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-</div>
+function addHorse() {
+  const name = document.getElementById("horseName").value.trim();
+  if (!name) return;
 
-<!-- 複勝 -->
-<div class="single-folds">
-  <details>
-  <summary><h2>複勝</h2></summary>
+  horses.push(name);
+  document.getElementById("horseName").value = "";
 
-  <div class="container">
-    <table id="fukushoTable">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="fukushoCount">0 点</span>
+  save();
+  render();
+}
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="fukusho">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="fukushoPay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>馬番</th>
-              <th>馬名</th>
-              <th>オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="fukushoResult"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-  
-  <details>
-  <summary><h2>複勝</h2></summary>
+function render() {
+  // 馬リスト
+  const list = document.getElementById("horseList");
+  list.innerHTML = "";
+  horses.forEach(h => {
+    const li = document.createElement("li");
+    li.textContent = h;
+    list.appendChild(li);
+  });
 
-  <div class="container">
-    <table id="fukusho2Table">
-      <tr>
-        <th>馬番</th><th>馬名</th><th>オッズ</th>
-        <th>選択</th>
-      </tr>
-    </table>
-    
-    <div class="result-area">
-      <div class="header-bar">
-        <div class="count">
-          <span id="fukusho2Count">0 点</span>
+  // セレクト更新
+  ["horseA", "horseB", "winner"].forEach(id => {
+    const sel = document.getElementById(id);
+    sel.innerHTML = "";
+    horses.forEach(h => {
+      const opt = document.createElement("option");
+      opt.value = h;
+      opt.textContent = h;
+      sel.appendChild(opt);
+    });
+  });
 
-          <span class="bet-area">
-            ×<input type="number" min="0" value="0" class="bet-input" data-key="fukusho2">00 円&nbsp;&nbsp;&nbsp;
-            =
-            &nbsp;&nbsp;&nbsp;<span id="fukusho2Pay">0</span> 円
-          </span>
-        </div>
-      </div>
-      
-      <div class="result-scroll">
-        <table>
-          <thead>
-            <tr>
-              <th>馬番</th>
-              <th>馬名</th>
-              <th>オッズ</th>
-            </tr>
-          </thead>
-          <tbody id="fukusho2Result"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  </details>
-</div>
+  // 結果表示
+  const table = document.getElementById("resultTable");
+  table.innerHTML = "";
 
-<div class="memo-area">
-  <textarea id="raceMemo" placeholder="ここにメモを自由に記入できます"></textarea>
-</div>
+  matches.forEach(m => {
+    const tr = document.createElement("tr");
 
-<script src="script.js"></script>
+    tr.innerHTML = `
+      <td>${m.date}</td>
+      <td>${m.race}</td>
+      <td>${m.distance}m</td>
+      <td>${m.surface}</td>
+      <td class="${m.winner === m.a ? 'win' : ''}">${m.a}</td>
+      <td class="${m.winner === m.b ? 'win' : ''}">${m.b}</td>
+      <td>${m.winner}</td>
+    `;
+
+    table.appendChild(tr);
+  });
+}
+
+function addMatch() {
+  const a = document.getElementById("horseA").value;
+  const b = document.getElementById("horseB").value;
+  const winner = document.getElementById("winner").value;
+  const race = document.getElementById("raceName").value;
+  const date = document.getElementById("raceDate").value;
+  const distance = document.getElementById("distance").value;
+  const surface = document.getElementById("surface").value;
+
+  if (a === b) {
+    alert("同じ馬は選べません");
+    return;
+  }
+
+  matches.push({
+    a, b, winner,
+    race,
+    date,
+    distance,
+    surface
+  });
+
+  save();
+  render();
+}
+
+render();
+</script>
+
 </body>
 </html>
