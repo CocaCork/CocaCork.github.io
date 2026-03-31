@@ -179,9 +179,6 @@ function render() {
   // フィルター値
   const filter = document.getElementById("filterHorse").value;
 
-// フィルター値
-const filter = document.getElementById("filterHorse").value;
-
 // 日付の新しい順にソート
 const sortedMatches = [...matches].sort((a, b) => {
   return new Date(b.date) - new Date(a.date);
@@ -251,9 +248,9 @@ function addMatch() {
   }
 
   allData[name] = {
-    horses: horses,
-    matches: matches
-  };
+  horses: [...horses],
+  matches: [...matches]
+};
 
   localStorage.setItem("allData", JSON.stringify(allData));
   updateSaveList();
