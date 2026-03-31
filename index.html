@@ -234,12 +234,14 @@
     
     // 距離プルダウン
     const distSel = document.getElementById("distance");
-    distSel.innerHTML = "";
-    for (let d = 1000; d <= 3600; d += 100) {
-      const opt = document.createElement("option");
-      opt.value = d;
-      opt.textContent = d + "m";
-      distSel.appendChild(opt);
+    
+    if (distSel.children.length === 0) {
+      for (let d = 1000; d <= 3600; d += 100) {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d + "m";
+        distSel.appendChild(opt);
+      }
     }
     
     // フィルター値
