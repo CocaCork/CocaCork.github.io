@@ -285,23 +285,23 @@
       0.4: "2 1/2馬身",
       0.5: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3馬身",
       0.6: "3 1/2馬身",
-      0.7: "    4馬身",
-      0.8: "    5馬身",
-      0.9: "    5馬身",
-      1.0: "    6馬身",
-      1.1: "    7馬身",
-      1.2: "    7馬身",
-      1.3: "    8馬身",
-      1.4: "    9馬身",
-      1.5: "    9馬身",
-      1.6: "   10馬身"
+      0.7: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4馬身",
+      0.8: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5馬身",
+      0.9: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;5馬身",
+      1.0: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;6馬身",
+      1.1: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7馬身",
+      1.2: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;7馬身",
+      1.3: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8馬身",
+      1.4: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9馬身",
+      1.5: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9馬身",
+      1.6: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10馬身"
     };
     
     // 小数第1位に丸める
     const rounded = Math.round(t * 10) / 10;
     
     if (rounded >= 1.7) {
-      return `${rounded} (&nbsp;&nbsp;&nbsp;&nbsp;大差&nbsp;&nbsp;&nbsp;&nbsp;)`;
+      return `${rounded} (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大差&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)`;
     }
     
     if (map.hasOwnProperty(rounded)) {
