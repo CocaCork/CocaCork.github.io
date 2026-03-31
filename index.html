@@ -264,13 +264,21 @@ function saveData() {
 function loadData() {
   const name = document.getElementById("loadSelect").value;
   if (!name) return;
+  
+  if (isDirty) {
+    const ok = confirm("現在の変更内容は保存されません。読み込みますか？");
+    if (!ok) return;
+  }
 
   const data = allData[name];
   if (!data) return;
 
   horses = data.horses || [];
   matches = data.matches || [];
-  
+
+  isDirty = false;
+
+  updateSaveList(name);
   render();
 }
 
