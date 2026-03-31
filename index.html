@@ -37,8 +37,7 @@
   <h2>💾 データ保存・読込</h2>
   <input type="text" id="saveName" placeholder="保存名を入力">
   <button onclick="saveData()">保存</button>
-  <select id="loadSelect"></select>
-  <button onclick="loadData()">読込</button>
+  <select id="loadSelect" onchange="loadData()"></select>
   <button onclick="deleteData()">削除</button>
   <button onclick="deleteAllData()">全削除</button>
 
@@ -396,12 +395,17 @@
   
   // 読込関数
   function loadData() {
-    const name = document.getElementById("loadSelect").value;
+    const sel = document.getElementById("loadSelect");
+    const name = sel.value;
     if (!name) return;
     
     if (isDirty) {
       const ok = confirm("現在の変更内容は保存されません。読み込みますか？");
-      if (!ok) return;
+      if (!ok) {
+        // 元の選択に戻す
+        sel.value = document.getElementById("saveName").value || "";
+        return;
+      }
     }
     
     const data = allData[name];
@@ -411,7 +415,7 @@
     matches = data.matches || [];
     
     isDirty = false;
-
+    
     document.getElementById("saveName").value = name;
     
     updateSaveList(name);
