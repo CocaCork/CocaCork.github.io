@@ -15,6 +15,10 @@
       vertical-align: middle;  /* 縦中央 */
     }
     .win { background-color: #d0f0ff; }
+
+    .gap-right {
+      margin-right: 20px;
+    }
     
     .filter-hit {
       color: red;
@@ -37,10 +41,9 @@
   <h2>💾 データ保存・読込</h2>
   <input type="text" id="saveName" placeholder="保存名を入力">
   <button onclick="saveData()">保存</button>
-  <select id="loadSelect" onchange="loadData()"></select>
+  <select id="loadSelect" onchange="loadData()" class="gap-right"></select>
   <button onclick="deleteData()">削除</button>
-  <button onclick="deleteAllData()">全削除</button>
-
+  <button onclick="deleteAllData()" class="gap-right">全削除</button>
   <button onclick="exportJSON()">JSONダウンロード</button>
   <input type="file" id="fileInput" accept=".json" onchange="importJSON(event)">
   
