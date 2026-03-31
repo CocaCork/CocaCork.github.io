@@ -375,6 +375,8 @@
     matches = data.matches || [];
     
     isDirty = false;
+
+    document.getElementById("saveName").value = name;
     
     updateSaveList(name);
     render();
