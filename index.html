@@ -78,24 +78,25 @@
   
   <br><br>
   
-  レース名：<input type="text" id="raceName">
+  レース名：<input type="text" id="raceName" placeholder="レース名を入力">
   日付：<input type="date" id="raceDate">
   
   <br>
 
-  競馬場：
-  <select id="course">
-    <option value="札幌">札幌</option>
-    <option value="函館">函館</option>
-    <option value="福島">福島</option>
-    <option value="新潟">新潟</option>
-    <option value="中山">中山</option>
-    <option value="東京">東京</option>
-    <option value="中京">中京</option>
-    <option value="京都">京都</option>
-    <option value="阪神">阪神</option>
-    <option value="小倉">小倉</option>
-  </select>
+  開催：
+  <input list="courseList" id="course" placeholder="競馬場を入力">
+  <datalist id="courseList">
+    <option value="札幌">
+    <option value="函館">
+    <option value="福島">
+    <option value="新潟">
+    <option value="中山">
+    <option value="東京">
+    <option value="中京">
+    <option value="京都">
+    <option value="阪神">
+    <option value="小倉">
+  </datalist>
 
   馬場：
   <select id="surface">
