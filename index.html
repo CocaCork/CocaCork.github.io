@@ -252,9 +252,18 @@
     // フィルター値
     const filter = document.getElementById("filterHorse").value;
     
-    // 日付の新しい順にソート
+    // ソート
     const sortedMatches = [...matches].sort((a, b) => {
-      return new Date(b.date) - new Date(a.date);
+      // 日付（新しい順）
+      const dateDiff = new Date(b.date) - new Date(a.date);
+      if (dateDiff !== 0) return dateDiff;
+      
+      // 勝者（昇順）
+      const winnerDiff = a.winner.localeCompare(b.winner, 'ja');
+      if (winnerDiff !== 0) return winnerDiff;
+      
+      // 敗者（昇順）
+      return a.loser.localeCompare(b.loser, 'ja');
     });
     
     // 結果表示
