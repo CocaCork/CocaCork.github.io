@@ -104,6 +104,8 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 </table>
 
 <script>
+let isDirty = false;
+  
 let horses = JSON.parse(localStorage.getItem("horses")) || [];
 let matches = JSON.parse(localStorage.getItem("matches")) || [];
 
@@ -121,7 +123,7 @@ function addHorse() {
   horses.push(name);
   document.getElementById("horseName").value = "";
 
-  save();
+  isDirty = true;
   render();
 }
 
@@ -129,7 +131,8 @@ function deleteMatch(index) {
   if (!confirm("削除しますか？")) return;
 
   matches.splice(index, 1);
-  save();
+
+  isDirty = true;
   render();
 }
 
@@ -235,7 +238,7 @@ function addMatch() {
     surface
   });
 
-  save();
+  isDirty = true;
   render();
 }
 
@@ -253,8 +256,10 @@ function addMatch() {
 };
 
   localStorage.setItem("allData", JSON.stringify(allData));
-  updateSaveList();
 
+  isDirty = false;
+  
+  updateSaveList();
   alert("保存しました");
 }
 
@@ -301,6 +306,14 @@ function updateSaveList() {
 
   updateSaveList();
 render();
+
+  // ページ離脱時の警告
+window.addEventListener("beforeunload", function (e) {
+  if (!isDirty) return;
+
+  e.preventDefault();
+  e.returnValue = "";
+});
 </script>
 
 </body>
