@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>直接対決記録ツール（完成版）</title>
+<title>直接対決記録ツール（強化版）</title>
 <style>
 body { font-family: sans-serif; padding: 20px; }
 input, select, button { margin: 5px; }
@@ -19,6 +19,15 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <button onclick="addHorse()">追加</button>
 
 <ul id="horseList"></ul>
+
+<hr>
+
+<h2>🔍 フィルター</h2>
+対象馬：
+<select id="filterHorse">
+  <option value="">すべて表示</option>
+</select>
+<button onclick="render()">適用</button>
 
 <hr>
 
@@ -76,6 +85,7 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <th>勝者</th>
 <th>敗者</th>
 <th>着差</th>
+<th>削除</th>
 </tr>
 </thead>
 <tbody id="resultTable"></tbody>
@@ -101,6 +111,14 @@ function addHorse() {
   render();
 }
 
+function deleteMatch(index) {
+  if (!confirm("削除しますか？")) return;
+
+  matches.splice(index, 1);
+  save();
+  render();
+}
+
 function render() {
   // 馬リスト
   const list = document.getElementById("horseList");
@@ -112,18 +130,29 @@ function render() {
   });
 
   // セレクト更新
-  ["winner", "loser"].forEach(id => {
+  ["winner", "loser", "filterHorse"].forEach(id => {
     const sel = document.getElementById(id);
+    const current = sel.value;
     sel.innerHTML = "";
+
+    if (id === "filterHorse") {
+      const allOpt = document.createElement("option");
+      allOpt.value = "";
+      allOpt.textContent = "すべて表示";
+      sel.appendChild(allOpt);
+    }
+
     horses.forEach(h => {
       const opt = document.createElement("option");
       opt.value = h;
       opt.textContent = h;
       sel.appendChild(opt);
     });
+
+    sel.value = current;
   });
 
-  // 距離プルダウン生成（1000〜3600）
+  // 距離プルダウン
   const distSel = document.getElementById("distance");
   distSel.innerHTML = "";
   for (let d = 1000; d <= 3600; d += 100) {
@@ -133,23 +162,42 @@ function render() {
     distSel.appendChild(opt);
   }
 
-  // 結果表示
-  const table = document.getElementById("resultTable");
-  table.innerHTML = "";
+  // フィルター値
+  const filter = document.getElementById("filterHorse").value;
 
-  matches.forEach(m => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${m.date}</td>
-      <td>${m.race}</td>
-      <td>${m.distance}m</td>
-      <td>${m.surface}</td>
-      <td class="win">${m.winner}</td>
-      <td>${m.loser}</td>
-      <td>${m.margin}</td>
-    `;
-    table.appendChild(tr);
-  });
+// フィルター値
+const filter = document.getElementById("filterHorse").value;
+
+// 日付の新しい順にソート
+const sortedMatches = [...matches].sort((a, b) => {
+  return new Date(b.date) - new Date(a.date);
+});
+
+// 結果表示
+const table = document.getElementById("resultTable");
+table.innerHTML = "";
+
+sortedMatches.forEach((m) => {
+  // フィルター適用
+  if (filter && m.winner !== filter && m.loser !== filter) return;
+
+  const originalIndex = matches.indexOf(m);
+
+  const tr = document.createElement("tr");
+
+  tr.innerHTML = `
+    <td>${m.date}</td>
+    <td>${m.race}</td>
+    <td>${m.distance}m</td>
+    <td>${m.surface}</td>
+    <td class="win">${m.winner}</td>
+    <td>${m.loser}</td>
+    <td>${m.margin}</td>
+    <td><button onclick="deleteMatch(${originalIndex})">削除</button></td>
+  `;
+
+  table.appendChild(tr);
+});
 }
 
 function addMatch() {
