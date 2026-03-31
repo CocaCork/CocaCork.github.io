@@ -41,6 +41,9 @@
   <button onclick="loadData()">読込</button>
   <button onclick="deleteData()">削除</button>
   <button onclick="deleteAllData()">全削除</button>
+
+  <button onclick="exportJSON()">JSONダウンロード</button>
+  <input type="file" id="fileInput" accept=".json" onchange="importJSON(event)">
   
   <hr>
   
@@ -466,6 +469,71 @@
       
       sel.appendChild(opt);
     });
+  }
+  
+  function exportJSON() {
+    const data = {
+      name: document.getElementById("saveName").value,
+      horses: horses,
+      matches: matches
+    };
+    
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    
+    // ファイル名（保存名があればそれを使う）
+    const name = document.getElementById("saveName").value || "keiba_data";
+    a.download = name + ".json";
+    
+    a.click();
+    
+    URL.revokeObjectURL(url);
+  }
+  
+  function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+      
+      try {
+        const data = JSON.parse(e.target.result);
+        
+        if (!data.horses || !data.matches) {
+          alert("形式が正しくありません");
+          return;
+        }
+        
+        if (isDirty) {
+          const ok = confirm("現在のデータは上書きされます。よろしいですか？");
+          if (!ok) return;
+        }
+        
+        horses = data.horses;
+        matches = data.matches;
+
+        if (data.name) {
+          document.getElementById("saveName").value = data.name;
+        }
+        
+        isDirty = false;
+        
+        render();
+        alert("読み込み完了しました");
+      
+      } catch (err) {
+        alert("読み込みに失敗しました");
+      }
+    };
+    
+    reader.readAsText(file);
   }
   
   updateSaveList();
