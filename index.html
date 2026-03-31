@@ -82,9 +82,9 @@
   </select>
   
   <br><br>
-  
-  レース名：<input type="text" id="raceName" placeholder="レース名を入力">
+
   日付：<input type="date" id="raceDate">
+  レース名：<input type="text" id="raceName" placeholder="レース名を入力">
   
   <br>
 
@@ -179,11 +179,29 @@
     render();
   }
   
-  function deleteMatch(index) {
-    if (!confirm("削除しますか？")) return;
+  function editHorse(index) {
+    const oldName = horses[index];
     
-    matches.splice(index, 1);
-  
+    const newName = prompt("新しい馬名を入力してください", oldName);
+    if (!newName || newName.trim() === "") return;
+    
+    const trimmedName = newName.trim();
+    
+    // 同名チェック（重複防止）
+    if (horses.includes(trimmedName)) {
+      alert("同じ馬名が既に存在します");
+      return;
+    }
+    
+    // horses配列を更新
+    horses[index] = trimmedName;
+    
+    // matches内のデータも更新
+    matches.forEach(m => {
+      if (m.winner === oldName) m.winner = trimmedName;
+      if (m.loser === oldName) m.loser = trimmedName;
+    });
+    
     isDirty = true;
     
     render();
@@ -198,6 +216,7 @@
       
       li.innerHTML = `
       ${h}
+      <button onclick="editHorse(${i})">変更</button>
       <button onclick="deleteHorse(${i})">削除</button>
       `;
       
@@ -302,6 +321,16 @@
       distance,
     });
     
+    isDirty = true;
+    
+    render();
+  }
+
+  function deleteMatch(index) {
+    if (!confirm("削除しますか？")) return;
+    
+    matches.splice(index, 1);
+  
     isDirty = true;
     
     render();
