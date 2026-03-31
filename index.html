@@ -239,7 +239,7 @@ function addMatch() {
 }
 
   // 保存関数
-  function saveData() {
+function saveData() {
   const name = document.getElementById("saveName").value.trim();
   if (!name) {
     alert("保存名を入力してください");
@@ -247,15 +247,16 @@ function addMatch() {
   }
 
   allData[name] = {
-  horses: [...horses],
-  matches: [...matches]
-};
+    horses: [...horses],
+    matches: [...matches]
+  };
 
   localStorage.setItem("allData", JSON.stringify(allData));
 
   isDirty = false;
-  
-  updateSaveList();
+
+  updateSaveList(name);
+
   alert("保存しました");
 }
 
@@ -300,14 +301,28 @@ function deleteData() {
 }
 
   // プルダウン更新
-function updateSaveList() {
+function updateSaveList(selectedName = "") {
   const sel = document.getElementById("loadSelect");
   sel.innerHTML = "";
+
+  // 未選択用
+  const defaultOpt = document.createElement("option");
+  defaultOpt.value = "";
+  defaultOpt.textContent = "データを選択";
+  defaultOpt.disabled = true;
+  defaultOpt.selected = true;
+  sel.appendChild(defaultOpt);
 
   Object.keys(allData).forEach(name => {
     const opt = document.createElement("option");
     opt.value = name;
     opt.textContent = name;
+
+    if (name === selectedName) {
+      opt.selected = true;
+      defaultOpt.selected = false;
+    }
+
     sel.appendChild(opt);
   });
 }
