@@ -1,380 +1,376 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-<meta charset="UTF-8">
-<title>直接対決記録ツール（強化版）</title>
-<style>
-body { font-family: sans-serif; padding: 20px; }
-input, select, button { margin: 5px; }
-table { border-collapse: collapse; margin-top: 15px; }
-td, th { border: 1px solid #ccc; padding: 5px 10px; }
-.win { background-color: #d0f0ff; }
-</style>
+  <meta charset="UTF-8">
+  <title>直接対決記録ツール（強化版）</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    input, select, button { margin: 5px; }
+    table { border-collapse: collapse; margin-top: 15px; }
+    td, th { border: 1px solid #ccc; padding: 5px 10px; }
+    .win { background-color: #d0f0ff; }
+  </style>
 </head>
 
 <body>
-
-<h2>💾 データ保存・読込</h2>
-
-<input type="text" id="saveName" placeholder="保存名を入力">
-
-<button onclick="saveData()">保存</button>
-
-<select id="loadSelect"></select>
-<button onclick="loadData()">読込</button>
-<button onclick="deleteData()">削除</button>
-<button onclick="deleteAllData()">全削除</button>
-
-<hr>
-
-<h2>🐎 馬の登録</h2>
-
-<div style="display: flex; gap: 30px; align-items: flex-start;">
-
-  <!-- 左：入力 -->
-  <div>
-    <input type="text" id="horseName" placeholder="馬名">
-    <button onclick="addHorse()">追加</button>
-  </div>
-
-  <!-- 右：リスト -->
-  <div>
-    <ul id="horseList"></ul>
-  </div>
-
-</div>
-
-<hr>
-
-<h2>🔍 フィルター</h2>
-対象馬：
-<select id="filterHorse">
-  <option value="">すべて表示</option>
-</select>
-<button onclick="render()">適用</button>
-
-<hr>
-
-<h2>⚔️ 対戦結果入力</h2>
-
-勝者：<select id="winner"></select>
-敗者：<select id="loser"></select>
-
-<br><br>
-
-着差：
-<select id="margin">
-  <option value="ハナ">ハナ</option>
-  <option value="アタマ">アタマ</option>
-  <option value="クビ">クビ</option>
-  <option value="1/2">1/2</option>
-  <option value="3/4">3/4</option>
-  <option value="1">1</option>
-  <option value="1 1/4">1 1/4</option>
-  <option value="1 1/2">1 1/2</option>
-  <option value="2">2</option>
-  <option value="大差">大差</option>
-</select>
-
-<br><br>
-
-レース名：<input type="text" id="raceName">
-日付：<input type="date" id="raceDate">
-
-<br>
-
-距離：
-<select id="distance"></select>
-
-馬場：
-<select id="surface">
-  <option value="芝">芝</option>
-  <option value="ダート">ダート</option>
-</select>
-
-<br>
-
-<button onclick="addMatch()">結果を追加</button>
-
-<hr>
-
-<h2>📊 対戦結果一覧</h2>
-<table>
-<thead>
-<tr>
-<th>日付</th>
-<th>レース</th>
-<th>距離</th>
-<th>馬場</th>
-<th>勝者</th>
-<th>敗者</th>
-<th>着差</th>
-<th>削除</th>
-</tr>
-</thead>
-<tbody id="resultTable"></tbody>
-</table>
-
-<script>
-let isDirty = false;
   
-let horses = [];
-let matches = [];
-
-let allData = JSON.parse(localStorage.getItem("allData")) || {};
-
-function addHorse() {
-  const name = document.getElementById("horseName").value.trim();
-  if (!name) return;
-
-  horses.push(name);
-  document.getElementById("horseName").value = "";
-
-  isDirty = true;
-  render();
-}
-
-function deleteHorse(index) {
-  if (!confirm("この馬を削除しますか？")) return;
-
-  const horseName = horses[index];
-
-  // 対戦データも削除（この馬が含まれるもの）
-  matches = matches.filter(m => m.winner !== horseName && m.loser !== horseName);
-
-  horses.splice(index, 1);
-
-  isDirty = true;
-  render();
-}
-
-function deleteMatch(index) {
-  if (!confirm("削除しますか？")) return;
-
-  matches.splice(index, 1);
-
-  isDirty = true;
-  render();
-}
-
-function render() {
-  // 馬リスト
-  const list = document.getElementById("horseList");
-  list.innerHTML = "";
-  horses.forEach((h, i) => {
-  const li = document.createElement("li");
-
-  li.innerHTML = `
-    ${h}
-    <button onclick="deleteHorse(${i})">削除</button>
-  `;
-
-  list.appendChild(li);
-});
-
-  // セレクト更新
-  ["winner", "loser", "filterHorse"].forEach(id => {
-    const sel = document.getElementById(id);
-    const current = sel.value;
-    sel.innerHTML = "";
-
-    if (id === "filterHorse") {
-      const allOpt = document.createElement("option");
-      allOpt.value = "";
-      allOpt.textContent = "すべて表示";
-      sel.appendChild(allOpt);
-    }
-
-    horses.forEach(h => {
+  <h2>💾 データ保存・読込</h2>
+  <input type="text" id="saveName" placeholder="保存名を入力">
+  <button onclick="saveData()">保存</button>
+  <select id="loadSelect"></select>
+  <button onclick="loadData()">読込</button>
+  <button onclick="deleteData()">削除</button>
+  <button onclick="deleteAllData()">全削除</button>
+  
+  <hr>
+  
+  <h2>🐎 馬の登録</h2>
+  <div style="display: flex; gap: 30px; align-items: flex-start;">
+    <div>
+      <input type="text" id="horseName" placeholder="馬名">
+      <button onclick="addHorse()">追加</button>
+    </div>
+    
+    <div>
+      <ul id="horseList"></ul>
+    </div>
+  </div>
+  
+  <hr>
+  
+  <h2>🔍 フィルター</h2>
+  対象馬：
+  <select id="filterHorse">
+    <option value="">すべて表示</option>
+  </select>
+  <button onclick="render()">適用</button>
+  
+  <hr>
+  
+  <h2>⚔️ 対戦結果入力</h2>
+  勝者：<select id="winner"></select>
+  敗者：<select id="loser"></select>
+  
+  <br><br>
+  
+  着差：
+  <select id="margin">
+    <option value="ハナ">ハナ</option>
+    <option value="アタマ">アタマ</option>
+    <option value="クビ">クビ</option>
+    <option value="1/2">1/2</option>
+    <option value="3/4">3/4</option>
+    <option value="1">1</option>
+    <option value="1 1/4">1 1/4</option>
+    <option value="1 1/2">1 1/2</option>
+    <option value="2">2</option>
+    <option value="大差">大差</option>
+  </select>
+  
+  <br><br>
+  
+  レース名：<input type="text" id="raceName">
+  日付：<input type="date" id="raceDate">
+  
+  <br>
+  
+  距離：
+  <select id="distance"></select>
+  
+  馬場：
+  <select id="surface">
+    <option value="芝">芝</option>
+    <option value="ダート">ダート</option>
+  </select>
+  
+  <br>
+  
+  <button onclick="addMatch()">結果を追加</button>
+  
+  <hr>
+  
+  <h2>📊 対戦結果一覧</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>レース</th>
+        <th>距離</th>
+        <th>馬場</th>
+        <th>勝者</th>
+        <th>敗者</th>
+        <th>着差</th>
+        <th>削除</th>
+      </tr>
+    </thead>
+    <tbody id="resultTable"></tbody>
+  </table>
+  
+<script>
+  let isDirty = false;
+  
+  let horses = [];
+  let matches = [];
+  
+  let allData = JSON.parse(localStorage.getItem("allData")) || {};
+  
+  function addHorse() {
+    const name = document.getElementById("horseName").value.trim();
+    if (!name) return;
+    
+    horses.push(name);
+    document.getElementById("horseName").value = "";
+    
+    isDirty = true;
+    
+    render();
+  }
+  
+  function deleteHorse(index) {
+    if (!confirm("この馬を削除しますか？")) return;
+    
+    const horseName = horses[index];
+    
+    // 対戦データも削除（この馬が含まれるもの）
+    matches = matches.filter(m => m.winner !== horseName && m.loser !== horseName);
+    
+    horses.splice(index, 1);
+    
+    isDirty = true;
+    
+    render();
+  }
+  
+  function deleteMatch(index) {
+    if (!confirm("削除しますか？")) return;
+    
+    matches.splice(index, 1);
+  
+    isDirty = true;
+    
+    render();
+  }
+  
+  function render() {
+    // 馬リスト
+    const list = document.getElementById("horseList");
+    list.innerHTML = "";
+    horses.forEach((h, i) => {
+      const li = document.createElement("li");
+      
+      li.innerHTML = `
+      ${h}
+      <button onclick="deleteHorse(${i})">削除</button>
+      `;
+      
+      list.appendChild(li);
+    });
+    
+    // セレクト更新
+    ["winner", "loser", "filterHorse"].forEach(id => {
+      const sel = document.getElementById(id);
+      const current = sel.value;
+      sel.innerHTML = "";
+      
+      if (id === "filterHorse") {
+        const allOpt = document.createElement("option");
+        allOpt.value = "";
+        allOpt.textContent = "すべて表示";
+        sel.appendChild(allOpt);
+      }
+      
+      horses.forEach(h => {
+        const opt = document.createElement("option");
+        opt.value = h;
+        opt.textContent = h;
+        sel.appendChild(opt);
+      });
+      
+      sel.value = current;
+    });
+    
+    // 距離プルダウン
+    const distSel = document.getElementById("distance");
+    distSel.innerHTML = "";
+    for (let d = 1000; d <= 3600; d += 100) {
       const opt = document.createElement("option");
-      opt.value = h;
-      opt.textContent = h;
+      opt.value = d;
+      opt.textContent = d + "m";
+      distSel.appendChild(opt);
+    }
+    
+    // フィルター値
+    const filter = document.getElementById("filterHorse").value;
+    
+    // 日付の新しい順にソート
+    const sortedMatches = [...matches].sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+    
+    // 結果表示
+    const table = document.getElementById("resultTable");
+    table.innerHTML = "";
+    
+    sortedMatches.forEach((m) => {
+      // フィルター適用
+      if (filter && m.winner !== filter && m.loser !== filter) return;
+      
+      const originalIndex = matches.indexOf(m);
+      
+      const tr = document.createElement("tr");
+      
+      tr.innerHTML = `
+      <td>${m.date}</td>
+      <td>${m.race}</td>
+      <td>${m.distance}m</td>
+      <td>${m.surface}</td>
+      <td class="win">${m.winner}</td>
+      <td>${m.loser}</td>
+      <td>${m.margin}</td>
+      <td><button onclick="deleteMatch(${originalIndex})">削除</button></td>
+      `;
+      
+      table.appendChild(tr);
+    });
+  }
+  
+  function addMatch() {
+    const winner = document.getElementById("winner").value;
+    const loser = document.getElementById("loser").value;
+    const margin = document.getElementById("margin").value;
+    const race = document.getElementById("raceName").value;
+    const date = document.getElementById("raceDate").value;
+    const distance = document.getElementById("distance").value;
+    const surface = document.getElementById("surface").value;
+    
+    if (winner === loser) {
+      alert("同じ馬は選べません");
+      return;
+    }
+    
+    matches.push({
+      winner,
+      loser,
+      margin,
+      race,
+      date,
+      distance,
+      surface
+    });
+    
+    isDirty = true;
+    
+    render();
+  }
+  
+  // 保存関数
+  function saveData() {
+    const name = document.getElementById("saveName").value.trim();
+    if (!name) {
+      alert("保存名を入力してください");
+      return;
+    }
+    
+    allData[name] = {
+      horses: [...horses],
+      matches: [...matches]
+    };
+    
+    localStorage.setItem("allData", JSON.stringify(allData));
+    
+    isDirty = false;
+    
+    updateSaveList(name);
+    
+    alert("保存しました");
+  }
+  
+  // 読込関数
+  function loadData() {
+    const name = document.getElementById("loadSelect").value;
+    if (!name) return;
+    
+    if (isDirty) {
+      const ok = confirm("現在の変更内容は保存されません。読み込みますか？");
+      if (!ok) return;
+    }
+    
+    const data = allData[name];
+    if (!data) return;
+    
+    horses = data.horses || [];
+    matches = data.matches || [];
+    
+    isDirty = false;
+    
+    updateSaveList(name);
+    render();
+  }
+  
+  // 削除関数
+  function deleteData() {
+    const name = document.getElementById("loadSelect").value;
+    if (!name) return;
+    
+    if (!confirm("削除しますか？")) return;
+    
+    delete allData[name];
+    localStorage.setItem("allData", JSON.stringify(allData));
+    
+    updateSaveList();
+  }
+  
+  function deleteAllData() {
+    if (!confirm("すべての保存データと現在のデータを削除しますか？")) return;
+    
+    // 保存データ削除
+    allData = {};
+    localStorage.removeItem("allData");
+    
+    // UI更新
+    updateSaveList();
+    
+    alert("保存データをすべて削除しました");
+  }
+  
+  // プルダウン更新
+  function updateSaveList(selectedName = "") {
+    const sel = document.getElementById("loadSelect");
+    sel.innerHTML = "";
+    
+    // 未選択用
+    const defaultOpt = document.createElement("option");
+    defaultOpt.value = "";
+    defaultOpt.textContent = "データを選択";
+    defaultOpt.disabled = true;
+    defaultOpt.selected = true;
+    sel.appendChild(defaultOpt);
+    
+    Object.keys(allData).forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      
+      if (name === selectedName) {
+        opt.selected = true;
+        defaultOpt.selected = false;
+      }
+      
       sel.appendChild(opt);
     });
-
-    sel.value = current;
-  });
-
-  // 距離プルダウン
-  const distSel = document.getElementById("distance");
-  distSel.innerHTML = "";
-  for (let d = 1000; d <= 3600; d += 100) {
-    const opt = document.createElement("option");
-    opt.value = d;
-    opt.textContent = d + "m";
-    distSel.appendChild(opt);
   }
-
-  // フィルター値
-  const filter = document.getElementById("filterHorse").value;
-
-// 日付の新しい順にソート
-const sortedMatches = [...matches].sort((a, b) => {
-  return new Date(b.date) - new Date(a.date);
-});
-
-// 結果表示
-const table = document.getElementById("resultTable");
-table.innerHTML = "";
-
-sortedMatches.forEach((m) => {
-  // フィルター適用
-  if (filter && m.winner !== filter && m.loser !== filter) return;
-
-  const originalIndex = matches.indexOf(m);
-
-  const tr = document.createElement("tr");
-
-  tr.innerHTML = `
-    <td>${m.date}</td>
-    <td>${m.race}</td>
-    <td>${m.distance}m</td>
-    <td>${m.surface}</td>
-    <td class="win">${m.winner}</td>
-    <td>${m.loser}</td>
-    <td>${m.margin}</td>
-    <td><button onclick="deleteMatch(${originalIndex})">削除</button></td>
-  `;
-
-  table.appendChild(tr);
-});
-}
-
-function addMatch() {
-  const winner = document.getElementById("winner").value;
-  const loser = document.getElementById("loser").value;
-  const margin = document.getElementById("margin").value;
-  const race = document.getElementById("raceName").value;
-  const date = document.getElementById("raceDate").value;
-  const distance = document.getElementById("distance").value;
-  const surface = document.getElementById("surface").value;
-
-  if (winner === loser) {
-    alert("同じ馬は選べません");
-    return;
-  }
-
-  matches.push({
-    winner,
-    loser,
-    margin,
-    race,
-    date,
-    distance,
-    surface
-  });
-
-  isDirty = true;
-  render();
-}
-
-  // 保存関数
-function saveData() {
-  const name = document.getElementById("saveName").value.trim();
-  if (!name) {
-    alert("保存名を入力してください");
-    return;
-  }
-
-  allData[name] = {
-    horses: [...horses],
-    matches: [...matches]
-  };
-
-  localStorage.setItem("allData", JSON.stringify(allData));
-
-  isDirty = false;
-
-  updateSaveList(name);
-
-  alert("保存しました");
-}
-
-  // 読込関数
-function loadData() {
-  const name = document.getElementById("loadSelect").value;
-  if (!name) return;
   
-  if (isDirty) {
-    const ok = confirm("現在の変更内容は保存されません。読み込みますか？");
-    if (!ok) return;
-  }
-
-  const data = allData[name];
-  if (!data) return;
-
-  horses = data.horses || [];
-  matches = data.matches || [];
-
-  isDirty = false;
-
-  updateSaveList(name);
+  updateSaveList();
   render();
-}
-
-  // 削除関数
-function deleteData() {
-  const name = document.getElementById("loadSelect").value;
-  if (!name) return;
-
-  if (!confirm("削除しますか？")) return;
-
-  delete allData[name];
-  localStorage.setItem("allData", JSON.stringify(allData));
-
-  updateSaveList();
-}
-
-  function deleteAllData() {
-  if (!confirm("すべての保存データと現在のデータを削除しますか？")) return;
-
-  // 保存データ削除
-  allData = {};
-  localStorage.removeItem("allData");
-
-  // UI更新
-  updateSaveList();
-
-  alert("保存データをすべて削除しました");
-}
-
-  // プルダウン更新
-function updateSaveList(selectedName = "") {
-  const sel = document.getElementById("loadSelect");
-  sel.innerHTML = "";
-
-  // 未選択用
-  const defaultOpt = document.createElement("option");
-  defaultOpt.value = "";
-  defaultOpt.textContent = "データを選択";
-  defaultOpt.disabled = true;
-  defaultOpt.selected = true;
-  sel.appendChild(defaultOpt);
-
-  Object.keys(allData).forEach(name => {
-    const opt = document.createElement("option");
-    opt.value = name;
-    opt.textContent = name;
-
-    if (name === selectedName) {
-      opt.selected = true;
-      defaultOpt.selected = false;
-    }
-
-    sel.appendChild(opt);
-  });
-}
-
-  updateSaveList();
-render();
-
+  
   // ページ離脱時の警告
-window.addEventListener("beforeunload", function (e) {
-  if (!isDirty) return;
-
-  e.preventDefault();
-  e.returnValue = "";
-});
+  window.addEventListener("beforeunload", function (e) {
+    if (!isDirty) return;
+    
+    e.preventDefault();
+    e.returnValue = "";
+  });
 </script>
 
 </body>
