@@ -279,11 +279,11 @@
     // 対応表
     const map = {
       0.0: "0",
-      0.1: "  1/2馬身",
-      0.2: "    1馬身",
+      0.1: "&nbsp;&nbsp;1/2馬身",
+      0.2: "&nbsp;&nbsp;&nbsp;&nbsp;1馬身",
       0.3: "1 3/4馬身",
       0.4: "2 1/2馬身",
-      0.5: "    3馬身",
+      0.5: "&nbsp;&nbsp;&nbsp;&nbsp;3馬身",
       0.6: "3 1/2馬身",
       0.7: "    4馬身",
       0.8: "    5馬身",
@@ -301,7 +301,7 @@
     const rounded = Math.round(t * 10) / 10;
     
     if (rounded >= 1.7) {
-      return `${rounded} (大差)`;
+      return `${rounded} (&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大差)`;
     }
     
     if (map.hasOwnProperty(rounded)) {
