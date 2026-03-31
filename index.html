@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>直接対決記録ツール</title>
+<title>直接対決記録ツール（完成版）</title>
 <style>
 body { font-family: sans-serif; padding: 20px; }
 input, select, button { margin: 5px; }
@@ -24,12 +24,24 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 
 <h2>⚔️ 対戦結果入力</h2>
 
-馬A：<select id="horseA"></select>
-馬B：<select id="horseB"></select>
-
-<br>
-
 勝者：<select id="winner"></select>
+敗者：<select id="loser"></select>
+
+<br><br>
+
+着差：
+<select id="margin">
+  <option value="ハナ">ハナ</option>
+  <option value="アタマ">アタマ</option>
+  <option value="クビ">クビ</option>
+  <option value="1/2">1/2</option>
+  <option value="3/4">3/4</option>
+  <option value="1">1</option>
+  <option value="1 1/4">1 1/4</option>
+  <option value="1 1/2">1 1/2</option>
+  <option value="2">2</option>
+  <option value="大差">大差</option>
+</select>
 
 <br><br>
 
@@ -39,7 +51,7 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <br>
 
 距離：
-<input type="number" id="distance" placeholder="例：1200">
+<select id="distance"></select>
 
 馬場：
 <select id="surface">
@@ -61,9 +73,9 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <th>レース</th>
 <th>距離</th>
 <th>馬場</th>
-<th>馬A</th>
-<th>馬B</th>
 <th>勝者</th>
+<th>敗者</th>
+<th>着差</th>
 </tr>
 </thead>
 <tbody id="resultTable"></tbody>
@@ -100,7 +112,7 @@ function render() {
   });
 
   // セレクト更新
-  ["horseA", "horseB", "winner"].forEach(id => {
+  ["winner", "loser"].forEach(id => {
     const sel = document.getElementById(id);
     sel.innerHTML = "";
     horses.forEach(h => {
@@ -111,43 +123,53 @@ function render() {
     });
   });
 
+  // 距離プルダウン生成（1000〜3600）
+  const distSel = document.getElementById("distance");
+  distSel.innerHTML = "";
+  for (let d = 1000; d <= 3600; d += 100) {
+    const opt = document.createElement("option");
+    opt.value = d;
+    opt.textContent = d + "m";
+    distSel.appendChild(opt);
+  }
+
   // 結果表示
   const table = document.getElementById("resultTable");
   table.innerHTML = "";
 
   matches.forEach(m => {
     const tr = document.createElement("tr");
-
     tr.innerHTML = `
       <td>${m.date}</td>
       <td>${m.race}</td>
       <td>${m.distance}m</td>
       <td>${m.surface}</td>
-      <td class="${m.winner === m.a ? 'win' : ''}">${m.a}</td>
-      <td class="${m.winner === m.b ? 'win' : ''}">${m.b}</td>
-      <td>${m.winner}</td>
+      <td class="win">${m.winner}</td>
+      <td>${m.loser}</td>
+      <td>${m.margin}</td>
     `;
-
     table.appendChild(tr);
   });
 }
 
 function addMatch() {
-  const a = document.getElementById("horseA").value;
-  const b = document.getElementById("horseB").value;
   const winner = document.getElementById("winner").value;
+  const loser = document.getElementById("loser").value;
+  const margin = document.getElementById("margin").value;
   const race = document.getElementById("raceName").value;
   const date = document.getElementById("raceDate").value;
   const distance = document.getElementById("distance").value;
   const surface = document.getElementById("surface").value;
 
-  if (a === b) {
+  if (winner === loser) {
     alert("同じ馬は選べません");
     return;
   }
 
   matches.push({
-    a, b, winner,
+    winner,
+    loser,
+    margin,
     race,
     date,
     distance,
