@@ -82,15 +82,29 @@
   日付：<input type="date" id="raceDate">
   
   <br>
-  
-  距離：
-  <select id="distance"></select>
-  
+
+  競馬場：
+  <select id="course">
+    <option value="札幌">札幌</option>
+    <option value="函館">函館</option>
+    <option value="福島">福島</option>
+    <option value="新潟">新潟</option>
+    <option value="中山">中山</option>
+    <option value="東京">東京</option>
+    <option value="中京">中京</option>
+    <option value="京都">京都</option>
+    <option value="阪神">阪神</option>
+    <option value="小倉">小倉</option>
+  </select>
+
   馬場：
   <select id="surface">
     <option value="芝">芝</option>
     <option value="ダート">ダート</option>
   </select>
+  
+  距離：
+  <select id="distance"></select>
   
   <br>
   
@@ -112,8 +126,9 @@
       <tr>
         <th>日付</th>
         <th>レース</th>
-        <th>距離</th>
+        <th>開催</th>
         <th>馬場</th>
+        <th>距離</th>
         <th>勝者</th>
         <th>敗者</th>
         <th>着差</th>
@@ -242,8 +257,9 @@
       tr.innerHTML = `
       <td>${m.date}</td>
       <td>${m.race}</td>
-      <td>${m.distance}m</td>
+      <td>${m.course || ""}</td>
       <td>${m.surface}</td>
+      <td>${m.distance}m</td>
       <td class="win ${isWinnerHit ? 'filter-hit' : ''}">${m.winner}</td>
       <td class="${isLoserHit ? 'filter-hit' : ''}">${m.loser}</td>
       <td>${m.margin}</td>
@@ -260,8 +276,9 @@
     const margin = document.getElementById("margin").value;
     const race = document.getElementById("raceName").value;
     const date = document.getElementById("raceDate").value;
-    const distance = document.getElementById("distance").value;
+    const course = document.getElementById("course").value;
     const surface = document.getElementById("surface").value;
+    const distance = document.getElementById("distance").value;
     
     if (winner === loser) {
       alert("同じ馬は選べません");
@@ -274,8 +291,9 @@
       margin,
       race,
       date,
+      course,
+      surface,
       distance,
-      surface
     });
     
     isDirty = true;
