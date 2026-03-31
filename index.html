@@ -28,10 +28,21 @@ td, th { border: 1px solid #ccc; padding: 5px 10px; }
 <hr>
 
 <h2>🐎 馬の登録</h2>
-<input type="text" id="horseName" placeholder="馬名">
-<button onclick="addHorse()">追加</button>
 
-<ul id="horseList"></ul>
+<div style="display: flex; gap: 30px; align-items: flex-start;">
+
+  <!-- 左：入力 -->
+  <div>
+    <input type="text" id="horseName" placeholder="馬名">
+    <button onclick="addHorse()">追加</button>
+  </div>
+
+  <!-- 右：リスト -->
+  <div>
+    <ul id="horseList"></ul>
+  </div>
+
+</div>
 
 <hr>
 
@@ -123,6 +134,20 @@ function addHorse() {
   render();
 }
 
+function deleteHorse(index) {
+  if (!confirm("この馬を削除しますか？")) return;
+
+  const horseName = horses[index];
+
+  // 対戦データも削除（この馬が含まれるもの）
+  matches = matches.filter(m => m.winner !== horseName && m.loser !== horseName);
+
+  horses.splice(index, 1);
+
+  isDirty = true;
+  render();
+}
+
 function deleteMatch(index) {
   if (!confirm("削除しますか？")) return;
 
@@ -136,11 +161,16 @@ function render() {
   // 馬リスト
   const list = document.getElementById("horseList");
   list.innerHTML = "";
-  horses.forEach(h => {
-    const li = document.createElement("li");
-    li.textContent = h;
-    list.appendChild(li);
-  });
+  horses.forEach((h, i) => {
+  const li = document.createElement("li");
+
+  li.innerHTML = `
+    ${h}
+    <button onclick="deleteHorse(${i})">削除</button>
+  `;
+
+  list.appendChild(li);
+});
 
   // セレクト更新
   ["winner", "loser", "filterHorse"].forEach(id => {
