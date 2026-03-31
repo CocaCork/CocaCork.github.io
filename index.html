@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>直接対決記録ツール（強化版）</title>
+  <title>競馬直対記録ツール</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
     input, select, button { margin: 5px; }
@@ -41,10 +41,9 @@
   
   <h2>🔍 フィルター</h2>
   対象馬：
-  <select id="filterHorse">
+  <select id="filterHorse" onchange="render()">
     <option value="">すべて表示</option>
   </select>
-  <button onclick="render()">適用</button>
   
   <hr>
   
