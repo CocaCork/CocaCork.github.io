@@ -20,10 +20,9 @@
       margin-right: 50px;
     }
     
-    .filter-hit {
-      color: red;
-      font-weight: bold;
-    }
+    .filter1 { color: red; font-weight: bold; }
+    .filter2 { color: blue; font-weight: bold; }
+    .filter3 { color: green; font-weight: bold; }
 
     .margin-time {
       border-right: none;
@@ -110,8 +109,18 @@
   <hr>
   
   <h2>🔍 フィルター</h2>
-  対象馬：
-  <select id="filterHorse" onchange="render()">
+  対象馬①：
+  <select id="filterHorse1" onchange="render()">
+    <option value="">すべて表示</option>
+  </select>
+  
+  対象馬②：
+  <select id="filterHorse2" onchange="render()">
+    <option value="">すべて表示</option>
+  </select>
+  
+  対象馬③：
+  <select id="filterHorse3" onchange="render()">
     <option value="">すべて表示</option>
   </select>
   
@@ -215,7 +224,7 @@
     });
     
     // セレクト更新
-    ["winner", "loser", "filterHorse"].forEach(id => {
+    ["winner", "loser", "filterHorse1", "filterHorse2", "filterHorse3"].forEach(id => {
       const sel = document.getElementById(id);
       const current = sel.value;
       sel.innerHTML = "";
@@ -250,7 +259,9 @@
     }
     
     // フィルター値
-    const filter = document.getElementById("filterHorse").value;
+    const f1 = document.getElementById("filterHorse1").value;
+    const f2 = document.getElementById("filterHorse2").value;
+    const f3 = document.getElementById("filterHorse3").value;
     
     // ソート
     const sortedMatches = [...matches].sort((a, b) => {
@@ -272,14 +283,25 @@
     
     sortedMatches.forEach((m) => {
       // フィルター適用
-      if (filter && m.winner !== filter && m.loser !== filter) return;
+      if (
+        (f1 && m.winner !== f1 && m.loser !== f1) &&
+        (f2 && m.winner !== f2 && m.loser !== f2) &&
+        (f3 && m.winner !== f3 && m.loser !== f3)
+      ) return;
       
       const originalIndex = matches.indexOf(m);
       
       const tr = document.createElement("tr");
       
-      const isWinnerHit = filter && m.winner === filter;
-      const isLoserHit = filter && m.loser === filter;
+      function getClass(name) {
+        if (name === f1) return "filter1";
+        if (name === f2) return "filter2";
+        if (name === f3) return "filter3";
+        return "";
+      }
+      
+      const winnerClass = getClass(m.winner);
+      const loserClass = getClass(m.loser);
       
       const marginData = formatMargin(m.margin);
       
@@ -289,8 +311,8 @@
       <td>${m.course || ""}</td>
       <td>${m.surface}</td>
       <td>${m.distance}m</td>
-      <td class="win ${isWinnerHit ? 'filter-hit' : ''}">${m.winner}</td>
-      <td class="${isLoserHit ? 'filter-hit' : ''}">${m.loser}</td>
+      <td class="win ${winnerClass}">${m.winner}</td>
+      <td class="${loserClass}">${m.loser}</td>
       
       <td class="margin-time">${marginData.time}</td>
       <td class="margin-text">${marginData.margin}</td>
