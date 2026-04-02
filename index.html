@@ -123,6 +123,8 @@
   <select id="filterHorse3" onchange="render()">
     <option value="">すべて表示</option>
   </select>
+
+  <button onclick="clearFilters()">フィルター解除</button>
   
   <hr>
   
@@ -229,7 +231,7 @@
       const current = sel.value;
       sel.innerHTML = "";
       
-      if (id === "filterHorse") {
+      if (id === "filterHorse1" || id === "filterHorse2" || id === "filterHorse3") {
         const allOpt = document.createElement("option");
         allOpt.value = "";
         allOpt.textContent = "すべて表示";
@@ -283,11 +285,12 @@
     
     sortedMatches.forEach((m) => {
       // フィルター適用
-      if (
-        (f1 && m.winner !== f1 && m.loser !== f1) &&
-        (f2 && m.winner !== f2 && m.loser !== f2) &&
-        (f3 && m.winner !== f3 && m.loser !== f3)
-      ) return;
+      const filters = [f1, f2, f3].filter(f => f);
+      
+      if (filters.length > 0) {
+        const hit = filters.some(f => m.winner === f || m.loser === f);
+        if (!hit) return;
+      }
       
       const originalIndex = matches.indexOf(m);
       
@@ -360,6 +363,13 @@
       return { time: displayTime, margin: map[rounded] };
     }
     return { time: displayTime, margin: "" };
+  }
+
+  function clearFilters() {
+    ["filterHorse1", "filterHorse2", "filterHorse3"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+    render();
   }
   
   function addMatch() {
