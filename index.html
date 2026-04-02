@@ -310,7 +310,11 @@
       
       tr.innerHTML = `
       <td>${m.date}</td>
-      <td>${m.race}</td>
+      <td>
+      <a href="https://www.google.com/search?q=${encodeURIComponent(m.date + '　' + m.race)}" target="_blank">
+      ${m.race}
+      </a>
+      </td>
       <td>${m.course || ""}</td>
       <td>${m.surface}</td>
       <td>${m.distance}m</td>
