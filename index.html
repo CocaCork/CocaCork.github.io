@@ -65,7 +65,16 @@
   
   <h2>⚔️ 対戦結果入力</h2>
   勝者：<select id="winner"></select>
+  順位：
+  <select id="winnerRank">
+    ${[...Array(18)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
+  </select>
+  
   敗者：<select id="loser"></select>
+  順位：
+  <select id="loserRank">
+    ${[...Array(18)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
+  </select>
   
   <br><br>
   
@@ -319,8 +328,12 @@
       <td>${m.course || ""}</td>
       <td>${m.surface}</td>
       <td>${m.distance}m</td>
-      <td class="win ${winnerClass}">${m.winner}</td>
-      <td class="${loserClass}">${m.loser}</td>
+      <td class="win ${winnerClass}">
+      ${m.winner}${m.winnerRank ? ` (${m.winnerRank})` : ""}
+      </td>
+      <td class="${loserClass}">
+      ${m.loser}${m.loserRank ? ` (${m.loserRank})` : ""}
+      </td>
       
       <td class="margin-time">${marginData.time}</td>
       <td class="margin-text">${marginData.margin}</td>
@@ -380,6 +393,8 @@
   function addMatch() {
     const winner = document.getElementById("winner").value;
     const loser = document.getElementById("loser").value;
+    const winnerRank = document.getElementById("winnerRank").value;
+    const loserRank = document.getElementById("loserRank").value;
     const margin = document.getElementById("margin").value;
     const race = document.getElementById("raceName").value;
     const date = document.getElementById("raceDate").value;
@@ -395,6 +410,8 @@
     matches.push({
       winner,
       loser,
+      winnerRank,
+      loserRank,
       margin,
       race,
       date,
@@ -404,9 +421,7 @@
     });
     
     isDirty = true;
-    
     render();
-
     alert("データを追加しました");
   }
 
