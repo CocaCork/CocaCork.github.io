@@ -65,16 +65,10 @@
   
   <h2>⚔️ 対戦結果入力</h2>
   勝者：<select id="winner"></select>
-  順位：
-  <select id="winnerRank">
-    ${[...Array(18)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
-  </select>
+  順位：<select id="winnerRank"></select>
   
   敗者：<select id="loser"></select>
-  順位：
-  <select id="loserRank">
-    ${[...Array(18)].map((_, i) => `<option value="${i+1}">${i+1}</option>`).join("")}
-  </select>
+  順位：<select id="loserRank"></select>
   
   <br><br>
   
@@ -217,6 +211,20 @@
     isDirty = true;
     
     render();
+  }
+
+  function initRankSelect(id) {
+    const sel = document.getElementById(id);
+    
+    // 念のため初期化（重複防止）
+    sel.innerHTML = "";
+    
+    for (let i = 1; i <= 18; i++) {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = i;
+      sel.appendChild(opt);
+    }
   }
   
   function render() {
@@ -603,6 +611,9 @@
     
     reader.readAsText(file);
   }
+  
+  initRankSelect("winnerRank");
+  initRankSelect("loserRank");
   
   updateSaveList();
   render();
