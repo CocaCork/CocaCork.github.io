@@ -345,7 +345,7 @@
       
       tr.innerHTML = `
       <td>
-      <select class="mark-${m.mark || ''}" 
+      <select class="mark-select mark-${m.mark || ''}" 
       onchange="updateMark(${originalIndex}, this)">
       <option value="">-</option>
       <option value="○" ${m.mark === "○" ? "selected" : ""}>○</option>
