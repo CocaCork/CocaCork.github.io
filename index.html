@@ -162,6 +162,12 @@
     const name = document.getElementById("horseName").value.trim();
     if (!name) return;
     
+    // 重複チェック
+    if (horses.includes(name)) {
+      alert("同じ馬名が既に登録されています");
+      return;
+    }
+    
     horses.push(name);
     document.getElementById("horseName").value = "";
     
