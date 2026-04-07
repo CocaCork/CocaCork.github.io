@@ -136,6 +136,7 @@
   <table>
     <thead>
       <tr>
+        <th>評価</th>
         <th>日付</th>
         <th>レース</th>
         <th>開催</th>
@@ -333,18 +334,32 @@
       const marginData = formatMargin(m.margin);
       
       tr.innerHTML = `
+      <td>
+      <select onchange="updateMark(${originalIndex}, this.value)">
+      <option value="">-</option>
+      <option value="○" ${m.mark === "○" ? "selected" : ""}>○</option>
+      <option value="△" ${m.mark === "△" ? "selected" : ""}>△</option>
+      <option value="×" ${m.mark === "×" ? "selected" : ""}>×</option>
+      <option value="✓" ${m.mark === "✓" ? "selected" : ""}>✓</option>
+      </select>
+      </td>
+      
       <td>${m.date}</td>
+      
       <td>
       <a href="https://www.google.com/search?q=${encodeURIComponent(m.date + '　' + m.race)}" target="_blank">
       ${m.race}
       </a>
       </td>
+      
       <td>${m.course || ""}</td>
       <td>${m.surface}</td>
       <td>${m.distance}m</td>
+      
       <td class="win ${winnerClass}">
       ${m.winner}${m.winnerRank ? ` (${m.winnerRank})` : ""}
       </td>
+      
       <td class="${loserClass}">
       ${m.loser}${m.loserRank ? ` (${m.loserRank})` : ""}
       </td>
@@ -444,6 +459,7 @@
       course,
       surface,
       distance,
+      mark: ""
     });
     
     isDirty = true;
@@ -536,6 +552,11 @@
     updateSaveList();
     
     alert("保存データをすべて削除しました");
+  }
+
+  function updateMark(index, value) {
+    matches[index].mark = value;
+    isDirty = true;
   }
   
   // プルダウン更新
