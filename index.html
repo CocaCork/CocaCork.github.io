@@ -420,6 +420,18 @@
       alert("同じ馬は選べません");
       return;
     }
+
+    // 重複チェック（日付・勝者・敗者が完全一致）
+    const exists = matches.some(m =>
+      m.date === date &&
+      m.winner === winner &&
+      m.loser === loser
+                               );
+    
+    if (exists) {
+      alert("同じ日付・勝者・敗者のデータは既に存在します");
+      return;
+    }
     
     matches.push({
       winner,
