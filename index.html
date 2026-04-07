@@ -32,6 +32,10 @@
       border-left: none;
       font-size: 0.85em;
     }
+
+    .mark-○ { color: red; font-weight: bold; }
+    .mark-× { color: gray; font-weight: bold; }
+    .mark-✓ { color: green; font-weight: bold; }
   </style>
 </head>
 
@@ -335,10 +339,10 @@
       
       tr.innerHTML = `
       <td>
-      <select onchange="updateMark(${originalIndex}, this.value)">
+      <select class="mark-${m.mark || ''}" 
+      onchange="updateMark(${originalIndex}, this)">
       <option value="">-</option>
       <option value="○" ${m.mark === "○" ? "selected" : ""}>○</option>
-      <option value="△" ${m.mark === "△" ? "selected" : ""}>△</option>
       <option value="×" ${m.mark === "×" ? "selected" : ""}>×</option>
       <option value="✓" ${m.mark === "✓" ? "selected" : ""}>✓</option>
       </select>
@@ -554,9 +558,20 @@
     alert("保存データをすべて削除しました");
   }
 
-  function updateMark(index, value) {
+  function updateMark(index, selectEl) {
+    const value = selectEl.value;
+    
+    // データ更新
     matches[index].mark = value;
     isDirty = true;
+    
+    // クラス全部リセット
+    selectEl.classList.remove("mark-○", "mark-△", "mark-×", "mark-✓");
+    
+    // 新しいクラス付与
+    if (value) {
+      selectEl.classList.add("mark-" + value);
+    }
   }
   
   // プルダウン更新
