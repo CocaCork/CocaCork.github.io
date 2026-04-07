@@ -38,10 +38,25 @@
       font-weight: bold;
       border-radius: 6px;
     }
-
-    .mark-○ { color: red; font-weight: bold; }
-    .mark-× { color: gray; font-weight: bold; }
-    .mark-✓ { color: green; font-weight: bold; }
+    
+    .mark-cell {
+      font-size: 1.5em;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      width: 40px;
+    }
+    
+    /* 色 */
+    .mark-○ { color: red; }
+    .mark-× { color: gray; }
+    .mark-✓ { color: green; }
+    
+    /* ホバーで分かりやすく */
+    .mark-cell:hover {
+      background-color: #eee;
+    }
   </style>
 </head>
 
@@ -344,14 +359,9 @@
       const marginData = formatMargin(m.margin);
       
       tr.innerHTML = `
-      <td>
-      <select class="mark-select mark-${m.mark || ''}" 
-      onchange="updateMark(${originalIndex}, this)">
-      <option value="">-</option>
-      <option value="○" ${m.mark === "○" ? "selected" : ""}>○</option>
-      <option value="×" ${m.mark === "×" ? "selected" : ""}>×</option>
-      <option value="✓" ${m.mark === "✓" ? "selected" : ""}>✓</option>
-      </select>
+      <td class="mark-cell mark-${m.mark || ''}" 
+      onclick="toggleMark(${originalIndex})">
+      ${m.mark || "-"}
       </td>
       
       <td>${m.date}</td>
@@ -564,20 +574,17 @@
     alert("保存データをすべて削除しました");
   }
 
-  function updateMark(index, selectEl) {
-    const value = selectEl.value;
+  function toggleMark(index) {
+    const order = ["", "○", "×", "✓"];
     
-    // データ更新
-    matches[index].mark = value;
+    const current = matches[index].mark || "";
+    const nextIndex = (order.indexOf(current) + 1) % order.length;
+    const next = order[nextIndex];
+    
+    matches[index].mark = next;
     isDirty = true;
     
-    // クラス全部リセット
-    selectEl.classList.remove("mark-○", "mark-△", "mark-×", "mark-✓");
-    
-    // 新しいクラス付与
-    if (value) {
-      selectEl.classList.add("mark-" + value);
-    }
+    render(); // 再描画
   }
   
   // プルダウン更新
