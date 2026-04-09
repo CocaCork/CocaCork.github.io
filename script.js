@@ -233,6 +233,16 @@ function updateSelect(side) {
 }
 
 
+function clearAllTeams(side) {
+  if (!confirm("本当にすべて削除しますか？")) return;
+
+  localStorage.removeItem(side + "_teams");
+
+  updateSelect(side);
+  setTeam(side, []); // 入力欄もクリア
+}
+
+
 function createTypeLabel(type) {
   if (!type) return "";
   return `<span class="type type-${type}">${type}</span>`;
