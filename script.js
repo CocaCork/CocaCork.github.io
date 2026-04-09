@@ -342,7 +342,7 @@ function showData(value, target) {
     ${createTypeLabel(pokemon.type2)}
     </div>
 
-    <div>
+    <div class="stat-row">
     <div class="stat-box"><b>HP:</b> ${calcHP(Number(pokemon.hp))}</div>
     <div class="stat-box"><b>攻撃:</b> ${calcOther(Number(pokemon.atk))}</div>
     <div class="stat-box"><b>防御:</b> ${calcOther(Number(pokemon.def))}</div>
