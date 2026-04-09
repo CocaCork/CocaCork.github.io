@@ -203,6 +203,8 @@ function deleteTeam(side) {
 
   if (!name) return;
 
+  if (!confirm("このパーティを削除しますか？")) return;
+
   const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
 
   delete data[name];
