@@ -149,9 +149,8 @@
       <input id="leftName" placeholder="保存名">
       
       <div class="team-controls">
+        <select id="leftSelect" onchange="loadTeam('left')"></select>
         <button onclick="saveTeam('left')">保存</button>
-        <select id="leftSelect"></select>
-        <button onclick="loadTeam('left')">読込</button>
         <button onclick="deleteTeam('left')">削除</button>
       </div>
       
@@ -164,9 +163,8 @@
       <input id="rightName" placeholder="保存名">
       
       <div class="team-controls">
+        <select id="rightSelect" onchange="loadTeam('right')"></select>
         <button onclick="saveTeam('right')">保存</button>
-        <select id="rightSelect"></select>
-        <button onclick="loadTeam('right')">読込</button>
         <button onclick="deleteTeam('right')">削除</button>
       </div>
       
