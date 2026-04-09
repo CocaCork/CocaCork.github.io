@@ -127,27 +127,28 @@
   </head>
   
   <body>
-
-    <div>
+    
+    <div class="column">
       <h3>左チーム</h3>
       <input id="leftName" placeholder="保存名">
       <button onclick="saveTeam('left')">保存</button>
       <select id="leftSelect"></select>
       <button onclick="loadTeam('left')">読込</button>
       <button onclick="deleteTeam('left')">削除</button>
+      
+      <div id="left"></div>
     </div>
     
-    <div>
+    <div class="column">
       <h3>右チーム</h3>
       <input id="rightName" placeholder="保存名">
       <button onclick="saveTeam('right')">保存</button>
       <select id="rightSelect"></select>
       <button onclick="loadTeam('right')">読込</button>
       <button onclick="deleteTeam('right')">削除</button>
+      
+      <div id="right"></div>
     </div>
-    
-    <div class="column" id="left"></div>
-    <div class="column" id="right"></div>
     
     <!-- 候補リスト -->
     <datalist id="pokemonList"></datalist>
