@@ -82,6 +82,24 @@ function createTypeLabel(type) {
 }
 
 
+function calcHP(base) {
+  let value = base * 2;
+  value = Math.floor(value + 31);
+  value = Math.floor(value / 2);
+  value = value + 60;
+  return value;
+}
+
+
+function calcOther(base) {
+  let value = base * 2;
+  value = Math.floor(value + 31);
+  value = Math.floor(value / 2);
+  value = value + 5;
+  return value;
+}
+
+
 // データ表示
 function showData(value, target) {
 
@@ -103,19 +121,19 @@ function showData(value, target) {
     ${createTypeLabel(pokemon.type2)}
     <br>
     
-    <b>HP:</b> ${pokemon.hp}<br>
+    <b>HP:</b> ${calcHP(Number(pokemon.hp))}<br>
     
     <div class="stat-row">
-    <div class="stat-box"><b>攻撃:</b> ${pokemon.atk}</div>
-    <div class="stat-box"><b>特攻:</b> ${pokemon.spa}</div>
+    <div class="stat-box"><b>攻撃:</b> ${calcOther(Number(pokemon.atk))}</div>
+    <div class="stat-box"><b>特攻:</b> ${calcOther(Number(pokemon.spa))}</div>
     </div>
     
     <div class="stat-row">
-    <div class="stat-box"><b>防御:</b> ${pokemon.def}</div>
-    <div class="stat-box"><b>特防:</b> ${pokemon.spd}</div>
+    <div class="stat-box"><b>防御:</b> ${calcOther(Number(pokemon.def))}</div>
+    <div class="stat-box"><b>特防:</b> ${calcOther(Number(pokemon.spd))}</div>
     </div>
     
-    <b>素早さ:</b> ${pokemon.spe}<br>
+    <b>素早さ:</b> ${calcOther(Number(pokemon.spe))}<br>
     
     <b>特性:</b> 
       ${pokemon.ability1 || ""}
