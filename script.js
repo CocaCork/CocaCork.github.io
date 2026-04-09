@@ -255,12 +255,14 @@ function showData(value, target) {
     </div>
 
     <div>
-    <b>弱点:</b>
+    <details>
+    <summary><b>相性:</b></summary>
     </div>
-    <div><span class="weak-label">x4:</span> ${renderTypes(weakness.x4)}</div>
-    <div><span class="weak-label">x2:</span> ${renderTypes(weakness.x2)}</div>
-    <div><span class="weak-label">x0.5:</span> ${renderTypes(weakness.x05)}</div>
-    <div><span class="weak-label">x0.25:</span> ${renderTypes(weakness.x025)}</div>
-    <div><span class="weak-label">x0:</span> ${renderTypes(weakness.x0)}</div>
+    <div><span class="weak-label">x4：</span> ${renderTypes(weakness.x4)}</div>
+    <div><span class="weak-label">x2：</span> ${renderTypes(weakness.x2)}</div>
+    <div><span class="weak-label">x0.5：</span> ${renderTypes(weakness.x05)}</div>
+    <div><span class="weak-label">x0.25：</span> ${renderTypes(weakness.x025)}</div>
+    <div><span class="weak-label">x0：</span> ${renderTypes(weakness.x0)}</div>
+    </details>
   `;
 }
