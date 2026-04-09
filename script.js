@@ -186,7 +186,10 @@ function loadTeam(side) {
   const select = document.getElementById(side + "Select");
   const name = select.value;
 
-  if (!name) return;
+  if (!name) {
+    setTeam(side, []); // 全部空にする
+    return;
+  }
 
   const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
 
