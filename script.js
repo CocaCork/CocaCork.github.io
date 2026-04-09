@@ -254,10 +254,8 @@ function showData(value, target) {
     ${pokemon.hidden ? `(夢:${pokemon.hidden})` : ""}
     </div>
 
-    <div>
     <details>
     <summary><b>相性:</b></summary>
-    </div>
     <div><span class="weak-label">x4：</span> ${renderTypes(weakness.x4)}</div>
     <div><span class="weak-label">x2：</span> ${renderTypes(weakness.x2)}</div>
     <div><span class="weak-label">x0.5：</span> ${renderTypes(weakness.x05)}</div>
