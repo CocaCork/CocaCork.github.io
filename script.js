@@ -210,6 +210,9 @@ function deleteTeam(side) {
   localStorage.setItem(side + "_teams", JSON.stringify(data));
 
   updateSelect(side);
+
+  setTeam(side, []);
+  select.value = "";
 }
 
 
