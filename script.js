@@ -214,6 +214,11 @@ function updateSelect(side) {
   const select = document.getElementById(side + "Select");
   select.innerHTML = "";
 
+  const empty = document.createElement("option");
+  empty.value = "";
+  empty.textContent = "選択してください";
+  select.appendChild(empty);
+
   const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
 
   Object.keys(data).forEach(name => {
