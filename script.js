@@ -305,13 +305,13 @@ function showData(value, target) {
     return hiraToKata(label).includes(hiraToKata(value));
   });
 
-  const weakness = getWeakness(pokemon.type1, pokemon.type2);
-
   if (!pokemon) {
     target.innerHTML = "";
     return;
   }
 
+  const weakness = getWeakness(pokemon.type1, pokemon.type2);
+  
   target.innerHTML = `
     <div>
     <b>タイプ:</b> 
