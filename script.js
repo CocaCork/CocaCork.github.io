@@ -53,6 +53,9 @@ fetch("pokemon_data.csv")
     createList();
     createUI("left");
     createUI("right");
+
+    updateSelect("left");
+    updateSelect("right");
   });
 
 
@@ -132,6 +135,93 @@ function createUI(side) {
     div.appendChild(dataDiv);
     container.appendChild(div);
   }
+}
+
+
+function getTeam(side) {
+  const container = document.getElementById(side);
+  const inputs = container.querySelectorAll("input");
+  return Array.from(inputs).map(input => input.value);
+}
+
+
+function setTeam(side, team) {
+  const container = document.getElementById(side);
+  const blocks = container.querySelectorAll(".pokemon-block");
+
+  blocks.forEach((block, i) => {
+    const input = block.querySelector("input");
+    const dataDiv = block.querySelector(".data");
+
+    input.value = team[i] || "";
+    showData(input.value, dataDiv);
+  });
+}
+
+
+function saveTeam(side) {
+  const nameInput = document.getElementById(side + "Name");
+  const name = nameInput.value.trim();
+
+  if (!name) {
+    alert("保存名を入力してください");
+    return;
+  }
+
+  const team = getTeam(side);
+
+  const key = side + "_teams";
+  const data = JSON.parse(localStorage.getItem(key) || "{}");
+
+  data[name] = team;
+
+  localStorage.setItem(key, JSON.stringify(data));
+
+  updateSelect(side);
+  nameInput.value = "";
+}
+
+
+function loadTeam(side) {
+  const select = document.getElementById(side + "Select");
+  const name = select.value;
+
+  if (!name) return;
+
+  const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
+
+  setTeam(side, data[name]);
+}
+
+
+function deleteTeam(side) {
+  const select = document.getElementById(side + "Select");
+  const name = select.value;
+
+  if (!name) return;
+
+  const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
+
+  delete data[name];
+
+  localStorage.setItem(side + "_teams", JSON.stringify(data));
+
+  updateSelect(side);
+}
+
+
+function updateSelect(side) {
+  const select = document.getElementById(side + "Select");
+  select.innerHTML = "";
+
+  const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
+
+  Object.keys(data).forEach(name => {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    select.appendChild(option);
+  });
 }
 
 
