@@ -190,6 +190,10 @@ function loadTeam(side) {
   const select = document.getElementById(side + "Select");
   const name = select.value;
 
+  const nameInput = document.getElementById(side + "Name");
+  
+  nameInput.value = name;
+
   if (!name) {
     setTeam(side, []); // 全部空にする
     return;
