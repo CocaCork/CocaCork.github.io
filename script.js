@@ -178,6 +178,10 @@ function saveTeam(side) {
   localStorage.setItem(key, JSON.stringify(data));
 
   updateSelect(side);
+
+  const select = document.getElementById(side + "Select");
+  select.value = name;
+  
   nameInput.value = "";
 }
 
