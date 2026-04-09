@@ -254,6 +254,7 @@ function showData(value, target) {
     ${pokemon.hidden ? `(夢:${pokemon.hidden})` : ""}
     </div>
 
+    <div>
     <details>
     <summary><b>相性:</b></summary>
     <div><span class="weak-label">x4：</span> ${renderTypes(weakness.x4)}</div>
@@ -262,5 +263,6 @@ function showData(value, target) {
     <div><span class="weak-label">x0.25：</span> ${renderTypes(weakness.x025)}</div>
     <div><span class="weak-label">x0：</span> ${renderTypes(weakness.x0)}</div>
     </details>
+    </div>
   `;
 }
