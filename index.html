@@ -5,25 +5,41 @@
     <title>ポケモン比較ツール</title>
     
     <style>
-      body { font-family: sans-serif; }
-      .container { display: flex; gap: 40px; }
-      .team { width: 45%; }
-      .slot { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
-      input { width: 100%; margin-bottom: 5px; }
-      .small { font-size: 12px; }
+      body {
+        font-family: sans-serif;
+        display: flex;
+        gap: 40px;
+      }
+      
+      .column {
+        width: 45%;
+      }
+      
+      .pokemon-block {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      
+      input {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      
+      .data {
+        font-size: 14px;
+      }
     </style>
   </head>
   
   <body>
     
-    <h2>ポケモン比較ツール</h2>
+    <div class="column" id="left"></div>
+    <div class="column" id="right"></div>
     
-    <div class="container">
-      <div id="leftTeam" class="team"></div>
-      <div id="rightTeam" class="team"></div>
-    </div>
+    <!-- 候補リスト -->
+    <datalist id="pokemonList"></datalist>
     
     <script src="script.js"></script>
-  
   </body>
 </html>
