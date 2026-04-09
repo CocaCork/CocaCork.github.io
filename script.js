@@ -76,6 +76,12 @@ function createUI(side) {
 }
 
 
+function createTypeLabel(type) {
+  if (!type) return "";
+  return `<span class="type type-${type}">${type}</span>`;
+}
+
+
 // データ表示
 function showData(value, target) {
 
@@ -92,7 +98,10 @@ function showData(value, target) {
   }
 
   target.innerHTML = `
-    <b>タイプ:</b> ${pokemon.type1} ${pokemon.type2 || ""}<br>
+    <b>タイプ:</b> 
+    ${createTypeLabel(pokemon.type1)}
+    ${createTypeLabel(pokemon.type2)}
+    <br>
     <b>HP:</b> ${pokemon.hp}<br>
     <b>攻撃:</b> ${pokemon.atk}<br>
     <b>防御:</b> ${pokemon.def}<br>
