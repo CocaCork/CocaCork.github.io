@@ -73,6 +73,40 @@ function createList() {
 }
 
 
+function showSuggest(input, suggest, dataDiv) {
+  const value = hiraToKata(input.value);
+
+  suggest.innerHTML = "";
+
+  if (!value) return;
+
+  const results = pokemonData.filter(p => {
+    const label = p.form === "通常"
+      ? p.name
+      : `${p.name}(${p.form})`;
+
+    return hiraToKata(label).includes(value);
+  }).slice(0, 10); // 上位10件だけ
+
+  results.forEach(p => {
+    const label = p.form === "通常"
+      ? p.name
+      : `${p.name}(${p.form})`;
+
+    const item = document.createElement("div");
+    item.textContent = label;
+
+    item.addEventListener("click", () => {
+      input.value = label;
+      suggest.innerHTML = "";
+      showData(label, dataDiv);
+    });
+
+    suggest.appendChild(item);
+  });
+}
+
+
 // UI生成（6枠）
 function createUI(side) {
   const container = document.getElementById(side);
@@ -82,17 +116,19 @@ function createUI(side) {
     div.className = "pokemon-block";
 
     const input = document.createElement("input");
-    input.setAttribute("list", "pokemonList");
-    input.placeholder = "ポケモン名";
+
+    const suggest = document.createElement("div");
+    suggest.className = "suggest";
 
     const dataDiv = document.createElement("div");
     dataDiv.className = "data";
 
     input.addEventListener("input", () => {
-      showData(input.value, dataDiv);
+      showSuggest(input, suggest, dataDiv);
     });
 
     div.appendChild(input);
+    div.appendChild(suggest);
     div.appendChild(dataDiv);
     container.appendChild(div);
   }
