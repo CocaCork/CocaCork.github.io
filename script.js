@@ -302,7 +302,7 @@ function showData(value, target) {
     const label = p.form === "通常"
       ? p.name
       : `${p.name}(${p.form})`;
-    return hiraToKata(label).includes(hiraToKata(value));
+    return hiraToKata(label) === hiraToKata(value);
   });
 
   if (!pokemon) {
