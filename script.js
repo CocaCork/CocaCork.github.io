@@ -155,7 +155,8 @@ function getWeakness(type1, type2) {
       }
     });
 
-    if (multiplier === 4) result.x4.push(attackType);
+    if (multiplier === 0) result.x0.push(attackType);
+    else if (multiplier === 4) result.x4.push(attackType);
     else if (multiplier === 2) result.x2.push(attackType);
     else if (multiplier === 0.5) result.x05.push(attackType);
     else if (multiplier === 0.25) result.x025.push(attackType);
@@ -212,5 +213,6 @@ function showData(value, target) {
     x2: ${renderTypes(weakness.x2)}<br>
     x0.5: ${renderTypes(weakness.x05)}<br>
     x0.25: ${renderTypes(weakness.x025)}<br>
+    x0: ${renderOrDash(weakness.x0)}<br>
   `;
 }
