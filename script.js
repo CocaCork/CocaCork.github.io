@@ -1,5 +1,28 @@
 let pokemonData = [];
 
+const allTypes = Object.keys(typeChart);
+
+const typeChart = {
+  ノーマル: { いわ: 0.5, ゴースト: 0, はがね: 0.5 },
+  ほのお: { くさ: 2, こおり: 2, むし: 2, はがね: 2, ほのお: 0.5, みず: 0.5, いわ: 0.5, ドラゴン: 0.5 },
+  みず: { ほのお: 2, じめん: 2, いわ: 2, みず: 0.5, くさ: 0.5, ドラゴン: 0.5 },
+  でんき: { みず: 2, ひこう: 2, でんき: 0.5, くさ: 0.5, ドラゴン: 0.5, じめん: 0 },
+  くさ: { みず: 2, じめん: 2, いわ: 2, ほのお: 0.5, くさ: 0.5, どく: 0.5, ひこう: 0.5, むし: 0.5, ドラゴン: 0.5, はがね: 0.5 },
+  こおり: { くさ: 2, じめん: 2, ひこう: 2, ドラゴン: 2, ほのお: 0.5, みず: 0.5, こおり: 0.5, はがね: 0.5 },
+  かくとう: { ノーマル: 2, いわ: 2, はがね: 2, こおり: 2, あく: 2, どく: 0.5, ひこう: 0.5, エスパー: 0.5, むし: 0.5, フェアリー: 0.5, ゴースト: 0 },
+  どく: { くさ: 2, フェアリー: 2, どく: 0.5, じめん: 0.5, いわ: 0.5, ゴースト: 0.5, はがね: 0 },
+  じめん: { ほのお: 2, でんき: 2, どく: 2, いわ: 2, はがね: 2, くさ: 0.5, むし: 0.5, ひこう: 0 },
+  ひこう: { くさ: 2, かくとう: 2, むし: 2, でんき: 0.5, いわ: 0.5, はがね: 0.5 },
+  エスパー: { かくとう: 2, どく: 2, エスパー: 0.5, はがね: 0.5, あく: 0 },
+  むし: { くさ: 2, エスパー: 2, あく: 2, ほのお: 0.5, かくとう: 0.5, どく: 0.5, ひこう: 0.5, ゴースト: 0.5, はがね: 0.5, フェアリー: 0.5 },
+  いわ: { ほのお: 2, こおり: 2, ひこう: 2, むし: 2, かくとう: 0.5, じめん: 0.5, はがね: 0.5 },
+  ゴースト: { エスパー: 2, ゴースト: 2, あく: 0.5, ノーマル: 0 },
+  ドラゴン: { ドラゴン: 2, はがね: 0.5, フェアリー: 0 },
+  あく: { エスパー: 2, ゴースト: 2, かくとう: 0.5, あく: 0.5, フェアリー: 0.5 },
+  はがね: { こおり: 2, いわ: 2, フェアリー: 2, ほのお: 0.5, みず: 0.5, でんき: 0.5, はがね: 0.5 },
+  フェアリー: { かくとう: 2, ドラゴン: 2, あく: 2, ほのお: 0.5, どく: 0.5, はがね: 0.5 }
+};
+
 
 // CSV読み込み
 fetch("pokemon_data.csv")
@@ -82,6 +105,17 @@ function createTypeLabel(type) {
 }
 
 
+function renderTypes(types) {
+  if (!types.length) return "-";
+  return types.map(t => createTypeLabel(t)).join(" ");
+}
+
+function renderTypes(types) {
+  if (!types.length) return "-";
+  return types.map(t => createTypeLabel(t)).join(" ");
+}
+
+
 function calcHP(base) {
   let value = base * 2;
   value = Math.floor(value + 31);
@@ -100,6 +134,37 @@ function calcOther(base) {
 }
 
 
+function getWeakness(type1, type2) {
+  const result = {
+    x4: [],
+    x2: [],
+    x05: [],
+    x025: [],
+    x0: []
+  };
+
+  allTypes.forEach(attackType => {
+    let multiplier = 1;
+
+    [type1, type2].forEach(defType => {
+      if (!defType) return;
+
+      const chart = typeChart[attackType];
+      if (chart && chart[defType] !== undefined) {
+        multiplier *= chart[defType];
+      }
+    });
+
+    if (multiplier === 4) result.x4.push(attackType);
+    else if (multiplier === 2) result.x2.push(attackType);
+    else if (multiplier === 0.5) result.x05.push(attackType);
+    else if (multiplier === 0.25) result.x025.push(attackType);
+  });
+
+  return result;
+}
+
+
 // データ表示
 function showData(value, target) {
 
@@ -109,6 +174,8 @@ function showData(value, target) {
       : `${p.name}(${p.form})`;
     return label === value;
   });
+
+  const weakness = getWeakness(pokemon.type1, pokemon.type2);
 
   if (!pokemon) {
     target.innerHTML = "";
@@ -135,9 +202,15 @@ function showData(value, target) {
     
     <b>素早さ:</b> ${calcOther(Number(pokemon.spe))}<br>
     
-    <b>特性:</b> 
-      ${pokemon.ability1 || ""}
-      ${pokemon.ability2 || ""}
-      ${pokemon.hidden ? `(夢:${pokemon.hidden})` : ""}
+    <b>特性:</b>
+    ${pokemon.ability1 || ""}
+    ${pokemon.ability2 || ""}
+    ${pokemon.hidden ? `(夢:${pokemon.hidden})` : ""}
+    
+    <b>弱点:</b><br>
+    x4: ${renderTypes(weakness.x4)}<br>
+    x2: ${renderTypes(weakness.x2)}<br>
+    x0.5: ${renderTypes(weakness.x05)}<br>
+    x0.25: ${renderTypes(weakness.x025)}<br>
   `;
 }
