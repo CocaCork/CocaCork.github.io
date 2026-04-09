@@ -161,6 +161,14 @@ function getWeakness(type1, type2) {
 }
 
 
+// ひらがな → カタカナ変換関数
+function hiraToKata(str) {
+  return str.replace(/[\u3041-\u3096]/g, ch =>
+    String.fromCharCode(ch.charCodeAt(0) + 0x60)
+  );
+}
+
+
 // データ表示
 function showData(value, target) {
 
@@ -168,7 +176,7 @@ function showData(value, target) {
     const label = p.form === "通常"
       ? p.name
       : `${p.name}(${p.form})`;
-    return label === value;
+    return hiraToKata(label).includes(hiraToKata(value));
   });
 
   const weakness = getWeakness(pokemon.type1, pokemon.type2);
