@@ -102,6 +102,10 @@ function showSuggest(input, suggest, dataDiv) {
     item.addEventListener("click", () => {
       input.value = label;
       suggest.innerHTML = "";
+
+      const summary = input.closest(".pokemon-block").querySelector("summary");
+      summary.textContent = label;
+      
       showData(label, dataDiv);
     });
 
