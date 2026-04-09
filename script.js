@@ -1,7 +1,5 @@
 let pokemonData = [];
 
-const allTypes = Object.keys(typeChart);
-
 const typeChart = {
   ノーマル: { いわ: 0.5, ゴースト: 0, はがね: 0.5 },
   ほのお: { くさ: 2, こおり: 2, むし: 2, はがね: 2, ほのお: 0.5, みず: 0.5, いわ: 0.5, ドラゴン: 0.5 },
@@ -22,6 +20,8 @@ const typeChart = {
   はがね: { こおり: 2, いわ: 2, フェアリー: 2, ほのお: 0.5, みず: 0.5, でんき: 0.5, はがね: 0.5 },
   フェアリー: { かくとう: 2, ドラゴン: 2, あく: 2, ほのお: 0.5, どく: 0.5, はがね: 0.5 }
 };
+
+const allTypes = Object.keys(typeChart);
 
 
 // CSV読み込み
@@ -104,11 +104,6 @@ function createTypeLabel(type) {
   return `<span class="type type-${type}">${type}</span>`;
 }
 
-
-function renderTypes(types) {
-  if (!types.length) return "-";
-  return types.map(t => createTypeLabel(t)).join(" ");
-}
 
 function renderTypes(types) {
   if (!types.length) return "-";
@@ -213,6 +208,6 @@ function showData(value, target) {
     x2: ${renderTypes(weakness.x2)}<br>
     x0.5: ${renderTypes(weakness.x05)}<br>
     x0.25: ${renderTypes(weakness.x025)}<br>
-    x0: ${renderOrDash(weakness.x0)}<br>
+    x0: ${renderTypes(weakness.x0)}<br>
   `;
 }
