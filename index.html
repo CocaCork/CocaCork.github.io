@@ -26,6 +26,13 @@
         box-sizing: border-box;
       }
 
+      .team-controls {
+        display: flex;
+        flex-wrap: wrap; /* はみ出したら折り返し */
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
       /* 左（青系） */
       #left input {
         background-color: #d8ecff; /* 淡い青 */
@@ -130,22 +137,30 @@
     
     <div class="column">
       <h3>左チーム</h3>
+      
       <input id="leftName" placeholder="保存名">
-      <button onclick="saveTeam('left')">保存</button>
-      <select id="leftSelect"></select>
-      <button onclick="loadTeam('left')">読込</button>
-      <button onclick="deleteTeam('left')">削除</button>
+      
+      <div class="team-controls">
+        <button onclick="saveTeam('left')">保存</button>
+        <button onclick="loadTeam('left')">読込</button>
+        <button onclick="deleteTeam('left')">削除</button>
+        <select id="leftSelect"></select>
+      </div>
       
       <div id="left"></div>
     </div>
     
     <div class="column">
       <h3>右チーム</h3>
+      
       <input id="rightName" placeholder="保存名">
-      <button onclick="saveTeam('right')">保存</button>
-      <select id="rightSelect"></select>
-      <button onclick="loadTeam('right')">読込</button>
-      <button onclick="deleteTeam('right')">削除</button>
+      
+      <div class="team-controls">
+        <button onclick="saveTeam('right')">保存</button>
+        <button onclick="loadTeam('right')">読込</button>
+        <button onclick="deleteTeam('right')">削除</button>
+        <select id="rightSelect"></select>
+      </div>
       
       <div id="right"></div>
     </div>
