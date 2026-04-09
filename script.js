@@ -223,12 +223,15 @@ function showData(value, target) {
   }
 
   target.innerHTML = `
+    <div>
     <b>タイプ:</b> 
     ${createTypeLabel(pokemon.type1)}
     ${createTypeLabel(pokemon.type2)}
-    <br>
-    
-    <b>HP:</b> ${calcHP(Number(pokemon.hp))}<br>
+    </div>
+
+    <div>
+    <b>HP:</b> ${calcHP(Number(pokemon.hp))}
+    </div>
     
     <div class="stat-row">
     <div class="stat-box"><b>攻撃:</b> ${calcOther(Number(pokemon.atk))}</div>
@@ -239,19 +242,25 @@ function showData(value, target) {
     <div class="stat-box"><b>防御:</b> ${calcOther(Number(pokemon.def))}</div>
     <div class="stat-box"><b>特防:</b> ${calcOther(Number(pokemon.spd))}</div>
     </div>
-    
-    <b>素早さ:</b> ${calcOther(Number(pokemon.spe))}<br>
-    
+
+    <div>
+    <b>素早さ:</b> ${calcOther(Number(pokemon.spe))}
+    </div>
+
+    <div>
     <b>特性:</b>
     ${pokemon.ability1 || ""}
     ${pokemon.ability2 || ""}
     ${pokemon.hidden ? `(夢:${pokemon.hidden})` : ""}
-    
-    <b>弱点:</b><br>
-    x4: ${renderTypes(weakness.x4)}<br>
-    x2: ${renderTypes(weakness.x2)}<br>
-    x0.5: ${renderTypes(weakness.x05)}<br>
-    x0.25: ${renderTypes(weakness.x025)}<br>
-    x0: ${renderTypes(weakness.x0)}<br>
+    </div>
+
+    <div>
+    <b>弱点:</b>
+    </div>
+    <div>x4: ${renderTypes(weakness.x4)}</div>
+    <div>x2: ${renderTypes(weakness.x2)}</div>
+    <div>x0.5: ${renderTypes(weakness.x05)}</div>
+    <div>x0.25: ${renderTypes(weakness.x025)}</div>
+    <div>x0: ${renderTypes(weakness.x0)}</div>
   `;
 }
