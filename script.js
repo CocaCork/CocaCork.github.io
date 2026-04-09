@@ -348,7 +348,7 @@ function showData(value, target) {
     <div class="stat-box"><b>防御:</b> ${calcOther(Number(pokemon.def))}</div>
     <div class="stat-box"><b>特攻:</b> ${calcOther(Number(pokemon.spa))}</div>
     <div class="stat-box"><b>特防:</b> ${calcOther(Number(pokemon.spd))}</div>
-    <div class="stat-box"><b>素早さ:</b> ${calcOther(Number(pokemon.spe))}</div>
+    <div><b>素早さ:</b> ${calcOther(Number(pokemon.spe))}</div>
     </div>
 
     <div>
