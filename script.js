@@ -318,7 +318,6 @@ function hiraToKata(str) {
 }
 
 
-// データ表示
 function showData(value, target) {
 
   const pokemon = pokemonData.find(p => {
