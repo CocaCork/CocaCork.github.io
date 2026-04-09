@@ -102,12 +102,21 @@ function showData(value, target) {
     ${createTypeLabel(pokemon.type1)}
     ${createTypeLabel(pokemon.type2)}
     <br>
+    
     <b>HP:</b> ${pokemon.hp}<br>
-    <b>攻撃:</b> ${pokemon.atk}<br>
-    <b>防御:</b> ${pokemon.def}<br>
-    <b>特攻:</b> ${pokemon.spa}<br>
-    <b>特防:</b> ${pokemon.spd}<br>
+    
+    <div class="stat-row">
+    <div class="stat-box"><b>攻撃:</b> ${pokemon.atk}</div>
+    <div class="stat-box"><b>特攻:</b> ${pokemon.spa}</div>
+    </div>
+    
+    <div class="stat-row">
+    <div class="stat-box"><b>防御:</b> ${pokemon.def}</div>
+    <div class="stat-box"><b>特防:</b> ${pokemon.spd}</div>
+    </div>
+    
     <b>素早さ:</b> ${pokemon.spe}<br>
+    
     <b>特性:</b> 
       ${pokemon.ability1 || ""}
       ${pokemon.ability2 || ""}
