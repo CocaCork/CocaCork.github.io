@@ -118,6 +118,12 @@ function createUI(side) {
     const div = document.createElement("div");
     div.className = "pokemon-block";
 
+    const details = document.createElement("details");
+    details.open = true; // 最初は開いた状態
+
+    const summary = document.createElement("summary");
+    summary.textContent = "ポケモン"; // 初期表示
+
     const input = document.createElement("input");
 
     const suggest = document.createElement("div");
@@ -130,9 +136,17 @@ function createUI(side) {
       showSuggest(input, suggest, dataDiv);
     });
 
-    div.appendChild(input);
-    div.appendChild(suggest);
-    div.appendChild(dataDiv);
+    // 名前入力されたらsummaryに反映
+    input.addEventListener("change", () => {
+      summary.textContent = input.value || "ポケモン";
+    });
+
+    details.appendChild(summary);
+    details.appendChild(input);
+    details.appendChild(suggest);
+    details.appendChild(dataDiv);
+
+    div.appendChild(details);
     container.appendChild(div);
   }
 }
@@ -152,8 +166,11 @@ function setTeam(side, team) {
   blocks.forEach((block, i) => {
     const input = block.querySelector("input");
     const dataDiv = block.querySelector(".data");
+    const summary = block.querySelector("summary");
 
     input.value = team[i] || "";
+    summary.textContent = input.value || "ポケモン";
+
     showData(input.value, dataDiv);
   });
 }
@@ -366,15 +383,13 @@ function showData(value, target) {
     </div>
 
     <div>
-    <details>
-    <summary><b>相性:</b></summary>
+    <b>相性:</b>
     <div><span class="weak-label">x4：</span> ${renderTypes(weakness.x4)}</div>
     <div><span class="weak-label">x2：</span> ${renderTypes(weakness.x2)}</div>
     <div class="separator"></div>
     <div><span class="weak-label">x0.5：</span> ${renderTypes(weakness.x05)}</div>
     <div><span class="weak-label">x0.25：</span> ${renderTypes(weakness.x025)}</div>
     <div><span class="weak-label">x0：</span> ${renderTypes(weakness.x0)}</div>
-    </details>
     </div>
   `;
 }
