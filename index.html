@@ -14,7 +14,8 @@
     <h1>競馬 買い目保存ツール</h1>
 
     <!-- レース情報 -->
-    <section class="race-info">
+    <section>
+        <h2>レース情報</h2>
 
         <div class="form-row">
             <label for="raceName">レース名</label>
@@ -28,77 +29,131 @@
 
         <div class="form-row">
             <label for="raceMemo">メモ</label>
-            <textarea id="raceMemo" placeholder="レースの展開予想など"></textarea>
+            <textarea id="raceMemo" placeholder="レースの予想メモなど"></textarea>
         </div>
-
     </section>
 
 
-    <!-- 買い目入力 -->
+    <!-- フォーメーション入力 -->
     <section>
 
-        <h2>買い目</h2>
+        <h2>フォーメーション</h2>
 
-        <div class="bet-input-area">
+        <div class="form-row">
+            <label for="betType">券種</label>
 
-            <div class="form-row">
-                <label for="betType">券種</label>
+            <select id="betType">
 
-                <select id="betType">
-                    <option value="単勝">単勝</option>
-                    <option value="複勝">複勝</option>
-                    <option value="馬連">馬連</option>
-                    <option value="馬単">馬単</option>
-                    <option value="ワイド">ワイド</option>
-                    <option value="3連複">3連複</option>
-                    <option value="3連単">3連単</option>
-                </select>
-            </div>
+                <option value="単勝">単勝</option>
+                <option value="複勝">複勝</option>
+                <option value="馬連">馬連</option>
+                <option value="馬単">馬単</option>
+                <option value="ワイド">ワイド</option>
+                <option value="3連複">3連複</option>
+                <option value="3連単">3連単</option>
 
-            <div class="form-row">
-                <label for="betNumbers">買い目</label>
+            </select>
+        </div>
+
+
+        <!-- フォーメーション説明 -->
+        <div id="formationDescription" class="formation-description">
+        </div>
+
+
+        <!-- チェックボックス -->
+        <div id="formationArea">
+        </div>
+
+
+        <!-- 金額 -->
+        <div class="form-row amount-row">
+
+            <label for="betAmount">
+                1点あたりの購入金額
+            </label>
+
+            <div class="amount-input">
+
                 <input
-                    type="text"
-                    id="betNumbers"
-                    placeholder="例：5-8"
+                    type="number"
+                    id="betAmount"
+                    min="100"
+                    step="100"
+                    value="100"
                 >
+
+                <span>円</span>
+
             </div>
 
-            <div class="form-row">
-                <label for="betAmount">購入金額</label>
-                <div class="amount-input">
-                    <input
-                        type="number"
-                        id="betAmount"
-                        min="100"
-                        step="100"
-                        placeholder="100"
-                    >
-                    <span>円</span>
-                </div>
-            </div>
+        </div>
 
-            <button id="addBetButton" class="add-button">
-                ＋ 買い目を追加
-            </button>
+
+        <div class="formation-result">
+
+            <span>
+                生成される買い目：
+            </span>
+
+            <strong id="formationCount">0</strong>
+
+            <span>点</span>
+
+        </div>
+
+
+        <button
+            id="addFormationButton"
+            class="add-button">
+
+            ＋ フォーメーションを追加
+
+        </button>
+
+    </section>
+
+
+    <!-- 登録済みフォーメーション -->
+    <section>
+
+        <h2>登録済みフォーメーション</h2>
+
+        <div id="formationList">
+
+            <p class="empty-message">
+                フォーメーションがありません
+            </p>
 
         </div>
 
     </section>
 
 
-    <!-- 買い目一覧 -->
+    <!-- 買い目 -->
     <section>
 
         <h2>買い目一覧</h2>
 
-        <div id="betList" class="bet-list">
-            <p class="empty-message">買い目がありません</p>
+        <div id="betList">
+
+            <p class="empty-message">
+                買い目がありません
+            </p>
+
         </div>
 
+
         <div class="total-area">
+
+            合計点数：
+            <span id="totalCount">0</span>点
+
+            <br>
+
             合計購入金額：
-            <span id="totalAmount">0</span> 円
+            <span id="totalAmount">0</span>円
+
         </div>
 
     </section>
@@ -107,12 +162,21 @@
     <!-- 保存 -->
     <section class="save-area">
 
-        <button id="saveButton" class="save-button">
+        <button
+            id="saveButton"
+            class="save-button">
+
             💾 このレースを保存
+
         </button>
 
-        <button id="clearButton" class="clear-button">
+
+        <button
+            id="clearButton"
+            class="clear-button">
+
             入力内容をクリア
+
         </button>
 
     </section>
@@ -123,15 +187,18 @@
 
         <h2>保存済みレース</h2>
 
-        <div id="savedRaceList" class="saved-race-list">
+        <div id="savedRaceList">
+
             <p class="empty-message">
                 保存されているレースがありません
             </p>
+
         </div>
 
     </section>
 
 </div>
+
 
 <script src="script.js"></script>
 
