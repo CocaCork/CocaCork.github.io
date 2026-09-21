@@ -1,207 +1,139 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <title>ポケモン比較ツール</title>
-    
-    <style>
-      body {
-        font-family: sans-serif;
-        display: flex;
-        gap: 40px;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>競馬 買い目保存ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-        justify-content: flex-start;
-      }
+<body>
 
-      #leftName {
-        width: 50%;
-      }
+<div class="container">
 
-      #rightName {
-        width: 50%;
-      }
-      
-      .column {
-        width: 100%;
-        max-width: 500px;
-      }
-      
-      .pokemon-block {
-        border: 1px solid #ccc;
-        padding: 10px;
-        margin-bottom: 10px;
-        width: 100%;
-        box-sizing: border-box;
-      }
+    <h1>競馬 買い目保存ツール</h1>
 
-      #left .pokemon-block {
-        border: 2px solid #4da6ff;
-        box-shadow: 0 0 4px rgba(77, 166, 255, 0.5);
-      }
-      
-      #right .pokemon-block {
-        border: 2px solid #ff6666;
-        box-shadow: 0 0 4px rgba(255, 102, 102, 0.5);
-      }
+    <!-- レース情報 -->
+    <section class="race-info">
 
-      .team-controls {
-        display: flex;
-        flex-wrap: wrap; /* はみ出したら折り返し */
-        gap: 6px;
-        margin-bottom: 20px;
-      }
+        <div class="form-row">
+            <label for="raceName">レース名</label>
+            <input type="text" id="raceName" placeholder="例：2026年 神戸新聞杯">
+        </div>
 
-      /* 左（青系） */
-      #left input {
-        background-color: #d8ecff; /* 淡い青 */
-        color: #000;
-        border: 1px solid #7fbfff;
-      }
-      
-      /* 右（赤系） */
-      #right input {
-        background-color: #ffdede; /* 淡い赤 */
-        color: #000;
-        border: 1px solid #ff9a9a;
-      }
-      
-      input {
-        width: 70%;
-        margin-bottom: 6px;
-      }
+        <div class="form-row">
+            <label for="raceDate">日付</label>
+            <input type="date" id="raceDate">
+        </div>
 
-      input::placeholder {
-        color: #ccc;
-      }
+        <div class="form-row">
+            <label for="raceMemo">メモ</label>
+            <textarea id="raceMemo" placeholder="レースの展開予想など"></textarea>
+        </div>
 
-      .suggest {
-        border: 1px solid #ccc;
-        background: white;
-        max-height: 150px;
-        overflow-y: auto;
-      }
+    </section>
 
-      .suggest div {
-        padding: 4px;
-        cursor: pointer;
-      }
 
-      .suggest div:hover {
-        background: #eee;
-      }
-      
-      .data {
-        font-size: 14px;
-      }
+    <!-- 買い目入力 -->
+    <section>
 
-      .data > div {
-        margin-top: 6px;
-      }
+        <h2>買い目</h2>
 
-      .stat-row {
-        display: flex;
-      }
-      
-      .stat-box {
-        margin-right: 10px;
-      }
+        <div class="bet-input-area">
 
-      .separator {
-        width: 100%;
-        border-top: 1px solid #aaa;
-        margin: 6px 0;
-      }
+            <div class="form-row">
+                <label for="betType">券種</label>
 
-      .weak-label {
-        display: inline-block;
-        width: 60px;
-        text-align: right;
-        margin-right: 6px;
-      }
+                <select id="betType">
+                    <option value="単勝">単勝</option>
+                    <option value="複勝">複勝</option>
+                    <option value="馬連">馬連</option>
+                    <option value="馬単">馬単</option>
+                    <option value="ワイド">ワイド</option>
+                    <option value="3連複">3連複</option>
+                    <option value="3連単">3連単</option>
+                </select>
+            </div>
 
-      summary {
-        cursor: pointer;
-        font-weight: bold;
-        margin-bottom: 6px;
-      }
-      
-      details[open] summary {
-        color: #333;
-      }
-      
-      details summary::-webkit-details-marker {
-        cursor: pointer;
-      }
+            <div class="form-row">
+                <label for="betNumbers">買い目</label>
+                <input
+                    type="text"
+                    id="betNumbers"
+                    placeholder="例：5-8"
+                >
+            </div>
 
-      .type {
-        display: inline-block;
-        text-align: center;
-        padding: 2px 8px;
-        margin-right: 4px;
-        border-radius: 8px;
-        min-width: 40px;
-        color: white;
-        font-weight: bold;
-        font-size: 12px;
-      }
-      
-      /* タイプごとの色 */
-      .type-くさ { background: #78C850; }
-      .type-どく { background: #A040A0; }
-      .type-ほのお { background: #F08030; }
-      .type-みず { background: #6890F0; }
-      .type-でんき { background: #bfa000; }
-      .type-こおり { background: #5ca8a8; }
-      .type-かくとう { background: #C03028; }
-      .type-じめん { background: #a88b3a; }
-      .type-ひこう { background: #A890F0; }
-      .type-エスパー { background: #F85888; }
-      .type-むし { background: #A8B820; }
-      .type-いわ { background: #B8A038; }
-      .type-ゴースト { background: #705898; }
-      .type-ドラゴン { background: #7038F8; }
-      .type-あく { background: #705848; }
-      .type-はがね { background: #7a7a9a; }
-      .type-フェアリー { background: #EE99AC; }
-      .type-ノーマル { background: #A8A878; }
-    </style>
-  </head>
-  
-  <body>
-    
-    <div class="column">
-      <h3>左チーム</h3>
-      
-      <input id="leftName" placeholder="保存名">
-      
-      <div class="team-controls">
-        <select id="leftSelect" onchange="loadTeam('left')"></select>
-        <button onclick="saveTeam('left')">保存</button>
-        <button onclick="deleteTeam('left')">削除</button>
-        <button onclick="clearAllTeams('left')">全削除</button>
-      </div>
-      
-      <div id="left"></div>
-    </div>
-    
-    <div class="column">
-      <h3>右チーム</h3>
-      
-      <input id="rightName" placeholder="保存名">
-      
-      <div class="team-controls">
-        <select id="rightSelect" onchange="loadTeam('right')"></select>
-        <button onclick="saveTeam('right')">保存</button>
-        <button onclick="deleteTeam('right')">削除</button>
-        <button onclick="clearAllTeams('right')">全削除</button>
-      </div>
-      
-      <div id="right"></div>
-    </div>
-    
-    <!-- 候補リスト -->
-    <datalist id="pokemonList"></datalist>
-    
-    <script src="script.js"></script>
-  </body>
+            <div class="form-row">
+                <label for="betAmount">購入金額</label>
+                <div class="amount-input">
+                    <input
+                        type="number"
+                        id="betAmount"
+                        min="100"
+                        step="100"
+                        placeholder="100"
+                    >
+                    <span>円</span>
+                </div>
+            </div>
+
+            <button id="addBetButton" class="add-button">
+                ＋ 買い目を追加
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- 買い目一覧 -->
+    <section>
+
+        <h2>買い目一覧</h2>
+
+        <div id="betList" class="bet-list">
+            <p class="empty-message">買い目がありません</p>
+        </div>
+
+        <div class="total-area">
+            合計購入金額：
+            <span id="totalAmount">0</span> 円
+        </div>
+
+    </section>
+
+
+    <!-- 保存 -->
+    <section class="save-area">
+
+        <button id="saveButton" class="save-button">
+            💾 このレースを保存
+        </button>
+
+        <button id="clearButton" class="clear-button">
+            入力内容をクリア
+        </button>
+
+    </section>
+
+
+    <!-- 保存済みレース -->
+    <section>
+
+        <h2>保存済みレース</h2>
+
+        <div id="savedRaceList" class="saved-race-list">
+            <p class="empty-message">
+                保存されているレースがありません
+            </p>
+        </div>
+
+    </section>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
 </html>
