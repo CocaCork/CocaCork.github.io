@@ -5,8 +5,11 @@
 body {
     margin: 0;
     padding: 20px;
+
     background: #f4f4f4;
+
     color: #333;
+
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -15,197 +18,435 @@ body {
         sans-serif;
 }
 
+
 .container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
 }
+
 
 h1 {
     margin-bottom: 25px;
 }
 
+
 h2 {
     margin-top: 0;
+
     border-left: 5px solid #1976d2;
+
     padding-left: 10px;
 }
 
+
 section {
     background: white;
+
     border-radius: 8px;
+
     padding: 20px;
+
     margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 
-/* レース情報 */
+/* -------------------------
+   レース情報
+------------------------- */
 
 .form-row {
     margin-bottom: 15px;
 }
 
+
 .form-row label {
     display: block;
+
     font-weight: bold;
+
     margin-bottom: 6px;
 }
+
 
 input,
 select,
 textarea {
     width: 100%;
+
     padding: 10px;
+
     font-size: 16px;
+
     border: 1px solid #ccc;
+
     border-radius: 5px;
 }
 
+
 textarea {
     min-height: 80px;
+
     resize: vertical;
 }
 
 
-/* 金額 */
+/* -------------------------
+   フォーメーション
+------------------------- */
+
+.formation-description {
+    margin-bottom: 15px;
+
+    padding: 10px;
+
+    background: #f5f7fa;
+
+    border-radius: 5px;
+
+    font-size: 14px;
+}
+
+
+/* チェックボックス */
+
+.formation-area {
+    display: block;
+}
+
+
+.position-block {
+    margin-bottom: 20px;
+
+    padding: 15px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 6px;
+
+    background: #fafafa;
+}
+
+
+.position-title {
+    font-weight: bold;
+
+    margin-bottom: 10px;
+
+    font-size: 17px;
+}
+
+
+.horse-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, 1fr);
+
+    gap: 6px;
+}
+
+
+.horse-check {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    padding: 8px 4px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 5px;
+
+    background: white;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+
+.horse-check:hover {
+    background: #eaf3ff;
+}
+
+
+.horse-check input {
+    width: auto;
+
+    margin: 0;
+}
+
+
+/* -------------------------
+   金額
+------------------------- */
+
+.amount-row {
+    margin-top: 20px;
+}
+
 
 .amount-input {
     display: flex;
+
     align-items: center;
+
     gap: 8px;
 }
+
 
 .amount-input input {
     width: 180px;
 }
 
 
-/* ボタン */
+/* -------------------------
+   点数
+------------------------- */
+
+.formation-result {
+    margin: 15px 0;
+
+    padding: 12px;
+
+    background: #fff8e1;
+
+    border: 1px solid #ffe082;
+
+    border-radius: 5px;
+
+    font-size: 17px;
+}
+
+
+/* -------------------------
+   ボタン
+------------------------- */
 
 button {
     border: none;
+
     border-radius: 5px;
+
     padding: 11px 18px;
+
     font-size: 15px;
+
     cursor: pointer;
 }
+
 
 button:hover {
     opacity: 0.85;
 }
 
+
 .add-button {
     background: #1976d2;
+
     color: white;
+
+    font-size: 16px;
 }
+
 
 .save-button {
     background: #2e7d32;
+
     color: white;
+
     font-size: 16px;
+
     margin-right: 10px;
 }
 
+
 .clear-button {
     background: #777;
+
     color: white;
 }
 
 
-/* 買い目一覧 */
+/* -------------------------
+   フォーメーション一覧
+------------------------- */
 
-.bet-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.bet-item {
+.formation-item {
     display: grid;
-    grid-template-columns: 90px 1fr 120px 70px;
+
+    grid-template-columns:
+        100px 1fr auto;
+
     align-items: center;
+
     gap: 10px;
 
     padding: 12px;
+
+    margin-bottom: 8px;
+
     border: 1px solid #ddd;
+
     border-radius: 5px;
+
     background: #fafafa;
 }
+
+
+.formation-type {
+    font-weight: bold;
+}
+
+
+.formation-text {
+    font-size: 15px;
+}
+
+
+.delete-formation {
+    background: #d32f2f;
+
+    color: white;
+
+    padding: 7px 10px;
+}
+
+
+/* -------------------------
+   買い目一覧
+------------------------- */
+
+.bet-item {
+    display: grid;
+
+    grid-template-columns:
+        90px 1fr 120px 70px;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 12px;
+
+    margin-bottom: 8px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 5px;
+
+    background: #fafafa;
+}
+
 
 .bet-type {
     font-weight: bold;
 }
 
+
 .bet-numbers {
     font-size: 17px;
 }
+
 
 .bet-amount {
     text-align: right;
 }
 
+
 .delete-bet {
     background: #d32f2f;
+
     color: white;
+
     padding: 7px 10px;
 }
 
 
-/* 合計 */
+/* -------------------------
+   合計
+------------------------- */
 
 .total-area {
     text-align: right;
+
     font-size: 18px;
+
     font-weight: bold;
+
     margin-top: 15px;
+
+    line-height: 1.8;
 }
 
 
-/* 保存済みレース */
-
-.saved-race-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+/* -------------------------
+   保存済みレース
+------------------------- */
 
 .saved-race {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+
+    grid-template-columns:
+        1fr auto auto;
+
     align-items: center;
+
     gap: 10px;
 
     padding: 15px;
+
+    margin-bottom: 8px;
+
     border: 1px solid #ddd;
+
     border-radius: 6px;
 }
+
 
 .saved-race-name {
     font-weight: bold;
 }
 
+
 .saved-race-date {
     color: #666;
+
     font-size: 14px;
 }
 
+
 .load-button {
     background: #1976d2;
+
     color: white;
 }
+
 
 .delete-race-button {
     background: #d32f2f;
+
     color: white;
 }
 
+
 .empty-message {
     color: #777;
+
     text-align: center;
 }
 
 
-/* スマホ */
+/* -------------------------
+   スマホ
+------------------------- */
 
 @media (max-width: 600px) {
 
@@ -213,25 +454,43 @@ button:hover {
         padding: 10px;
     }
 
+
     section {
         padding: 15px;
     }
 
-    .bet-item {
-        grid-template-columns: 1fr 1fr;
+
+    .horse-grid {
+        grid-template-columns:
+            repeat(3, 1fr);
     }
+
+
+    .bet-item {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
 
     .bet-amount {
         text-align: left;
     }
 
+
+    .formation-item {
+        grid-template-columns: 1fr;
+    }
+
+
     .saved-race {
         grid-template-columns: 1fr;
     }
 
+
     .save-button,
     .clear-button {
         width: 100%;
+
         margin-bottom: 10px;
     }
 }
