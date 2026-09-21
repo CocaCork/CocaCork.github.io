@@ -1,399 +1,390 @@
-let pokemonData = [];
+// ========================================
+// データ
+// ========================================
 
-const typeChart = {
-  ノーマル: { いわ: 0.5, ゴースト: 0, はがね: 0.5 },
-  ほのお: { くさ: 2, こおり: 2, むし: 2, はがね: 2, ほのお: 0.5, みず: 0.5, いわ: 0.5, ドラゴン: 0.5 },
-  みず: { ほのお: 2, じめん: 2, いわ: 2, みず: 0.5, くさ: 0.5, ドラゴン: 0.5 },
-  でんき: { みず: 2, ひこう: 2, でんき: 0.5, くさ: 0.5, ドラゴン: 0.5, じめん: 0 },
-  くさ: { みず: 2, じめん: 2, いわ: 2, ほのお: 0.5, くさ: 0.5, どく: 0.5, ひこう: 0.5, むし: 0.5, ドラゴン: 0.5, はがね: 0.5 },
-  こおり: { くさ: 2, じめん: 2, ひこう: 2, ドラゴン: 2, ほのお: 0.5, みず: 0.5, こおり: 0.5, はがね: 0.5 },
-  かくとう: { ノーマル: 2, いわ: 2, はがね: 2, こおり: 2, あく: 2, どく: 0.5, ひこう: 0.5, エスパー: 0.5, むし: 0.5, フェアリー: 0.5, ゴースト: 0 },
-  どく: { くさ: 2, フェアリー: 2, どく: 0.5, じめん: 0.5, いわ: 0.5, ゴースト: 0.5, はがね: 0 },
-  じめん: { ほのお: 2, でんき: 2, どく: 2, いわ: 2, はがね: 2, くさ: 0.5, むし: 0.5, ひこう: 0 },
-  ひこう: { くさ: 2, かくとう: 2, むし: 2, でんき: 0.5, いわ: 0.5, はがね: 0.5 },
-  エスパー: { かくとう: 2, どく: 2, エスパー: 0.5, はがね: 0.5, あく: 0 },
-  むし: { くさ: 2, エスパー: 2, あく: 2, ほのお: 0.5, かくとう: 0.5, どく: 0.5, ひこう: 0.5, ゴースト: 0.5, はがね: 0.5, フェアリー: 0.5 },
-  いわ: { ほのお: 2, こおり: 2, ひこう: 2, むし: 2, かくとう: 0.5, じめん: 0.5, はがね: 0.5 },
-  ゴースト: { エスパー: 2, ゴースト: 2, あく: 0.5, ノーマル: 0 },
-  ドラゴン: { ドラゴン: 2, はがね: 0.5, フェアリー: 0 },
-  あく: { エスパー: 2, ゴースト: 2, かくとう: 0.5, あく: 0.5, フェアリー: 0.5 },
-  はがね: { こおり: 2, いわ: 2, フェアリー: 2, ほのお: 0.5, みず: 0.5, でんき: 0.5, はがね: 0.5 },
-  フェアリー: { かくとう: 2, ドラゴン: 2, あく: 2, ほのお: 0.5, どく: 0.5, はがね: 0.5 }
-};
+let bets = [];
 
-const allTypes = Object.keys(typeChart);
+const STORAGE_KEY = "keibaBetSavedRaces";
 
 
-// CSV読み込み
-fetch("pokemon_data.csv")
-  .then(res => res.text())
-  .then(text => {
-    const rows = text.trim().split("\n").slice(1);
-    
-    pokemonData = rows.map(row => {
-      const cols = row.split(",");
-      
-      return {
-        name: cols[0],
-        form: cols[1],
-        type1: cols[2],
-        type2: cols[3],
-        hp: cols[4],
-        atk: cols[5],
-        def: cols[6],
-        spa: cols[7],
-        spd: cols[8],
-        spe: cols[9],
-        ability1: cols[10],
-        ability2: cols[11],
-        hidden: cols[12]
-      };
+// ========================================
+// DOM
+// ========================================
+
+const raceName = document.getElementById("raceName");
+const raceDate = document.getElementById("raceDate");
+const raceMemo = document.getElementById("raceMemo");
+
+const betType = document.getElementById("betType");
+const betNumbers = document.getElementById("betNumbers");
+const betAmount = document.getElementById("betAmount");
+
+const addBetButton = document.getElementById("addBetButton");
+const saveButton = document.getElementById("saveButton");
+const clearButton = document.getElementById("clearButton");
+
+const betList = document.getElementById("betList");
+const totalAmount = document.getElementById("totalAmount");
+const savedRaceList = document.getElementById("savedRaceList");
+
+
+// ========================================
+// 買い目追加
+// ========================================
+
+addBetButton.addEventListener("click", () => {
+
+    const type = betType.value;
+    const numbers = betNumbers.value.trim();
+    const amount = Number(betAmount.value);
+
+    if (!numbers) {
+        alert("買い目を入力してください。");
+        return;
+    }
+
+    if (!amount || amount < 100) {
+        alert("購入金額を100円以上で入力してください。");
+        return;
+    }
+
+    if (amount % 100 !== 0) {
+        alert("購入金額は100円単位で入力してください。");
+        return;
+    }
+
+    bets.push({
+        type: type,
+        numbers: numbers,
+        amount: amount
     });
 
-    createList();
-    createUI("left");
-    createUI("right");
+    betNumbers.value = "";
+    betAmount.value = "";
 
-    updateSelect("left");
-    updateSelect("right");
-  });
+    renderBets();
+});
 
 
-// 候補リスト生成
-function createList() {
-  const list = document.getElementById("pokemonList");
+// ========================================
+// 買い目一覧表示
+// ========================================
 
-  pokemonData.forEach(p => {
-    const option = document.createElement("option");
+function renderBets() {
 
-    const label = p.form === "通常"
-      ? p.name
-      : `${p.name}(${p.form})`;
+    betList.innerHTML = "";
 
-    option.value = label;
-    list.appendChild(option);
-  });
+    if (bets.length === 0) {
+
+        betList.innerHTML =
+            '<p class="empty-message">買い目がありません</p>';
+
+        totalAmount.textContent = "0";
+
+        return;
+    }
+
+    let total = 0;
+
+    bets.forEach((bet, index) => {
+
+        total += bet.amount;
+
+        const item = document.createElement("div");
+
+        item.className = "bet-item";
+
+        item.innerHTML = `
+            <div class="bet-type">
+                ${escapeHtml(bet.type)}
+            </div>
+
+            <div class="bet-numbers">
+                ${escapeHtml(bet.numbers)}
+            </div>
+
+            <div class="bet-amount">
+                ${bet.amount.toLocaleString()}円
+            </div>
+
+            <button
+                class="delete-bet"
+                data-index="${index}">
+                削除
+            </button>
+        `;
+
+        betList.appendChild(item);
+    });
+
+    totalAmount.textContent = total.toLocaleString();
+
+    // 削除ボタン
+    document.querySelectorAll(".delete-bet").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const index = Number(button.dataset.index);
+
+            bets.splice(index, 1);
+
+            renderBets();
+        });
+
+    });
 }
 
 
-function showSuggest(input, suggest, dataDiv) {
-  const value = hiraToKata(input.value);
+// ========================================
+// レース保存
+// ========================================
 
-  suggest.innerHTML = "";
+saveButton.addEventListener("click", () => {
 
-  if (!value) return;
+    const name = raceName.value.trim();
 
-  const results = pokemonData.filter(p => {
-    const label = p.form === "通常"
-      ? p.name
-      : `${p.name}(${p.form})`;
+    if (!name) {
+        alert("レース名を入力してください。");
+        return;
+    }
 
-    return hiraToKata(label).includes(value);
-  }).slice(0, 10); // 上位10件だけ
+    if (bets.length === 0) {
+        alert("買い目を1つ以上追加してください。");
+        return;
+    }
 
-  results.forEach(p => {
-    const label = p.form === "通常"
-      ? p.name
-      : `${p.name}(${p.form})`;
+    const savedRaces = getSavedRaces();
 
-    const item = document.createElement("div");
-    item.textContent = label;
+    const raceData = {
+        id: Date.now(),
 
-    item.addEventListener("click", () => {
-      input.value = label;
-      suggest.innerHTML = "";
+        name: name,
 
-      const summary = input.closest(".pokemon-block").querySelector("summary");
-      summary.textContent = label;
-      
-      showData(label, dataDiv);
-    });
+        date: raceDate.value,
 
-    suggest.appendChild(item);
-  });
+        memo: raceMemo.value,
+
+        bets: structuredClone(bets),
+
+        savedAt: new Date().toISOString()
+    };
+
+    savedRaces.push(raceData);
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(savedRaces)
+    );
+
+    renderSavedRaces();
+
+    alert("レースを保存しました。");
+});
+
+
+// ========================================
+// 保存済みレース取得
+// ========================================
+
+function getSavedRaces() {
+
+    const data = localStorage.getItem(STORAGE_KEY);
+
+    if (!data) {
+        return [];
+    }
+
+    try {
+        return JSON.parse(data);
+    } catch (error) {
+
+        console.error(error);
+
+        return [];
+    }
 }
 
 
-// UI生成（6枠）
-function createUI(side) {
-  const container = document.getElementById(side);
+// ========================================
+// 保存済みレース表示
+// ========================================
 
-  for (let i = 0; i < 6; i++) {
+function renderSavedRaces() {
+
+    const savedRaces = getSavedRaces();
+
+    savedRaceList.innerHTML = "";
+
+    if (savedRaces.length === 0) {
+
+        savedRaceList.innerHTML =
+            '<p class="empty-message">保存されているレースがありません</p>';
+
+        return;
+    }
+
+    // 新しいものを上に
+    savedRaces
+        .slice()
+        .reverse()
+        .forEach(race => {
+
+            const item = document.createElement("div");
+
+            item.className = "saved-race";
+
+            item.innerHTML = `
+
+                <div>
+                    <div class="saved-race-name">
+                        ${escapeHtml(race.name)}
+                    </div>
+
+                    <div class="saved-race-date">
+                        ${race.date || "日付なし"}
+                    </div>
+                </div>
+
+                <button
+                    class="load-button"
+                    data-id="${race.id}">
+                    呼び出す
+                </button>
+
+                <button
+                    class="delete-race-button"
+                    data-id="${race.id}">
+                    削除
+                </button>
+            `;
+
+            savedRaceList.appendChild(item);
+        });
+
+
+    // 呼び出し
+    document.querySelectorAll(".load-button").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const id = Number(button.dataset.id);
+
+            loadRace(id);
+        });
+
+    });
+
+
+    // 削除
+    document.querySelectorAll(".delete-race-button").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const id = Number(button.dataset.id);
+
+            deleteRace(id);
+        });
+
+    });
+}
+
+
+// ========================================
+// レース呼び出し
+// ========================================
+
+function loadRace(id) {
+
+    const savedRaces = getSavedRaces();
+
+    const race = savedRaces.find(
+        item => item.id === id
+    );
+
+    if (!race) {
+        return;
+    }
+
+    raceName.value = race.name;
+
+    raceDate.value = race.date || "";
+
+    raceMemo.value = race.memo || "";
+
+    bets = structuredClone(race.bets || []);
+
+    renderBets();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+// ========================================
+// レース削除
+// ========================================
+
+function deleteRace(id) {
+
+    if (!confirm("このレースを削除しますか？")) {
+        return;
+    }
+
+    let savedRaces = getSavedRaces();
+
+    savedRaces = savedRaces.filter(
+        race => race.id !== id
+    );
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(savedRaces)
+    );
+
+    renderSavedRaces();
+}
+
+
+// ========================================
+// 入力クリア
+// ========================================
+
+clearButton.addEventListener("click", () => {
+
+    if (!confirm("現在の入力内容をすべてクリアしますか？")) {
+        return;
+    }
+
+    raceName.value = "";
+    raceDate.value = "";
+    raceMemo.value = "";
+
+    bets = [];
+
+    renderBets();
+});
+
+
+// ========================================
+// HTMLエスケープ
+// ========================================
+
+function escapeHtml(value) {
+
     const div = document.createElement("div");
-    div.className = "pokemon-block";
 
-    const details = document.createElement("details");
-    details.open = true; // 最初は開いた状態
+    div.textContent = value;
 
-    const summary = document.createElement("summary");
-    summary.textContent = "ポケモン"; // 初期表示
-
-    const input = document.createElement("input");
-
-    const suggest = document.createElement("div");
-    suggest.className = "suggest";
-
-    const dataDiv = document.createElement("div");
-    dataDiv.className = "data";
-
-    input.addEventListener("input", () => {
-      showSuggest(input, suggest, dataDiv);
-    });
-
-    // 名前入力されたらsummaryに反映
-    input.addEventListener("change", () => {
-      summary.textContent = input.value || "ポケモン";
-    });
-
-    details.appendChild(summary);
-    details.appendChild(input);
-    details.appendChild(suggest);
-    details.appendChild(dataDiv);
-
-    div.appendChild(details);
-    container.appendChild(div);
-  }
+    return div.innerHTML;
 }
 
 
-function getTeam(side) {
-  const container = document.getElementById(side);
-  const inputs = container.querySelectorAll("input");
-  return Array.from(inputs).map(input => input.value);
-}
+// ========================================
+// 初期表示
+// ========================================
 
+renderBets();
 
-function setTeam(side, team) {
-  const container = document.getElementById(side);
-  const blocks = container.querySelectorAll(".pokemon-block");
-
-  blocks.forEach((block, i) => {
-    const input = block.querySelector("input");
-    const dataDiv = block.querySelector(".data");
-    const summary = block.querySelector("summary");
-
-    input.value = team[i] || "";
-    summary.textContent = input.value || "ポケモン";
-
-    showData(input.value, dataDiv);
-  });
-}
-
-
-function saveTeam(side) {
-  const nameInput = document.getElementById(side + "Name");
-  const name = nameInput.value.trim();
-
-  if (!name) {
-    alert("保存名を入力してください");
-    return;
-  }
-
-  const team = getTeam(side);
-
-  const key = side + "_teams";
-  const data = JSON.parse(localStorage.getItem(key) || "{}");
-
-  data[name] = team;
-
-  localStorage.setItem(key, JSON.stringify(data));
-
-  updateSelect(side);
-
-  const select = document.getElementById(side + "Select");
-  select.value = name;
-  
-  nameInput.value = "";
-}
-
-
-function loadTeam(side) {
-  const select = document.getElementById(side + "Select");
-  const name = select.value;
-
-  const nameInput = document.getElementById(side + "Name");
-  
-  nameInput.value = name;
-
-  if (!name) {
-    setTeam(side, []); // 全部空にする
-    return;
-  }
-
-  const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
-
-  setTeam(side, data[name]);
-}
-
-
-function deleteTeam(side) {
-  const select = document.getElementById(side + "Select");
-  const name = select.value;
-
-  if (!name) return;
-
-  if (!confirm(`「${name}」を削除しますか？`)) return;
-
-  const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
-
-  delete data[name];
-
-  localStorage.setItem(side + "_teams", JSON.stringify(data));
-
-  updateSelect(side);
-
-  setTeam(side, []);
-  select.value = "";
-}
-
-
-function updateSelect(side) {
-  const select = document.getElementById(side + "Select");
-  select.innerHTML = "";
-
-  const empty = document.createElement("option");
-  empty.value = "";
-  empty.textContent = "選択してください";
-  select.appendChild(empty);
-
-  const data = JSON.parse(localStorage.getItem(side + "_teams") || "{}");
-
-  Object.keys(data).forEach(name => {
-    const option = document.createElement("option");
-    option.value = name;
-    option.textContent = name;
-    select.appendChild(option);
-  });
-}
-
-
-function clearAllTeams(side) {
-  if (!confirm("本当にすべて削除しますか？")) return;
-
-  localStorage.removeItem(side + "_teams");
-
-  updateSelect(side);
-  setTeam(side, []); // 入力欄もクリア
-}
-
-
-function createTypeLabel(type) {
-  if (!type) return "";
-  return `<span class="type type-${type}">${type}</span>`;
-}
-
-
-function renderTypes(types) {
-  if (!types.length) return "-";
-  return types.map(t => createTypeLabel(t)).join(" ");
-}
-
-
-function calcHP(base) {
-  let value = base * 2;
-  value = Math.floor(value + 31);
-  value = Math.floor(value / 2);
-  value = value + 60;
-  return value;
-}
-
-
-function calcOther(base) {
-  let value = base * 2;
-  value = Math.floor(value + 31);
-  value = Math.floor(value / 2);
-  value = value + 5;
-  return value;
-}
-
-
-function getWeakness(type1, type2) {
-  const result = {
-    x4: [],
-    x2: [],
-    x05: [],
-    x025: [],
-    x0: []
-  };
-
-  allTypes.forEach(attackType => {
-    let multiplier = 1;
-
-    [type1, type2].forEach(defType => {
-      if (!defType) return;
-
-      const chart = typeChart[attackType];
-      if (chart && chart[defType] !== undefined) {
-        multiplier *= chart[defType];
-      }
-    });
-
-    if (multiplier === 0) result.x0.push(attackType);
-    else if (multiplier === 4) result.x4.push(attackType);
-    else if (multiplier === 2) result.x2.push(attackType);
-    else if (multiplier === 0.5) result.x05.push(attackType);
-    else if (multiplier === 0.25) result.x025.push(attackType);
-  });
-
-  return result;
-}
-
-
-// ひらがな → カタカナ変換関数
-function hiraToKata(str) {
-  return str.replace(/[\u3041-\u3096]/g, ch =>
-    String.fromCharCode(ch.charCodeAt(0) + 0x60)
-  );
-}
-
-
-function showData(value, target) {
-
-  const pokemon = pokemonData.find(p => {
-    const label = p.form === "通常"
-      ? p.name
-      : `${p.name}(${p.form})`;
-    return hiraToKata(label) === hiraToKata(value);
-  });
-
-  if (!pokemon) {
-    target.innerHTML = "";
-    return;
-  }
-
-  const weakness = getWeakness(pokemon.type1, pokemon.type2);
-  
-  target.innerHTML = `
-    <div>
-    <b>タイプ:</b> 
-    ${createTypeLabel(pokemon.type1)}
-    ${createTypeLabel(pokemon.type2)}
-    </div>
-
-    <div class="stat-row">
-    <div class="stat-box"><b>HP:</b> ${calcHP(Number(pokemon.hp))}</div>
-    <div class="stat-box"><b>攻撃:</b> ${calcOther(Number(pokemon.atk))}</div>
-    <div class="stat-box"><b>防御:</b> ${calcOther(Number(pokemon.def))}</div>
-    <div class="stat-box"><b>特攻:</b> ${calcOther(Number(pokemon.spa))}</div>
-    <div class="stat-box"><b>特防:</b> ${calcOther(Number(pokemon.spd))}</div>
-    <div><b>素早さ:</b> ${calcOther(Number(pokemon.spe))}</div>
-    </div>
-
-    <div>
-    <b>特性:</b>
-    ${pokemon.ability1 || ""}
-    ${pokemon.ability2 || ""}
-    ${pokemon.hidden ? `(夢:${pokemon.hidden})` : ""}
-    </div>
-
-    <div>
-    <b>相性:</b>
-    <div><span class="weak-label">x4：</span> ${renderTypes(weakness.x4)}</div>
-    <div><span class="weak-label">x2：</span> ${renderTypes(weakness.x2)}</div>
-    <div class="separator"></div>
-    <div><span class="weak-label">x0.5：</span> ${renderTypes(weakness.x05)}</div>
-    <div><span class="weak-label">x0.25：</span> ${renderTypes(weakness.x025)}</div>
-    <div><span class="weak-label">x0：</span> ${renderTypes(weakness.x0)}</div>
-    </div>
-  `;
-}
+renderSavedRaces();
